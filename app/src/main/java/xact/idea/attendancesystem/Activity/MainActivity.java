@@ -1,8 +1,10 @@
-package xact.idea.attendancesystem;
+package xact.idea.attendancesystem.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import xact.idea.attendancesystem.R;
 
 public class MainActivity extends AppCompatActivity {
 

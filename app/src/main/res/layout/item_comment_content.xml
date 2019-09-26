@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlt_item_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <RelativeLayout
+        android:id="@+id/rl_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:minLines="1"
+            android:padding="32px"
+            android:paddingBottom="18px"
+            android:tag="28"
+            android:textColor="@color/colorAccent"
+            android:textSize="28px" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_edit"
+        android:padding="3dp"
+        android:layout_marginLeft="26px"
+        android:layout_marginRight="26px"
+        android:minWidth="120px"
+        android:minHeight="120px"
+        android:visibility="gone"
+        >
+
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/img_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside" />
+
+        <RelativeLayout
+            android:id="@+id/rl_btn_remove"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_alignRight="@+id/img_content"
+            android:layout_alignTop="@+id/img_content"
+
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:visibility="gone">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_close"
+                android:layout_width="40px"
+                android:layout_height="40px"
+                android:layout_centerInParent="true"
+                android:scaleType="fitCenter"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>
