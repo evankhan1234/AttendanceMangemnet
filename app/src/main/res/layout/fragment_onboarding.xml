@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/lib/.OnboardingActivity"
+    android:id="@+id/onboarding_fragment_bg"
+    android:padding="30px"
+    android:layout_marginTop="100px"
+    tools:background="@color/white">
+
+
+
+
+    <TextView
+        android:background="@drawable/white_circle_drawable"
+        android:id="@+id/intro"
+        android:layout_width="450px"
+        android:layout_height="450px"
+        android:text="Attendance"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:tag="45"
+        android:textSize="45px"
+        android:gravity="center_vertical"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+
+        />
+
+
+
+    <TextView
+        android:layout_centerHorizontal="true"
+        android:id="@+id/intro_1_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100px"
+        android:textColor="@color/transparentBlack"
+        android:textAlignment="center"
+        android:text="Attendance System"/>
+
+
+</RelativeLayout>
