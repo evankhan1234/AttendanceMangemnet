@@ -14,7 +14,9 @@
         <activity android:name=".Activity.OnBoardingActivity"></activity>
         <activity android:name=".Activity.LoadingActivity" />
         <activity android:name=".Activity.LoginActivity" />
-        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.MainActivity" >
+
+        </activity>
         <activity android:name=".Activity.SpalashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

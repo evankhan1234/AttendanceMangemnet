@@ -40,7 +40,7 @@
             android:paddingBottom="3px"
 
             android:stateListAnimator="@null"
-            android:visibility="visible"
+            android:visibility="gone"
             app:srcCompat="@drawable/icon_search" />
 
 
@@ -56,7 +56,7 @@
             android:paddingLeft="120px"
             android:paddingRight="120px"
             android:tag="46"
-            android:text="Moments"
+            android:text="Home"
             android:textColor="@color/black"
             android:textSize="46px" />
 

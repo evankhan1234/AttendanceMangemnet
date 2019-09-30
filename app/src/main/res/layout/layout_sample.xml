@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/rlt_fragment_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/rlt_home_category"
+        android:layout_width="match_parent"
+        android:layout_height="142px"
+        >
+
+        <HorizontalScrollView
+            android:id="@+id/scr_category"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/lnl_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="132px"
+                    android:orientation="horizontal">
+
+                    <include layout="@layout/item_home_category" />
+
+                    <include layout="@layout/item_home_category" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="12px">
+
+                    <View
+                        android:id="@+id/homeCategoryBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/homeCategoryBackground" />
+
+                    <View
+                        android:id="@+id/CategoryLineColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1px"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <View
+                        android:id="@+id/view_category_selected_run"
+                        android:layout_width="5px"
+                        android:layout_height="12px"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/view_touch"
+            android:layout_width="match_parent"
+            android:layout_height="142px" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlt_home_child_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlt_home_category">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpg_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlt_detail_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>

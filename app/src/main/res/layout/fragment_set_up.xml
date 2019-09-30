@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlt_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="30px"
+    >
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F9F9F9"
+        android:paddingBottom="50px">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    >
+
+    <TextView
+
+        android:textStyle="bold"
+        android:tag="40"
+        android:textSize="40px"
+        android:layout_marginLeft="60px"
+        android:layout_marginTop="30px"
+        android:text="List Of Units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Spinner
+        android:entries="@array/unit_lists"
+       android:background="@drawable/test"
+        android:layout_marginTop="20px"
+        android:layout_marginLeft="60px"
+        android:layout_marginRight="50px"
+        android:id="@+id/spinnerUnit"
+        android:layout_width="match_parent"
+        android:layout_height="120px"/>
+    <HorizontalScrollView
+        android:visibility="gone"
+        android:layout_marginTop="50px"
+        android:layout_marginLeft="50px"
+        android:id="@+id/scr_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_1"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+
+                android:text="DCO"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_finishs"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+
+                android:text="DFB"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_finishsSs"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+
+                android:text="DBD"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_finishsssd"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:minWidth="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+                android:text="MIS"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+        </LinearLayout>
+    </HorizontalScrollView>
+    <TextView
+
+        android:textStyle="bold"
+        android:tag="40"
+        android:textSize="40px"
+        android:layout_marginLeft="60px"
+        android:layout_marginTop="30px"
+        android:text="List Of Departments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:entries="@array/department_lists"
+        android:layout_marginTop="20px"
+        android:background="@drawable/test"
+        android:layout_marginLeft="60px"
+        android:layout_marginRight="50px"
+        android:id="@+id/spinnerDepartments"
+        android:layout_width="match_parent"
+        android:layout_height="120px"/>
+    <HorizontalScrollView
+        android:visibility="gone"
+        android:layout_marginTop="50px"
+        android:layout_marginLeft="50px"
+        android:id="@+id/scr_categorys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btnd_2"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:minWidth="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+
+                android:text="Import"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_2"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:minWidth="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+
+                android:text="SDL"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_finishsss"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:minWidth="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+                android:text="MIS"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+            <Button
+                android:layout_marginLeft="20px"
+                android:background="@drawable/round_button_blue"
+                android:id="@+id/btn_finishsdss"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:minWidth="300px"
+                android:layout_height="130px"
+                android:layout_gravity="end|center"
+                android:text="MIS"
+
+                android:textColor="@color/white"
+                android:visibility="visible" />
+        </LinearLayout>
+    </HorizontalScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        tools:listitem="@layout/item_unit_dept_list_layout"
+        android:layout_marginTop="25px"
+
+        android:nestedScrollingEnabled="false"
+        android:id="@+id/rcl_this_place_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_marginLeft="50px"
+
+        android:layout_marginRight="50px"
+        android:layout_marginBottom="0px"
+
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
+    </RelativeLayout>
+</ScrollView>

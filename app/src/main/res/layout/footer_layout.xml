@@ -32,12 +32,12 @@
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="btn_coupon_clicked"
+                android:onClick="btn_home_clicked"
                 android:stateListAnimator="@null" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_footer_coupons"
+                android:id="@+id/btn_footer_home"
                 android:layout_width="80px"
                 android:layout_height="78px"
                 android:layout_marginLeft="149px"
@@ -47,7 +47,7 @@
                 android:background="@color/transparent" />
 
             <TextView
-                android:id="@+id/tv_coupon_menus"
+                android:id="@+id/tv_home_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
@@ -57,7 +57,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="Neighbours"
+                android:text="Home"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 
@@ -70,28 +70,28 @@
             android:clickable="true">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_coupon_clickedd"
+                android:id="@+id/btn_setup_clicked"
 
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="btn_coupon_clicked"
+                android:onClick="btn_setup_clicked"
                 android:stateListAnimator="@null" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_footer_couponsd"
+                android:id="@+id/btn_footer_setup"
                 android:layout_width="80px"
                 android:layout_height="78px"
                 android:layout_marginLeft="149px"
                 android:layout_marginTop="26px"
-                app:srcCompat="@drawable/img_footer_home_selector"
+                app:srcCompat="@drawable/img_footer_setup_selector"
                 android:layout_centerHorizontal="true"
                 android:background="@color/transparent" />
 
             <TextView
-                android:id="@+id/tv_coupon_menud"
+                android:id="@+id/tv_setup_menus"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
@@ -101,7 +101,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="Neighbours"
+                android:text="SetUp"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 
@@ -116,28 +116,28 @@
             android:clickable="true">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_coupons_clicked"
+                android:id="@+id/btn_user_clicked"
 
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="btn_coupon_clicked"
+                android:onClick="btn_user_clicked"
                 android:stateListAnimator="@null" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_footer_csoupons"
+                android:id="@+id/btn_footer_user"
                 android:layout_width="80px"
                 android:layout_height="78px"
                 android:layout_marginLeft="149px"
                 android:layout_marginTop="26px"
-                app:srcCompat="@drawable/img_footer_home_selector"
+                app:srcCompat="@drawable/img_footer_user_selector"
                 android:layout_centerHorizontal="true"
                 android:background="@color/transparent" />
 
             <TextView
-                android:id="@+id/tv_coupon_menu"
+                android:id="@+id/tv_user_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
@@ -147,7 +147,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="Neighbours"
+                android:text="User Activity"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 
@@ -159,28 +159,28 @@
             android:clickable="true">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btn_coupon_clickesd"
+                android:id="@+id/btn_more_clicked"
 
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:onClick="btn_coupon_clicked"
+                android:onClick="btn_more_clicked"
                 android:stateListAnimator="@null" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/btn_footer_couposns"
+                android:id="@+id/btn_footer_more"
                 android:layout_width="80px"
                 android:layout_height="78px"
                 android:layout_marginLeft="149px"
                 android:layout_marginTop="26px"
-                app:srcCompat="@drawable/img_footer_home_selector"
+                app:srcCompat="@drawable/img_footer_more_selector"
                 android:layout_centerHorizontal="true"
                 android:background="@color/transparent" />
 
             <TextView
-                android:id="@+id/tv_coupon_mensus"
+                android:id="@+id/tv_more_menus"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
@@ -190,7 +190,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="Neighbours"
+                android:text="More"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 
