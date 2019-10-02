@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import xact.idea.attendancesystem.Fragment.DepartmentFragment;
-import xact.idea.attendancesystem.Fragment.UnityFragment;
+import xact.idea.attendancesystem.Fragment.PunchOutFragment;
+import xact.idea.attendancesystem.Fragment.PunchInFragment;
 
 public class HomePagerFragmentAdapter extends FragmentPagerAdapter {
 
@@ -21,8 +21,8 @@ public class HomePagerFragmentAdapter extends FragmentPagerAdapter {
         return HOME_PAGER;
     }
 
-    UnityFragment unityFragment = null;
-    DepartmentFragment departmentFragment = null;
+    PunchInFragment unityFragment = null;
+    PunchOutFragment departmentFragment = null;
 
 
     @Override
@@ -31,20 +31,20 @@ public class HomePagerFragmentAdapter extends FragmentPagerAdapter {
         if (position == 0)
         {
             if (unityFragment == null) {
-                unityFragment = new UnityFragment();
+                unityFragment = new PunchInFragment();
             }
             return unityFragment;
         } else if (position == 1)
         {
             if (departmentFragment == null) {
-                departmentFragment = new DepartmentFragment();
+                departmentFragment = new PunchOutFragment();
             }
             return departmentFragment;
 
         }
         else {
             if (unityFragment == null) {
-                unityFragment = new UnityFragment();
+                unityFragment = new PunchInFragment();
             }
             return unityFragment;
         }

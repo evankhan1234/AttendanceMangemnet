@@ -71,7 +71,7 @@
         android:layout_height="5px"
         android:layout_below="@+id/rlt_header"
         android:layout_marginTop="1dp"
-        android:background="#FAF7F7" />
+        android:background="@drawable/gradient_color_top" />
 
     <RelativeLayout
 

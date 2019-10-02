@@ -15,7 +15,7 @@ import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
 
-public class UnityFragment extends Fragment {
+public class PunchOutFragment extends Fragment {
     Activity mActivity;
     CorrectSizeUtil correctSizeUtil;
     private View mRoot;
@@ -23,12 +23,13 @@ public class UnityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mRoot= inflater.inflate(R.layout.fragment_unity, container, false);
+        mRoot= inflater.inflate(R.layout.fragment_department, container, false);
         mActivity=getActivity();
         correctSizeUtil= correctSizeUtil.getInstance(getActivity());
         correctSizeUtil.setWidthOriginal(1080);
         correctSizeUtil.correctSize(mRoot);
         return mRoot;
     }
+
 
 }

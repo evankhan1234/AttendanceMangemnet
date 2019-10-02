@@ -1,93 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    android:id="@+id/rlt_fragment_root"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlt_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
+    android:layout_marginBottom="30px"
+    >
     <RelativeLayout
-        android:id="@+id/rlt_home_category"
+
+
+        android:id="@+id/rlt_fragment_root"
         android:layout_width="match_parent"
-        android:layout_height="142px"
-        >
-
-        <HorizontalScrollView
-            android:id="@+id/scr_category"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_view"
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+
+                card_view:cardBackgroundColor="#FFFFFF"
+                card_view:cardCornerRadius="5dp"
+
+                card_view:cardElevation="1dp"
+                card_view:cardUseCompatPadding="true">
 
                 <LinearLayout
-                    android:id="@+id/lnl_category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="132px"
-                    android:orientation="horizontal">
 
-                    <include layout="@layout/item_home_category" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-                    <include layout="@layout/item_home_category" />
+
+                    android:layout_marginBottom="30px"
+                    android:background="@drawable/btn_background"
+                    android:orientation="vertical"
+                    android:padding="50px"
+                    android:visibility="visible">
+
+
+                    <RelativeLayout
+
+                        android:id="@+id/rlt_fragment_rootxs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white">
+
+                        <LinearLayout
+                            android:visibility="visible"
+                            android:layout_width="match_parent"
+
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="40px"
+                            android:orientation="horizontal">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/img_avatar"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+
+                                android:elevation="10px"
+                                android:layout_width="180px"
+                                android:layout_height="180px"
+                                android:src="@drawable/imageicon"
+
+
+
+                                />
+
+                            <LinearLayout
+                                android:layout_marginTop="25px"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/text_name"
+                                    android:layout_width="wrap_content"
+
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="40px"
+
+                                    android:tag="40"
+                                    android:text="Evan Khan"
+                                    android:textColor="#6A6B6B"
+                                    android:textSize="40px" />
+
+                                <TextView
+                                    android:id="@+id/text_office_text"
+                                    android:layout_width="wrap_content"
+
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="40px"
+
+                                    android:tag="40"
+                                    android:text="+8801677182084"
+                                    android:textColor="#6A6B6B"
+                                    android:textSize="40px" />
+
+
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="80px"
+
+                            android:gravity="right"
+                            android:layout_gravity="right"
+                            android:layout_height="50px"
+                            android:src="@drawable/right_arrow"
+                            android:layout_width="50px"/>
+                    </RelativeLayout>
+
+
+
 
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_marginTop="350px"
+            android:id="@+id/rlt_home_category"
+            android:layout_width="match_parent"
+            android:layout_height="142px"
+            >
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="12px">
 
-                    <View
-                        android:id="@+id/homeCategoryBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/homeCategoryBackground" />
+            <HorizontalScrollView
 
-                    <View
-                        android:id="@+id/CategoryLineColor"
+                android:id="@+id/scr_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/lnl_category"
                         android:layout_width="wrap_content"
-                        android:layout_height="1px"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        />
+                        android:layout_height="132px"
+                        android:orientation="horizontal">
 
-                    <View
-                        android:id="@+id/view_category_selected_run"
-                        android:layout_width="5px"
-                        android:layout_height="12px"
-                        />
-                </RelativeLayout>
-            </LinearLayout>
-        </HorizontalScrollView>
+                        <include layout="@layout/item_home_category" />
 
-        <View
-            android:id="@+id/view_touch"
+                        <include layout="@layout/item_home_category" />
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="12px">
+
+                        <View
+                            android:id="@+id/homeCategoryBackground"
+                            android:layout_width="match_parent"
+                            android:layout_height="1px"
+                            android:layout_alignParentBottom="true"
+                            android:background="@color/homeCategoryBackground" />
+
+                        <View
+                            android:id="@+id/CategoryLineColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="1px"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <View
+                            android:id="@+id/view_category_selected_run"
+                            android:layout_width="5px"
+                            android:layout_height="12px"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <View
+                android:id="@+id/view_touch"
+                android:layout_width="match_parent"
+                android:layout_height="142px" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlt_home_child_fragment"
             android:layout_width="match_parent"
-            android:layout_height="142px" />
-    </RelativeLayout>
+            android:layout_height="1500px"
+            android:layout_below="@+id/rlt_home_category">
 
-    <RelativeLayout
-        android:id="@+id/rlt_home_child_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/rlt_home_category">
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/vpg_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vpg_home"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_marginTop="500px"
+            android:id="@+id/rlt_detail_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="1500px"
+            />
 
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/rlt_detail_fragment"
+            android:orientation="horizontal"
+            android:layout_marginBottom="30px"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_gravity="left"
+                android:drawablePadding="10px"
+                android:drawableRight="@drawable/right_arrow"
+
+                android:textAlignment="center"
+                android:text="View All Punch In List"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_weight="1"
+
+                android:drawablePadding="10px"
+                android:layout_marginRight="20px"
+                android:drawableRight="@drawable/right_arrow"
+
+                android:textAlignment="center"
+                android:text="View All Punch Out List"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rlt_detail_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-</RelativeLayout>
+</ScrollView>

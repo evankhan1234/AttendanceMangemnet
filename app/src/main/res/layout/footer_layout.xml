@@ -17,7 +17,7 @@
         android:layout_height="176px"
         android:layout_alignParentBottom="false"
         android:orientation="horizontal"
-        android:weightSum="4">
+        android:weightSum="3">
 
         <RelativeLayout
             android:layout_width="0px"
@@ -64,6 +64,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:visibility="visible"
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -101,7 +102,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="SetUp"
+                android:text="Leave"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 
@@ -110,6 +111,7 @@
 
 
         <RelativeLayout
+            android:visibility="gone"
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_weight="1"

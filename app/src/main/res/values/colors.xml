@@ -22,6 +22,7 @@
     <color name="teal">#009688</color>
     <color name="gradient_strong">#80AAAAAA</color>
     <color name="gradient_weak">#00555555</color>
+    <color name="light_gray">#dbdbdb</color>
     <!-- ONBOARDING -->
     <color name="indicator_unselected">#4D000000</color>
     <array name="colors">

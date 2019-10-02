@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
         CorrectSizeUtil.getInstance(this).correctSize();
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
+        afterClickTabItem(Constant.FRAG_HOME, null);
         btn_footer_home.setSelected(true);
         tv_home_menu.setSelected(true);
     }

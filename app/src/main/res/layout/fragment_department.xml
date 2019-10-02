@@ -3,12 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.DepartmentFragment">
+    tools:context=".Fragment.PunchInFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        tools:listitem="@layout/item_unit_dept_list_layout"
+        android:layout_marginTop="25px"
+
+        android:nestedScrollingEnabled="false"
+        android:id="@+id/rcl_punch_out_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
+
+        android:layout_marginBottom="0px"
+
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>
