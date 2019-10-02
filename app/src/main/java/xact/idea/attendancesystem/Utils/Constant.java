@@ -6,6 +6,13 @@ public class Constant {
     public static final int TIME_OUT = 30000;
     public static final int LOADING_TIME = 1000;
     public static final String DOMAIN = "https://webhawks.oceanize.co.jp/PreMo-Api/public/";
+    public static final int FRAG_HOME = 1;
+
+    public static final int FRAG_SET_UP = 2;
+    public static final int FRAG_USER_ACTIVTY= 3;
+
+    public static final int FRAG_MORE = 4;
+
     public static class API {
         public static final String LOGIN = DOMAIN + "users/login"; // done n
 

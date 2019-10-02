@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0px"
+    android:clipToPadding="false"
+   >
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+
+
+
+            android:background="@drawable/btn_background"
+            android:orientation="vertical"
+
+            android:visibility="visible">
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="6"
+                android:id="@+id/layout_header"
+
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="2019-10-11"
+                    android:gravity="left|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_customer_name" />
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Dhaka Horizon"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_date" />
+
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="10:30 A.M"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amounst" />
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Banani"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amount" />
+
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+
+                    android:text="5.30 P.M"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amounsvt" />
+                <TextView
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="2 Hours"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amouvnt" />
+            </LinearLayout>
+
+            <TableLayout
+                android:visibility="gone"
+                android:layout_weight="4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:paddingLeft="10px"
+                android:paddingRight="10px" >
+                <TableRow android:background="#4CAF50"
+                    android:padding="20px">
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Name" />
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Punch In Location" />
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Punch In Time" />
+                    <TextView
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Duration" />
+                </TableRow>
+                <TableRow
+                    android:layout_weight="4"
+                    android:layout_marginTop="30px"
+                    android:background="@drawable/border"
+                    android:padding="5dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="MD. Sarawer Jahan Evan" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Banani Horizon" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="10:30 P.M" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="2 Hours" />
+                </TableRow>
+
+            </TableLayout>
+
+
+
+
+
+
+
+
+
+
+
+        </LinearLayout>
+
+
+</RelativeLayout>

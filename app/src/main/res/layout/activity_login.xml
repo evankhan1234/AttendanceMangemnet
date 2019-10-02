@@ -110,7 +110,7 @@
             android:layout_marginLeft="95px"
             android:layout_marginTop="70px"
             android:layout_marginRight="95px"
-            android:background="@drawable/login_button_background"
+            android:background="@drawable/btn_more_background"
             android:hint="Log In"
             android:tag="45"
             android:textColorHint="#fff"
@@ -124,7 +124,7 @@
             android:layout_marginTop="65px"
             android:tag="38"
             android:text="Sign Up"
-            android:textColor="#399DF9"
+            android:textColor="#4CAF50"
             android:textSize="38px" />
     </LinearLayout>
 

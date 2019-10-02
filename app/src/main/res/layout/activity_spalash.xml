@@ -19,7 +19,7 @@
         <TextView
             android:textStyle="bold"
             android:tag="50"
-            android:textColor="@color/transparentBlack"
+            android:textColor="#4CAF50"
             android:textSize="50px"
             android:text="HRM Management"
             android:layout_marginTop="40px"

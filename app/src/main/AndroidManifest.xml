@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="xact.idea.attendancesystem">
-
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <application
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,16 +13,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize">
-        <activity android:name=".Activity.OnBoardingActivity"></activity>
-        <activity android:name=".Activity.LoadingActivity" />
-        <activity android:name=".Activity.LoginActivity" />
-        <activity android:name=".Activity.MainActivity" />
-        <activity android:name=".Activity.SpalashActivity">
+        <activity android:name=".Activity.OnBoardingActivity"
+
+
+            ></activity>
+        <activity android:name=".Activity.LoadingActivity"
+
+            />
+        <activity android:name=".Activity.LoginActivity"
+
+            />
+        <activity android:name=".Activity.MainActivity" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Activity.SpalashActivity">
+
         </activity>
 
         <provider
