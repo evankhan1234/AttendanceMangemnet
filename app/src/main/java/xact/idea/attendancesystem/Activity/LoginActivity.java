@@ -37,6 +37,7 @@ import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.DLog;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
@@ -130,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
                 //input_password.setError("You need to enter a name");
                 if (verifyInput()) {
                  //   doLogin("");
+                    SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
                     goMainScreen();
                 }
             }

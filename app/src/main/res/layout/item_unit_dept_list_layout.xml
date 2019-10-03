@@ -44,11 +44,18 @@
                 android:layout_marginTop="40px"
                 android:orientation="horizontal">
 
-                <com.github.siyamed.shapeimageview.CircularImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/user_icon"
+
+
+
                     android:layout_width="280px"
                     android:layout_height="280px"
-                    android:src="@drawable/imageicon" />
+                    android:src="@drawable/imageicon"
+
+
+
+                    />
 
                 <LinearLayout
                     android:layout_marginTop="30px"

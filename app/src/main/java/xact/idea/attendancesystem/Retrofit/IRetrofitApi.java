@@ -1,5 +1,6 @@
 package xact.idea.attendancesystem.Retrofit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -10,10 +11,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import xact.idea.attendancesystem.Entity.UserListEntity;
 
 public interface IRetrofitApi {
-//    @GET("getMenu.php")
-//    io.reactivex.Observable<List<Category>> getCategory();
+    @GET("16jtsp")
+    io.reactivex.Observable<ArrayList<UserListEntity>> getUser();
 //
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")

@@ -11,15 +11,24 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Collections;
+import java.util.List;
 
 import xact.idea.attendancesystem.Fragment.HomeFragment;
 import xact.idea.attendancesystem.Fragment.MoreFragment;
+import xact.idea.attendancesystem.Fragment.ProfileDetailsFragment;
+import xact.idea.attendancesystem.Fragment.PunchInFragment;
 import xact.idea.attendancesystem.Fragment.SetUpFragment;
 import xact.idea.attendancesystem.Fragment.UserActivityFragment;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,16 +50,25 @@ public class MainActivity extends AppCompatActivity {
     public static final int SET_UP_BTN = 1;
     public static final int USER_BTN = 2;
     public static final int MORE_BTN = 3;
+    private RelativeLayout rlt_header;
+    private RelativeLayout rlt_header_details;
+    private TextView details_title;
+    private View view_header_details;
+    private ImageButton btn_header_back_;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         title=findViewById(R.id.title);
+        btn_header_back_=findViewById(R.id.btn_header_back_);
+        view_header_details=findViewById(R.id.view_header_details);
+        details_title=findViewById(R.id.details_title);
         btn_footer_home=findViewById(R.id.btn_footer_home);
         btn_footer_setUp=findViewById(R.id.btn_footer_setup);
         btn_footer_user_activity=findViewById(R.id.btn_footer_user);
         btn_footer_more=findViewById(R.id.btn_footer_more);
-
+        rlt_header=findViewById(R.id.rlt_header);
+        rlt_header_details=findViewById(R.id.rlt_header_details);
         tv_home_menu=findViewById(R.id.tv_home_menu);
         tv_setup_menu=findViewById(R.id.tv_setup_menus);
         tv_user_activity_menu=findViewById(R.id.tv_user_menu);
@@ -61,6 +79,71 @@ public class MainActivity extends AppCompatActivity {
         afterClickTabItem(Constant.FRAG_HOME, null);
         btn_footer_home.setSelected(true);
         tv_home_menu.setSelected(true);
+        btn_header_back_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+               onBackPressed();
+            }
+        });
+    }
+    @Override
+    public void onBackPressed() {
+        //   super.onBackPressed();
+
+        Fragment f = getVisibleFragment();
+        Log.e("frag","frag"+f);
+        if (f != null)
+        {
+            if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f1);
+                transaction.commit();
+                getSupportFragmentManager().popBackStack();
+
+                hideHeaderDetail();
+               // return 2;
+
+            }
+//
+//                int handle = ((SetUpFragment) f).handleBackPress();
+//                if (handle == 0) {
+//                    finish();
+//                } else if (handle == 2) {
+//                    hideHeaderDetail();
+//                } else {
+//                    // do not hide header
+//                }
+
+
+        } else {
+            // finish();
+        }
+    }
+    public void hideHeaderDetail() {
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        //card_view.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        rlt_header_details.setVisibility(View.GONE);
+
+
+    }
+    public Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        Collections.reverse(fragments);
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
     }
     private void setUnselectAllmenu() {
         tv_home_menu.setSelected(false);
@@ -109,17 +192,22 @@ public class MainActivity extends AppCompatActivity {
         afterClickTabItem(Constant.FRAG_HOME, null);
         // checkToGetTicket(false);
         title.setText("Home");
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
 
     }
 
     public void btn_setup_clicked(View view) {
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = false;
-        setUpFooter(SET_UP_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_SET_UP, null);
-        // checkToGetTicket(false);
-        title.setText("Set Up");
+        Toast.makeText(mContext, "Not implement Yet", Toast.LENGTH_SHORT).show();
+//        Log.e(TAG, "Home Button Clicked");
+//        Utils.is_home = false;
+//        setUpFooter(SET_UP_BTN);
+//        //show the initial home page
+//        afterClickTabItem(Constant.FRAG_SET_UP, null);
+//        // checkToGetTicket(false);
+//        title.setText("Set Up");
 
 
     }
@@ -172,10 +260,16 @@ public class MainActivity extends AppCompatActivity {
         // identify which fragment will be called
         switch (fragId) {
             case Constant.FRAG_HOME:
-                newFrag = new HomeFragment();
+                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
+                    newFrag = new SetUpFragment();
+                }
+              else{
+                    newFrag = new SetUpFragment();
+                }
                 break;
             case Constant.FRAG_SET_UP:
-                newFrag = new SetUpFragment();
+
+
                 //   newFrag = new AlertFragment();
                 //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
                 //  setUnreadMessage();
@@ -205,4 +299,33 @@ public class MainActivity extends AppCompatActivity {
         fragTransaction.commit();
 
     }
+    public void showHeaderDetail(String titles) {
+
+        if (titles.equals("no"))
+        {
+            rlt_header.setVisibility(View.VISIBLE);
+            // / rlt_header_details.setVisibility(View.VISIBLE);
+            //view_header_details.setVisibility(View.VISIBLE);
+
+            title.setVisibility(View.VISIBLE);
+        }
+        else {
+            rlt_header.setVisibility(View.GONE);
+            rlt_header_details.setVisibility(View.VISIBLE);
+            view_header_details.setVisibility(View.VISIBLE);
+
+            title.setVisibility(View.GONE);
+        }
+
+
+
+
+
+
+    }
+    public void ShowText(String name)
+    {
+        details_title.setText(name);
+    }
+
 }

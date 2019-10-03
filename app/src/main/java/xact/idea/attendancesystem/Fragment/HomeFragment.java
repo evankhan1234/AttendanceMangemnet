@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
@@ -48,6 +51,7 @@ public class HomeFragment extends Fragment {
     ArrayList<String> arrayList = new ArrayList<>();
     PunchInAdapter mAdapters;
     IRetrofitApi mService;
+    ImageView img_next;
    // RecyclerView recycler_cart;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Override
@@ -80,8 +84,55 @@ public class HomeFragment extends Fragment {
 //            }
 //        }));
     }
+    public int handleBackPress() {
+        if (getChildFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName()) != null) {
+            ProfileDetailsFragment f = (ProfileDetailsFragment) getChildFragmentManager()
+                    .findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+            transaction.remove(f);
+            transaction.commit();
+            getChildFragmentManager().popBackStack();
+
+
+            return 2;
+
+        }
+//        Fragment f = getFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
+//        if (f != null) {
+//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//            transaction.remove(f);
+//            transaction.commit();
+//            getChildFragmentManager().popBackStack();
+//            // ((MainActivity) getActivity()).showHeaderDetail("no");
+////                    Log.e("22","22");
+////
+////                    Log.e("CONTACT_ADMIN","call");
+//
+//        } else {
+//
+//        }
+        return 2;
+    }
+    public void momentDetailsFragmnett() {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+        Fragment f = new ProfileDetailsFragment();
+
+        transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
+        transaction.add(R.id.rlt_detail_fragment, f, f.getClass().getSimpleName());
+        transaction.addToBackStack(null);
+        transaction.commit();
+//
+        ((MainActivity) getActivity()).showHeaderDetail("details");
+//        ((MainActivity) getActivity()).ShowText("Details");
+
+        // disableNestedScroll();
+    }
         private void initView() {
         mService = Common.getApi();
+        img_next =  mRoot.findViewById(R.id.img_next);
         user_icon =  mRoot.findViewById(R.id.img_avatar);
         lnl_category = (LinearLayout) mRoot.findViewById(R.id.lnl_category);
 
@@ -95,7 +146,12 @@ public class HomeFragment extends Fragment {
 
             arrayList.add("House "+j);
         }
-
+            img_next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    momentDetailsFragmnett();
+                }
+            });
 
         mAdapters = new PunchInAdapter(mActivity, arrayList);
 
