@@ -21,12 +21,20 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.siyamed.shapeimageview.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import xact.idea.attendancesystem.Activity.MainActivity;
+import xact.idea.attendancesystem.Entity.UserListEntity;
+import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
@@ -34,12 +42,14 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
 
     private Activity mActivity = null;
-    private List<String> messageEntities;
+    private List<UserListEntity> messageEntities;
+    ClickInterface  clickInterface;
 
-    public UnitDepartmentAdapter(Activity activity, List<String> messageEntitie) {
+    public UnitDepartmentAdapter(Activity activity, List<UserListEntity> messageEntitie,ClickInterface  clickInterfaces) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
+        clickInterface=clickInterfaces;
     }
 
 
@@ -53,9 +63,25 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
     }
 
     @Override
-    public void onBindViewHolder(UnitDepartmentAdapter.PlaceTagListiewHolder holder, final int position) {
+    public void onBindViewHolder(final UnitDepartmentAdapter.PlaceTagListiewHolder holder, final int position) {
 
         Log.e("SDFsf", "SDfs" + messageEntities.get(position));
+
+        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.girl)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        holder.user_icon.setImageDrawable(resource);
+                    }
+                });
+        holder.text_name.setText(messageEntities.get(position).FullName);
+        holder.text_email.setText(messageEntities.get(position).Email);
+        holder.text_office_text.setText(messageEntities.get(position).OfficeExt);
+        holder.text_phone_number.setText(messageEntities.get(position).PhoneNumber);
+
+        holder.text_department.setText(messageEntities.get(position).Designation);
+        holder.text_unit.setText(messageEntities.get(position).UnitName);
+        holder.text_department.setText(messageEntities.get(position).DepartmentName);
 
         holder.img_email.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,15 +92,21 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         holder.img_sms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendSMS(view);
+                sendSMS(messageEntities.get(position).PhoneNumber);
             }
         });
         holder.img_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:0123456789"));
+                intent.setData(Uri.parse("tel:"+messageEntities.get(position).PhoneNumber));
                 mActivity. startActivity(intent);
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickInterface.onItemClick(position);
             }
         });
 
@@ -87,7 +119,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
     }
 
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
-        private CircularImageView user_icon;
+        private CircleImageView user_icon;
         private TextView text_name;
         private TextView text_office_text;
         private TextView text_phone_number;
@@ -140,8 +172,8 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         }
     }
 
-    public void sendSMS(View v) {
-        String number = "12346556";  // The number on which you want to send SMS
+    public void sendSMS(String number) {
+          // The number on which you want to send SMS
         mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
     }
 }

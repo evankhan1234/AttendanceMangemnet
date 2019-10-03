@@ -43,7 +43,7 @@ public class PunchInFragment extends Fragment {
         rcl_punch_in_list.setLayoutManager(lm);
 
 
-        for(int j = 0; j < 3; j++){
+        for(int j = 0; j < 20; j++){
 
             arrayList.add("House "+j);
         }

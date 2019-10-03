@@ -107,7 +107,7 @@
             android:paddingLeft="120px"
             android:paddingRight="120px"
             android:tag="46"
-            android:text="Thread"
+            android:text="Details"
             android:textColor="@color/black"
             android:textSize="46px" />
     </RelativeLayout>

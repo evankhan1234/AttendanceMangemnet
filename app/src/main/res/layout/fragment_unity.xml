@@ -3,38 +3,134 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlt_root"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="30px"
+
     >
     <RelativeLayout
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F9F9F9"
-        android:paddingBottom="50px">
+        android:paddingBottom="10px">
+
 
         <LinearLayout
+
+
+            android:background="@color/colorPrimary"
+
+            android:layout_marginLeft="10px"
+            android:layout_marginRight="10px"
+            android:layout_below="@+id/user"
+
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            android:id="@+id/layout_header"
 
-            android:orientation="vertical"
-            >
+            xmlns:android="http://schemas.android.com/apk/res/android">
 
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Dates"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_customer_name" />
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Punch In Location"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_date" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Punch In Time"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_amounst" />
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Punch Out Location"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_amount" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Punch Out Time"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_amounsvt" />
+            <TextView
+                android:textColor="@color/white"
+                android:paddingTop="10px"
+                android:paddingBottom="10px"
+                android:tag="40"
+                android:textSize="40px"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Duration"
+                android:gravity="center|center_vertical"
+                android:layout_weight="1"
+
+                android:background="@drawable/cell_shape"
+                android:id="@+id/text_amouvnt" />
         </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
-                tools:listitem="@layout/item_unit_dept_list_layout"
+                tools:listitem="@layout/item_punch_in_list"
                 android:layout_marginTop="25px"
 
+                android:layout_below="@+id/layout_header"
                 android:nestedScrollingEnabled="false"
                 android:id="@+id/rcl_punch_in_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
 
-                android:layout_marginLeft="50px"
+                android:layout_marginLeft="10px"
 
-                android:layout_marginRight="50px"
+                android:layout_marginRight="10px"
                 android:layout_marginBottom="0px"
 
 
