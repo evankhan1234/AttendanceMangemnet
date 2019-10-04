@@ -169,7 +169,7 @@ public class SetUpFragment extends Fragment {
             transaction.addToBackStack(f.getClass().getSimpleName());
             transaction.commit();
             ((MainActivity) getActivity()).ShowText("Details");
-            ((MainActivity) getActivity()).showHeaderDetail("test");
+            ((MainActivity) getActivity()).showHeaderDetail("rrr");
 
 
         }

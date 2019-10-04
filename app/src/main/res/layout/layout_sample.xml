@@ -1,249 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlt_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="30px"
     >
-    <RelativeLayout
+    <ScrollView
 
 
         android:id="@+id/rlt_fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_view"
-
-
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/linear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_view"
 
-                card_view:cardBackgroundColor="#FFFFFF"
-                card_view:cardCornerRadius="5dp"
-
-                card_view:cardElevation="1dp"
-                card_view:cardUseCompatPadding="true">
-
-                <LinearLayout
 
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
+                    card_view:cardBackgroundColor="#FFFFFF"
+                    card_view:cardCornerRadius="5dp"
 
-                    android:layout_marginBottom="30px"
-                    android:background="@drawable/btn_background"
-                    android:orientation="vertical"
-                    android:padding="50px"
-                    android:visibility="visible">
+                    card_view:cardElevation="1dp"
+                    card_view:cardUseCompatPadding="true">
 
+                    <LinearLayout
 
-                    <RelativeLayout
-
-                        android:id="@+id/rlt_fragment_rootxs"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/white">
+                        android:layout_height="wrap_content"
 
-                        <LinearLayout
-                            android:visibility="visible"
+
+                        android:layout_marginBottom="30px"
+                        android:background="@drawable/btn_background"
+                        android:orientation="vertical"
+                        android:padding="50px"
+                        android:visibility="visible">
+
+
+                        <RelativeLayout
+
+                            android:id="@+id/rlt_fragment_rootxs"
                             android:layout_width="match_parent"
-
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="40px"
-                            android:orientation="horizontal">
-
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/img_avatar"
-                                android:layout_alignParentLeft="true"
-                                android:layout_centerVertical="true"
-
-                                android:elevation="10px"
-                                android:layout_width="180px"
-                                android:layout_height="180px"
-                                android:src="@drawable/imageicon"
-
-
-
-                                />
+                            android:layout_height="match_parent"
+                            android:background="@color/white">
 
                             <LinearLayout
-                                android:layout_marginTop="25px"
-                                android:layout_width="wrap_content"
+                                android:visibility="visible"
+                                android:layout_width="match_parent"
+
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:layout_marginTop="40px"
+                                android:orientation="horizontal">
 
-                                <TextView
-                                    android:id="@+id/text_name"
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/img_avatar"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerVertical="true"
+
+                                    android:elevation="10px"
+                                    android:layout_width="180px"
+                                    android:layout_height="180px"
+                                    android:src="@drawable/imageicon"
+
+
+
+                                    />
+
+                                <LinearLayout
+                                    android:layout_marginTop="25px"
                                     android:layout_width="wrap_content"
-
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="40px"
+                                    android:orientation="vertical">
 
-                                    android:tag="40"
-                                    android:text="Evan Khan"
-                                    android:textColor="#6A6B6B"
-                                    android:textSize="40px" />
+                                    <TextView
+                                        android:id="@+id/text_name"
+                                        android:layout_width="wrap_content"
 
-                                <TextView
-                                    android:id="@+id/text_office_text"
-                                    android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="40px"
 
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="40px"
+                                        android:tag="40"
+                                        android:text="Evan Khan"
+                                        android:textColor="#6A6B6B"
+                                        android:textSize="40px" />
 
-                                    android:tag="40"
-                                    android:text="+8801677182084"
-                                    android:textColor="#6A6B6B"
-                                    android:textSize="40px" />
+                                    <TextView
+                                        android:id="@+id/text_office_text"
+                                        android:layout_width="wrap_content"
+
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="40px"
+
+                                        android:tag="40"
+                                        android:text="+8801677182084"
+                                        android:textColor="#6A6B6B"
+                                        android:textSize="40px" />
+
+
+                                </LinearLayout>
+
 
 
                             </LinearLayout>
+                            <ImageView
+                                android:id="@+id/img_next"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="80px"
+
+                                android:gravity="right"
+                                android:layout_gravity="right"
+                                android:layout_height="70px"
+                                android:src="@drawable/right_arrow"
+                                android:layout_width="70px"/>
+                        </RelativeLayout>
 
 
 
-                        </LinearLayout>
-                        <ImageView
-                            android:layout_alignParentRight="true"
-                            android:layout_marginTop="80px"
-
-                            android:gravity="right"
-                            android:layout_gravity="right"
-                            android:layout_height="50px"
-                            android:src="@drawable/right_arrow"
-                            android:layout_width="50px"/>
-                    </RelativeLayout>
-
-
-
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_marginTop="350px"
-            android:id="@+id/rlt_home_category"
-            android:layout_width="match_parent"
-            android:layout_height="142px"
-            >
-
-
-            <HorizontalScrollView
-
-                android:id="@+id/scr_category"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/lnl_category"
-                        android:layout_width="wrap_content"
-                        android:layout_height="132px"
-                        android:orientation="horizontal">
-
-                        <include layout="@layout/item_home_category" />
-
-                        <include layout="@layout/item_home_category" />
 
                     </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="12px">
-
-                        <View
-                            android:id="@+id/homeCategoryBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="1px"
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/homeCategoryBackground" />
-
-                        <View
-                            android:id="@+id/CategoryLineColor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="1px"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            />
-
-                        <View
-                            android:id="@+id/view_category_selected_run"
-                            android:layout_width="5px"
-                            android:layout_height="12px"
-                            />
-                    </RelativeLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <View
-                android:id="@+id/view_touch"
-                android:layout_width="match_parent"
-                android:layout_height="142px" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlt_home_child_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="1500px"
-            android:layout_below="@+id/rlt_home_category">
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/vpg_home"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_marginTop="500px"
-            android:id="@+id/rlt_detail_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="1500px"
-            />
-
-        <LinearLayout
-            android:layout_centerInParent="true"
-            android:layout_below="@+id/rlt_detail_fragment"
-            android:orientation="horizontal"
-            android:layout_marginBottom="30px"
-            android:weightSum="2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
             <TextView
-                android:layout_weight="1"
-                android:layout_gravity="left"
-                android:drawablePadding="10px"
-                android:drawableRight="@drawable/right_arrow"
-
-                android:textAlignment="center"
-                android:text="View All Punch In List"
-                android:layout_width="0dp"
+                android:tag="45"
+                android:textSize="45px"
+                android:layout_marginTop="20px"
+                android:layout_marginLeft="30px"
+                android:id="@+id/user"
+                android:layout_below="@+id/linear"
+                android:text="Your Activities"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:layout_weight="1"
+            <LinearLayout
+                android:layout_marginTop="25px"
+                android:background="@color/colorPrimary"
 
-                android:drawablePadding="10px"
-                android:layout_marginRight="20px"
-                android:drawableRight="@drawable/right_arrow"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                android:layout_below="@+id/user"
 
-                android:textAlignment="center"
-                android:text="View All Punch Out List"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </RelativeLayout>
-</ScrollView>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="6"
+                android:id="@+id/layout_header"
+
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Dates"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_customer_name" />
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Punch In Location"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_date" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Punch In Time"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amounst" />
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Punch Out Location"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amount" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Punch Out Time"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amounsvt" />
+                <TextView
+                    android:textColor="@color/white"
+                    android:paddingTop="10px"
+                    android:paddingBottom="10px"
+                    android:tag="40"
+                    android:textSize="40px"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Duration"
+                    android:gravity="center|center_vertical"
+                    android:layout_weight="1"
+
+                    android:background="@drawable/cell_shape"
+                    android:id="@+id/text_amouvnt" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:layout_below="@+id/layout_header"
+                tools:listitem="@layout/item_punch_in_list"
+
+
+                android:nestedScrollingEnabled="false"
+                android:id="@+id/rcl_punch_in_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_marginLeft="10px"
+
+                android:layout_marginRight="10px"
+
+
+
+                >
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </RelativeLayout>
+    </ScrollView>
+    <RelativeLayout
+        android:id="@+id/rlt_detail_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>

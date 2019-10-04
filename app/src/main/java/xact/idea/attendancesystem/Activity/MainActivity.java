@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     newFrag = new SetUpFragment();
                 }
               else{
-                    newFrag = new SetUpFragment();
+                    newFrag = new HomeFragment();
                 }
                 break;
             case Constant.FRAG_SET_UP:
@@ -309,7 +309,15 @@ public class MainActivity extends AppCompatActivity {
 
             title.setVisibility(View.VISIBLE);
         }
-        else {
+       else  if (titles.equals("test"))
+        {
+            rlt_header.setVisibility(View.GONE);
+          rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+
+            title.setVisibility(View.GONE);
+        }
+        else if (titles.equals("rrr")){
             rlt_header.setVisibility(View.GONE);
             rlt_header_details.setVisibility(View.VISIBLE);
             view_header_details.setVisibility(View.VISIBLE);
