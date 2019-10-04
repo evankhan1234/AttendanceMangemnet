@@ -13,6 +13,7 @@ import com.github.siyamed.shapeimageview.CircularImageView;
 
 import java.util.List;
 
+import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
@@ -20,9 +21,9 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
 
 
     private Activity mActivity = null;
-    private List<String> messageEntities;
+    private List<UserActivityEntity> messageEntities;
 
-    public PunchInAdapter(Activity activity, List<String> messageEntitie) {
+    public PunchInAdapter(Activity activity, List<UserActivityEntity> messageEntitie) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
@@ -42,6 +43,12 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
     public void onBindViewHolder(PunchInAdapter.PlaceTagListiewHolder holder, final int position) {
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
+        holder.text_date.setText(messageEntities.get(position).Date);
+        holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
+        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
+        holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);
+        holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
+        holder.text_duration.setText(messageEntities.get(position).Duration);
 
     }
 
@@ -51,27 +58,27 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
         return messageEntities.size();
     }
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
-        private CircularImageView user_icon;
-        private TextView text_name;
-        private TextView text_office_text;
-        private TextView text_phone_number;
-        private TextView text_email;
-        private TextView text_unit;
-        private TextView text_designation;
+
+        private TextView text_duration;
+        private TextView text_date;
+        private TextView text_punchIn_location;
+        private TextView text_punchIn_time;
+        private TextView text_punchOut_location;
+        private TextView text_punchOut_time;
         private TextView text_department;
 
 
 
         public PlaceTagListiewHolder(View itemView) {
             super(itemView);
-//            user_icon = itemView.findViewById(R.id.user_icon);
-//            text_name = itemView.findViewById(R.id.text_name);
-//            text_office_text = itemView.findViewById(R.id.text_office_text);
-//            text_phone_number = itemView.findViewById(R.id.text_phone_number);
-//            text_email = itemView.findViewById(R.id.text_email);
-//            text_unit = itemView.findViewById(R.id.text_unit);
-//            text_designation = itemView.findViewById(R.id.text_designation);
-//            text_department = itemView.findViewById(R.id.text_department);
+
+            text_duration = itemView.findViewById(R.id.text_duration);
+            text_date = itemView.findViewById(R.id.text_date);
+            text_punchIn_location = itemView.findViewById(R.id.text_punchIn_location);
+            text_punchIn_time = itemView.findViewById(R.id.text_punchIn_time);
+            text_punchOut_location = itemView.findViewById(R.id.text_punchOut_location);
+            text_punchOut_time = itemView.findViewById(R.id.text_punchOut_time);
+          //  text_department = itemView.findViewById(R.id.text_department);
 
 
 

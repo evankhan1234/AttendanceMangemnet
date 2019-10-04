@@ -10,6 +10,7 @@ import android.os.Handler;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 
 public class SpalashActivity extends AppCompatActivity {
     private Context mContext = null;
@@ -30,18 +31,48 @@ public class SpalashActivity extends AppCompatActivity {
     }
 
     private void goNextScreen() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        if (SharedPreferenceUtil.getUserID(SpalashActivity.this).equals("") || SharedPreferenceUtil.getUserID(SpalashActivity.this)==null){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                goToLoginPage();
-            }
-        }, Constant.SPLASH_TIME);
+                    goToLoginPage();
+                }
+            }, Constant.SPLASH_TIME);
+        } else if (SharedPreferenceUtil.getUserID(SpalashActivity.this).equals("1")) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    goToLoginPage();
+                }
+            }, Constant.SPLASH_TIME);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    goToMainPage();
+                }
+            }, Constant.SPLASH_TIME);
+        }
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                goToLoginPage();
+//            }
+//        }, Constant.SPLASH_TIME);
     }
 
     private void goToLoginPage() {
 
         Intent i = new Intent(SpalashActivity.this, OnBoardingActivity.class);
+        startActivity(i);
+        finish();
+    }
+    private void goToMainPage() {
+
+        Intent i = new Intent(SpalashActivity.this, MainActivity.class);
         startActivity(i);
         finish();
     }

@@ -32,35 +32,36 @@
                 xmlns:android="http://schemas.android.com/apk/res/android">
 
                 <TextView
+
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="2019-10-11"
-                    android:gravity="left|center_vertical"
+                    android:gravity="center|center_vertical"
                     android:layout_weight="1"
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_customer_name" />
+                    android:id="@+id/text_date" />
                 <TextView
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="Dhaka Horizon"
                     android:gravity="center|center_vertical"
                     android:layout_weight="1"
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_date" />
+                    android:id="@+id/text_punchIn_location" />
 
                 <TextView
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="10:30 A.M"
@@ -68,12 +69,12 @@
                     android:layout_weight="1"
 
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_amounst" />
+                    android:id="@+id/text_punchIn_time" />
                 <TextView
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="Banani"
@@ -81,13 +82,13 @@
                     android:layout_weight="1"
 
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_amount" />
+                    android:id="@+id/text_punchOut_location" />
 
                 <TextView
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
 
@@ -96,12 +97,12 @@
                     android:layout_weight="1"
 
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_amounsvt" />
+                    android:id="@+id/text_punchOut_time" />
                 <TextView
                     android:paddingTop="10px"
                     android:paddingBottom="10px"
-                    android:tag="40"
-                    android:textSize="40px"
+                    android:tag="30"
+                    android:textSize="30px"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="2 Hours"
@@ -109,7 +110,7 @@
                     android:layout_weight="1"
 
                     android:background="@drawable/cell_shape"
-                    android:id="@+id/text_amouvnt" />
+                    android:id="@+id/text_duration" />
             </LinearLayout>
 
             <TableLayout

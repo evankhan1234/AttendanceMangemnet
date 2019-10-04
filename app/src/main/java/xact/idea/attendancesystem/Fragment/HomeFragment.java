@@ -31,10 +31,14 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+
+import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
+import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 
 public class HomeFragment extends Fragment {
     private View mRoot;
@@ -66,6 +70,13 @@ public class HomeFragment extends Fragment {
         initView();
         return mRoot;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadDataActivity();
+    }
+
     private void loadData() {
 //        compositeDisposable.add(mService.getCategory().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Category>>() {
 //            @Override
@@ -125,7 +136,7 @@ public class HomeFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
 //
-        ((MainActivity) getActivity()).showHeaderDetail("details");
+        ((MainActivity) getActivity()).showHeaderDetail("test");
 //        ((MainActivity) getActivity()).ShowText("Details");
 
         // disableNestedScroll();
@@ -134,7 +145,7 @@ public class HomeFragment extends Fragment {
         mService = Common.getApi();
         img_next =  mRoot.findViewById(R.id.img_next);
         user_icon =  mRoot.findViewById(R.id.img_avatar);
-        lnl_category = (LinearLayout) mRoot.findViewById(R.id.lnl_category);
+      //  lnl_category = (LinearLayout) mRoot.findViewById(R.id.lnl_category);
 
         rcl_punch_in_list=mRoot.findViewById(R.id.rcl_punch_in_list);
         LinearLayoutManager lm = new LinearLayoutManager(mActivity);
@@ -153,9 +164,9 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-        mAdapters = new PunchInAdapter(mActivity, arrayList);
+     //   mAdapters = new PunchInAdapter(mActivity, arrayList);
 
-        rcl_punch_in_list.setAdapter(mAdapters);
+       // rcl_punch_in_list.setAdapter(mAdapters);
 //        initCategoryList(true);
 //        initPager();
 //        selectCategory(0, true);
@@ -169,7 +180,21 @@ public class HomeFragment extends Fragment {
                 });
 
     }
+    private void loadDataActivity() {
+        showLoadingProgress(mActivity);
+        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
+            @Override
+            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
 
+                mAdapters = new PunchInAdapter(mActivity, carts);
+
+                rcl_punch_in_list.setAdapter(mAdapters);
+                dismissLoadingProgress();
+            }
+        }));
+
+
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

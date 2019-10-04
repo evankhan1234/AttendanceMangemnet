@@ -11,11 +11,15 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 
 public interface IRetrofitApi {
     @GET("16jtsp")
     io.reactivex.Observable<ArrayList<UserListEntity>> getUser();
+
+    @GET("eu7j3")
+    io.reactivex.Observable<ArrayList<UserActivityEntity>> getUserActivity();
 //
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")

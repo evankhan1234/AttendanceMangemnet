@@ -34,11 +34,12 @@
             xmlns:android="http://schemas.android.com/apk/res/android">
 
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Dates"
@@ -47,11 +48,12 @@
                 android:background="@drawable/cell_shape"
                 android:id="@+id/text_customer_name" />
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Punch In Location"
@@ -61,11 +63,12 @@
                 android:id="@+id/text_date" />
 
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Punch In Time"
@@ -75,11 +78,12 @@
                 android:background="@drawable/cell_shape"
                 android:id="@+id/text_amounst" />
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Punch Out Location"
@@ -89,12 +93,14 @@
                 android:background="@drawable/cell_shape"
                 android:id="@+id/text_amount" />
 
+
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Punch Out Time"
@@ -104,11 +110,12 @@
                 android:background="@drawable/cell_shape"
                 android:id="@+id/text_amounsvt" />
             <TextView
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingTop="10px"
                 android:paddingBottom="10px"
-                android:tag="40"
-                android:textSize="40px"
+                android:tag="35"
+                android:textSize="35px"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:text="Duration"
@@ -120,7 +127,7 @@
         </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 tools:listitem="@layout/item_punch_in_list"
-                android:layout_marginTop="25px"
+
 
                 android:layout_below="@+id/layout_header"
                 android:nestedScrollingEnabled="false"

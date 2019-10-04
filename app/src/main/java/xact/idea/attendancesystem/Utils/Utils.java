@@ -3,6 +3,8 @@ package xact.idea.attendancesystem.Utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -21,12 +23,17 @@ import android.text.style.RelativeSizeSpan;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -46,6 +53,7 @@ import java.util.regex.Pattern;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import xact.idea.attendancesystem.Activity.LoginActivity;
 import xact.idea.attendancesystem.R;
 
 
@@ -59,7 +67,47 @@ public class Utils {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public static void showInfoDialog(final Context mContext) {
+//        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+//        alertDialog.setTitle("Alert");
+//        alertDialog.setMessage("Alert message to be shown");
+//      //  TextView messageView = alertDialog.findViewById(android.R.id.message);
+//      //  messageView.setGravity(Gravity.CENTER);
+//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        SharedPreferenceUtil.removeShared(mContext,SharedPreferenceUtil.TYPE_USER_ID);
+//                        dialog.dismiss();
+//                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
+//
+//                    }
+//                });
+//        alertDialog.show();
+        final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
+        LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.layout_pop_up_message, null);
 
+        infoDialog.setContentView(v);
+        infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+        Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+
+        CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
+        btn_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferenceUtil.removeShared(mContext,SharedPreferenceUtil.TYPE_USER_ID);
+                infoDialog.dismiss();
+                       mContext.startActivity(new Intent(mContext, LoginActivity.class));
+                ((Activity) mContext).finish();
+            }
+        });
+        //correctSizeUtil = correctSizeUtil.getInstance(getActivity());
+        //  CorrectSizeUtil.setWidthOriginal(1080);
+        // correctSizeUtil.correctSize(view);
+
+        infoDialog.show();
+    }
 
     public static boolean isAndroid5() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
