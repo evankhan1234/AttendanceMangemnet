@@ -67,7 +67,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
         Log.e("SDFsf", "SDfs" + messageEntities.get(position));
 
-        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.girl)
+        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

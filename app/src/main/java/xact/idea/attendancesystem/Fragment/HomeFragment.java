@@ -109,21 +109,7 @@ public class HomeFragment extends Fragment {
             return 2;
 
         }
-//        Fragment f = getFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
-//        if (f != null) {
-//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-//            transaction.remove(f);
-//            transaction.commit();
-//            getChildFragmentManager().popBackStack();
-//            // ((MainActivity) getActivity()).showHeaderDetail("no");
-////                    Log.e("22","22");
-////
-////                    Log.e("CONTACT_ADMIN","call");
-//
-//        } else {
-//
-//        }
+
         return 2;
     }
     public void momentDetailsFragmnett() {
@@ -135,11 +121,9 @@ public class HomeFragment extends Fragment {
         transaction.add(R.id.rlt_detail_fragment, f, f.getClass().getSimpleName());
         transaction.addToBackStack(null);
         transaction.commit();
-//
-        ((MainActivity) getActivity()).showHeaderDetail("test");
-//        ((MainActivity) getActivity()).ShowText("Details");
 
-        // disableNestedScroll();
+        ((MainActivity) getActivity()).showHeaderDetail("test");
+
     }
         private void initView() {
         mService = Common.getApi();
@@ -171,7 +155,7 @@ public class HomeFragment extends Fragment {
 //        initPager();
 //        selectCategory(0, true);
 //        mRoot.findViewById(R.id.view_category_selected_run).setBackground(Utils.getGradientColor(getContext()));
-        Glide.with(mActivity).load("https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2019/03/04/Pictures/_146f44ea-3e38-11e9-92c7-2b8d3185a4e0.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.girl)
+        Glide.with(mActivity).load("https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2019/03/04/Pictures/_146f44ea-3e38-11e9-92c7-2b8d3185a4e0.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

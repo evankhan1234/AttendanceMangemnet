@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.Collections;
 import java.util.List;
 
+import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
 import xact.idea.attendancesystem.Fragment.MoreFragment;
 import xact.idea.attendancesystem.Fragment.ProfileDetailsFragment;
@@ -84,18 +85,34 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-               onBackPressed();
+                onBack();
             }
         });
     }
     @Override
     public void onBackPressed() {
-        //   super.onBackPressed();
+          super.onBackPressed();
+          finish();
 
+
+    }
+    private void onBack(){
         Fragment f = getVisibleFragment();
         Log.e("frag","frag"+f);
         if (f != null)
         {
+            if (f instanceof MoreFragment) {
+
+                int handle = ((MoreFragment) f).handleBackPress();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+
+            }
             if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
                 PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
                         .findFragmentByTag(PunchInFragment.class.getSimpleName());
@@ -106,7 +123,20 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().popBackStack();
 
                 hideHeaderDetail();
-               // return 2;
+                // return 2;
+
+            }
+            else if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
+                AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f1);
+                transaction.commit();
+                getSupportFragmentManager().popBackStack();
+
+                hideHeaderDetail();
+                // return 2;
 
             }
 //
@@ -121,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         } else {
-            // finish();
+            finish();
         }
     }
     public void hideHeaderDetail() {
