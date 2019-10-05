@@ -91,6 +91,7 @@ public class Utils {
         infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
         Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+        Button btn_no = infoDialog.findViewById(R.id.btn_no);
 
         CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
         btn_yes.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +101,12 @@ public class Utils {
                 infoDialog.dismiss();
                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
                 ((Activity) mContext).finish();
+            }
+        });
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                infoDialog.dismiss();
             }
         });
         //correctSizeUtil = correctSizeUtil.getInstance(getActivity());

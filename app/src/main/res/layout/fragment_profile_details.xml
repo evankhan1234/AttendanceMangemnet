@@ -88,7 +88,7 @@
                             android:layout_gravity="center"
                             android:layout_marginTop="20px"
                             android:elevation="10px"
-                            android:src="@drawable/profile_image"
+                            android:src="@drawable/backwhite"
                             app:civ_border_color="#FFFFFF"
                             app:civ_border_width="2dp" />
 
@@ -135,7 +135,6 @@
                                 android:inputType="text|textNoSuggestions"
                                 android:textColor="#6A6B6B"
 
-                                android:text="MD Sarawer Jahan Evan"
                                 android:paddingLeft="40px"
                                 android:paddingTop="20px"
                                 android:paddingBottom="20px"
@@ -183,7 +182,6 @@
                                 android:inputType="text|textNoSuggestions"
                                 android:textColor="#6A6B6B"
 
-                                android:text="Male"
                                 android:paddingLeft="40px"
                                 android:paddingTop="20px"
                                 android:paddingBottom="20px"
@@ -231,7 +229,6 @@
                                 android:inputType="text|textNoSuggestions"
                                 android:textColor="#6A6B6B"
 
-                                android:text="02, January, 2019"
                                 android:paddingLeft="40px"
                                 android:paddingTop="20px"
                                 android:paddingBottom="20px"
@@ -279,7 +276,6 @@
                                 android:inputType="text|textNoSuggestions"
                                 android:textColor="#6A6B6B"
 
-                                android:text="evankhan1234@gmail.com"
                                 android:paddingLeft="40px"
                                 android:paddingTop="20px"
                                 android:paddingBottom="20px"
@@ -327,7 +323,7 @@
                                 android:inputType="text|textNoSuggestions"
                                 android:textColor="#6A6B6B"
 
-                                android:text="+8801677182084"
+
                                 android:paddingLeft="40px"
                                 android:paddingTop="20px"
                                 android:paddingBottom="20px"

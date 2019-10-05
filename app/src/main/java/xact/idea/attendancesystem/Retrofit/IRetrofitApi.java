@@ -1,17 +1,12 @@
 package xact.idea.attendancesystem.Retrofit;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import okhttp3.MultipartBody;
-import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
+import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
+import xact.idea.attendancesystem.Entity.UserDetailsEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 
 public interface IRetrofitApi {
@@ -20,6 +15,12 @@ public interface IRetrofitApi {
 
     @GET("eu7j3")
     io.reactivex.Observable<ArrayList<UserActivityEntity>> getUserActivity();
+    @GET("lr4y7")
+    io.reactivex.Observable<ArrayList<UnitListEntity>> getUnitList();
+    @GET("1620of")
+    io.reactivex.Observable<ArrayList<DepartmentListEntity>> getDepartmentList();
+    @GET("1h2jdb")
+    io.reactivex.Observable<UserDetailsEntity> getProfileDetails();
 //
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")

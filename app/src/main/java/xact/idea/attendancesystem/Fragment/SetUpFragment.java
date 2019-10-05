@@ -17,11 +17,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
+import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.R;
@@ -64,6 +70,12 @@ public class SetUpFragment extends Fragment {
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
     ArrayList<UserListEntity> userListEntities = new ArrayList<>();
+    List<DepartmentListEntity> departmentListEntityList  = new ArrayList<>();;
+    List<UnitListEntity> unitListEntityList  = new ArrayList<>();
+    ArrayAdapter<UnitListEntity> unitListEntityArrayAdapter;
+    ArrayAdapter<DepartmentListEntity> departmentListEntityArrayAdapter;
+    Spinner spinnerDepartments;
+    Spinner spinnerUnit;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +87,8 @@ public class SetUpFragment extends Fragment {
         correctSizeUtil.correctSize(mRoot);
         //   initView();
         mService = Common.getApi();
+        spinnerDepartments = mRoot.findViewById(R.id.spinnerDepartments);
+        spinnerUnit = mRoot.findViewById(R.id.spinnerUnit);
         btn_2 = mRoot.findViewById(R.id.btn_2);
         btn_1 = mRoot.findViewById(R.id.btn_1);
         btn_1.setOnClickListener(new View.OnClickListener() {
@@ -102,62 +116,64 @@ public class SetUpFragment extends Fragment {
         }
 
 
+        unitListData();
+        DepartmentListData();
 
+        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                if (position > 0) {
+                    Log.e("sp_div", "" + position);
+                    setDepartment(unitListEntityList.get(position).Id);
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         return mRoot;
     }
+    private void setDepartment(final int unitId) {
 
+
+        //sp_dis.setSelection(getDisIndex(((NewMemberActivity)mActivity).groupInfoMember.getDisId()),false);
+        spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//if(position>0)
+                {
+                    //Toast.makeText(mActivity, String.valueOf(unitId)+String.valueOf(departmentListEntityList.get(position).Id), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
     @Override
     public void onResume() {
         super.onResume();
         loadData();
+
     }
 
-    public int handleBackPress() {
-        if (getChildFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
-            PunchInFragment f = (PunchInFragment) getChildFragmentManager()
-                    .findFragmentByTag(PunchInFragment.class.getSimpleName());
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-            transaction.remove(f);
-            transaction.commit();
-            getChildFragmentManager().popBackStack();
 
-
-            return 2;
-
-        }
-//        Fragment f = getFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
-//        if (f != null) {
-//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-//            transaction.remove(f);
-//            transaction.commit();
-//            getChildFragmentManager().popBackStack();
-//            // ((MainActivity) getActivity()).showHeaderDetail("no");
-////                    Log.e("22","22");
-////
-////                    Log.e("CONTACT_ADMIN","call");
-//
-//        } else {
-//
-//        }
-        return 2;
-    }
         private ClickInterface mClick = new ClickInterface() {
         @Override
         public void onItemClick(int position) {
-//            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//
-//            Fragment f = new ProfileDetailsFragment();
-//
-//            transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
-//            transaction.add(R.id.rlt_detail_fragment, f, f.getClass().getSimpleName());
-//            transaction.addToBackStack(null);
-//            transaction.commit();
-////
-          //  ((MainActivity) getActivity()).showHeaderDetail("details");
-//
+
+
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             Bundle bundle = new Bundle();
             bundle.putParcelable(PunchInFragment.class.getSimpleName(), userListEntities.get(position));
@@ -189,6 +205,32 @@ public class SetUpFragment extends Fragment {
         }));
 
 
+    }
+    private void unitListData(){
+
+        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
+            @Override
+            public void accept(ArrayList<UnitListEntity> carts) throws Exception {
+                unitListEntityList=carts;
+
+
+                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+            }
+        }));
+    }
+    private void DepartmentListData(){
+
+        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
+            @Override
+            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
+                departmentListEntityList=carts;
+                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
+                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
+            }
+        }));
     }
     @Override
     public void onDestroy() {

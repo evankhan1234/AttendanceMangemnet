@@ -71,7 +71,7 @@
                                     android:elevation="10px"
                                     android:layout_width="180px"
                                     android:layout_height="180px"
-                                    android:src="@drawable/imageicon"
+                                    android:src="@drawable/backwhite"
 
 
 

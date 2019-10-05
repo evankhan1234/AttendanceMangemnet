@@ -33,21 +33,41 @@
             android:layout_gravity="center"
             android:tag="45"
 
-            android:text="Are you want to logout?."
+            android:text="Are you want to logout....?"
             android:textColor="#6A6B6B"
             android:textSize="45px" />
-        <Button
-            android:tag="45"
-            android:textSize="45px"
+        <LinearLayout
+            android:layout_marginLeft="50px"
+            android:layout_marginRight="50px"
+            android:layout_marginTop="20px"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            android:layout_weight="1"
-            android:id="@+id/btn_yes"
-           android:layout_marginTop="30px"
-            android:background="@drawable/btn_more_background"
-            android:hint="Yes"
-            android:textColorHint="#fff"
-            android:layout_width="270px"
-            android:layout_height="35px" />
+            <Button
+                android:tag="45"
+                android:textSize="45px"
+                android:layout_weight="1"
+                android:id="@+id/btn_no"
+                android:background="@drawable/btn_more_background"
+                android:hint="No"
+                android:textColorHint="#fff"
+                android:layout_width="0dp"
+                android:layout_height="100px" />
+            <Button
+                android:layout_marginLeft="20px"
+                android:tag="45"
+                android:textSize="45px"
+                android:layout_weight="1"
+                android:id="@+id/btn_yes"
+                android:background="@drawable/btn_more_background"
+                android:hint="Yes"
+                android:textColorHint="#fff"
+                android:layout_width="0dp"
+                android:layout_height="100px" />
+        </LinearLayout>
+
 
 
     </LinearLayout>

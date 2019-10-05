@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.AboutUsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="150px"
+        android:layout_gravity="center"
+        android:id="@+id/img_avatar"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+
+        android:elevation="10px"
+        android:layout_width="180px"
+        android:layout_height="180px"
+        android:src="@drawable/xact"
+
+
+
+        />
+    <TextView
+        android:textStyle="bold"
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xact Idea Limited" />
+    <View
+
+
+        android:layout_width="match_parent"
+        android:layout_height="5px"
+        android:layout_below="@+id/rlt_header"
+        android:layout_marginTop="20px"
+        android:background="@drawable/gradient_color_top" />
+    <TextView
+        android:textStyle="bold"
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Privacy Policy" />
+    <View
+
+
+        android:layout_width="match_parent"
+        android:layout_height="5px"
+        android:layout_below="@+id/rlt_header"
+        android:layout_marginTop="20px"
+        android:background="@drawable/gradient_color_top" />
+    <TextView
+        android:textStyle="bold"
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Terms of Use" />
+    <View
+
+
+        android:layout_width="match_parent"
+        android:layout_height="5px"
+        android:layout_below="@+id/rlt_header"
+        android:layout_marginTop="20px"
+        android:background="@drawable/gradient_color_top" />
+    <TextView
+        android:textStyle="bold"
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="www.xactidea.com" />
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_marginTop="100px"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+
+            android:layout_width="120px"
+            android:layout_height="120px">
+            <ImageView
+
+                android:layout_gravity="center"
+
+
+                android:id="@+id/img_phone"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:src="@drawable/facebook"
+
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="30px"
+
+            android:layout_width="120px"
+            android:layout_height="120px">
+            <ImageView
+
+                android:layout_gravity="center"
+
+
+                android:id="@+id/img_sms"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:src="@drawable/youtube"
+
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="30px"
+
+            android:layout_width="120px"
+            android:layout_height="120px">
+            <ImageView
+
+                android:layout_gravity="center"
+
+
+                android:id="@+id/img_sdms"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:src="@drawable/instagram"
+
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="30px"
+
+            android:layout_width="120px"
+            android:layout_height="120px">
+            <ImageView
+
+                android:layout_gravity="center"
+
+
+                android:id="@+id/img_smsd"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:src="@drawable/twitter"
+
+
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Follow us on social media" />
+    <TextView
+        android:textStyle="bold"
+        android:tag="45"
+        android:textColor="#6A6B6B"
+        android:textSize="45px"
+        android:layout_marginTop="30px"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version 1.0.0" />
+</LinearLayout>

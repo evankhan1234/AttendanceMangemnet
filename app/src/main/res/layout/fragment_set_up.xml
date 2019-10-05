@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Spinner
-        android:entries="@array/unit_lists"
+
        android:background="@drawable/test"
         android:layout_marginTop="20px"
         android:layout_marginLeft="60px"
@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"/>
 
     <Spinner
-        android:entries="@array/department_lists"
+
         android:layout_marginTop="20px"
         android:background="@drawable/test"
         android:layout_marginLeft="60px"
