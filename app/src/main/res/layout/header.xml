@@ -29,19 +29,19 @@
             app:srcCompat="@drawable/menu" />
 
         <ImageButton
-            android:id="@+id/btn_header_search"
+            android:id="@+id/btn_header_application"
             android:layout_width="126px"
-            android:layout_height="135px"
+            android:layout_height="105px"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="10px"
-            android:layout_marginTop="55px"
+            android:layout_marginTop="75px"
             android:background="@color/transparent"
             android:foreground="?android:attr/selectableItemBackground"
             android:paddingBottom="3px"
 
             android:stateListAnimator="@null"
             android:visibility="gone"
-            app:srcCompat="@drawable/icon_search" />
+            app:srcCompat="@drawable/resume" />
 
 
         <TextView
