@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_margin="0px">
+
+    <LinearLayout
+
+        android:background="@drawable/btn_background"
+        android:layout_width="match_parent"
+        android:layout_height="335px"
+
+
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="183px"
+        android:layout_marginRight="182px"
+
+
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:padding="50px">
+
+
+        <TextView
+            android:textAlignment="center"
+            android:letterSpacing="0.01"
+            android:id="@+id/text_invitation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:tag="45"
+
+            android:text="Are you want to logout....?"
+            android:textColor="#6A6B6B"
+            android:textSize="45px" />
+        <Button
+            android:id="@+id/btn_send"
+            android:textColorHint="@color/white"
+            android:layout_marginBottom="30px"
+            android:layout_marginLeft="70px"
+            android:layout_marginRight="70px"
+            android:layout_marginTop="30px"
+            android:hint="Send"
+            android:background="@drawable/capsule_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

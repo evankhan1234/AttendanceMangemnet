@@ -26,6 +26,31 @@
         <item>Buisness Development</item>
         <item>MIS</item>
     </string-array>
+    <string-array name="leave_lists">
+        <item>Casual Leave</item>
+        <item>Unpaid Leave</item>
+        <item>HalfDay Leave</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="reason_lists">
+        <item>Personal</item>
+        <item>Sickness</item>
+        <item>Study</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="reporting_lists">
+        <item>Abdul Mannan</item>
+        <item>Abdur ROB</item>
+        <item>Al-Amin Seikh</item>
+        <item>MD.Rafiqul Islam</item>
+    </string-array>
+    <string-array name="select_lists">
+        <item>Select</item>
+        <item>Abdul Mannan</item>
+        <item>Abdur ROB</item>
+        <item>Al-Amin Seikh</item>
+        <item>MD.Rafiqul Islam</item>
+    </string-array>
     <string-array name="timeline_categorys">
         <item>#000</item>
         <item>#CCCC</item>
