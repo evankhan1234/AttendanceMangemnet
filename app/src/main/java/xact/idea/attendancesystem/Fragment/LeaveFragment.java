@@ -75,6 +75,20 @@ public class LeaveFragment extends Fragment {
         transaction.commit();
         return 2;
     }
+    public int  leaveApplication(){
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Fragment f = new LeaveApplicationFragment();
+
+        Log.e("test1", "test1" + f.getClass().getSimpleName());
+        //String test = f.getClass().getSimpleName();
+
+        // f.setArguments(bundle);
+        transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
+        transaction.add(R.id.rlt_detail_fragment, f, f.getClass().getSimpleName());
+        transaction.addToBackStack(f.getClass().getSimpleName());
+        transaction.commit();
+        return 2;
+    }
 
 
 }

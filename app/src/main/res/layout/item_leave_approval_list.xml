@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0px"
+    android:clipToPadding="false"
+    android:elevation="50px">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        card_view:cardBackgroundColor="#FFFFFF"
+        card_view:cardCornerRadius="5dp"
+
+        card_view:cardElevation="5dp"
+        card_view:cardUseCompatPadding="true">
+
+        <LinearLayout
+
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5px"
+            android:layout_marginTop="5px"
+            android:layout_marginRight="5px"
+
+
+            android:background="@drawable/btn_background"
+            android:orientation="vertical"
+            android:padding="10px"
+            android:visibility="visible">
+
+
+            <LinearLayout
+                android:visibility="visible"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0px"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_marginLeft="30px"
+                    android:id="@+id/user_icon"
+                    android:layout_marginTop="30px"
+
+
+
+                    android:layout_width="150px"
+                    android:layout_height="150px"
+                    android:src="@drawable/backwhite"
+
+
+
+                    />
+
+                <LinearLayout
+                    android:layout_marginTop="15px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/text_name"
+                            android:layout_width="wrap_content"
+
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="40px"
+
+                            android:tag="40"
+                            android:text="Preet Kamal Preet  Kamal"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/text_office_text"
+                            android:layout_width="wrap_content"
+
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20px"
+
+                            android:tag="40"
+                            android:text="(1166)"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <TextView
+
+                            android:id="@+id/text_leave_type"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="40px"
+
+                            android:tag="40"
+                            android:text="Type: Casual Leave"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+                        <TextView
+
+                            android:id="@+id/text_leave_application_date"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+
+                            android:gravity="right"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+
+                            android:tag="40"
+                            android:text="20-12-2019"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+                    </LinearLayout>
+                    <LinearLayout
+
+
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <TextView
+
+                            android:layout_marginLeft="40px"
+                            android:id="@+id/text_backup_name"
+                            android:layout_width="wrap_content"
+
+
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+
+                            android:tag="40"
+                            android:text="Backup: MD. Abdur Rob"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+                        <TextView
+                            android:gravity="right"
+                            android:id="@+id/text_reason"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+
+
+                            android:tag="40"
+                            android:text="Sickness"
+                            android:textColor="#6A6B6B"
+                            android:textSize="40px" />
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+
+
+
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/text_hours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30px"
+                    android:gravity="end"
+                    android:letterSpacing="0.1"
+                    android:tag="40"
+                    android:textColor="#806A6B6B"
+                    android:textSize="40px" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginBottom="10px"
+                android:layout_gravity="center"
+                android:layout_marginTop="20px"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+
+                    android:layout_width="120px"
+                    android:layout_height="120px">
+                    <ImageView
+
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="25px"
+
+                        android:id="@+id/img_accept"
+                        android:layout_width="70px"
+                        android:layout_height="70px"
+                        android:src="@drawable/check"
+
+
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginLeft="30px"
+                    android:layout_marginTop="28px"
+                    android:background="@drawable/white_circle_drawable"
+                    android:layout_width="70px"
+                    android:layout_height="70px">
+                    <TextView
+
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="25px"
+
+                        android:id="@+id/img_sms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:tag="40"
+                        android:text="P"
+                        android:textColor="@color/white"
+                        android:textSize="40px"
+
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginLeft="30px"
+
+                    android:layout_width="120px"
+                    android:layout_height="120px">
+
+                    <ImageView
+
+                        android:id="@+id/img_attempt"
+                        android:layout_width="70px"
+
+                        android:layout_height="70px"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20px"
+                        android:src="@drawable/exclamation_mark"
+
+
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginLeft="0px"
+
+                    android:layout_width="120px"
+                    android:layout_height="120px">
+
+                    <ImageView
+
+                        android:id="@+id/img_cancel"
+                        android:layout_width="70px"
+
+                        android:layout_height="70px"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="20px"
+                        android:src="@drawable/error"
+
+
+                        />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

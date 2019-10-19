@@ -22,6 +22,7 @@ import java.util.List;
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
 import xact.idea.attendancesystem.Fragment.LeaveApplicationApprovalFragment;
+import xact.idea.attendancesystem.Fragment.LeaveApplicationFragment;
 import xact.idea.attendancesystem.Fragment.LeaveFragment;
 import xact.idea.attendancesystem.Fragment.MoreFragment;
 import xact.idea.attendancesystem.Fragment.ProfileDetailsFragment;
@@ -135,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
                     // do not hide header
                 }
             }
+            else if (f instanceof LeaveApplicationFragment){
+                int handle = ((LeaveApplicationFragment) f).handleBackPress();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+            }
            // else if ()
             if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
                 PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
@@ -186,13 +197,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void hideHeaderDetailForLeave() {
-        rlt_header.setVisibility(View.GONE);
-        title.setVisibility(View.GONE);
-        //card_view.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.VISIBLE);
-        rlt_header_details.setVisibility(View.VISIBLE);
-        details_title.setText("Leave Approval");
+    public void hideHeaderDetailForLeave(String name) {
+        if (name.equals("Approval")){
+            rlt_header.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+            //card_view.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.VISIBLE);
+            rlt_header_details.setVisibility(View.VISIBLE);
+            details_title.setText("Leave Approval");
+        }
+        else if (name.equals("Application")){
+            rlt_header.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+            //card_view.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.VISIBLE);
+            rlt_header_details.setVisibility(View.VISIBLE);
+            details_title.setText("Leave Application");
+        }
+
 
 
     }
@@ -307,15 +329,34 @@ public class MainActivity extends AppCompatActivity {
         if (f != null)
         {
             if (f instanceof LeaveFragment) {
-                int handle = ((LeaveFragment) f).leaveApproval();
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 2) {
-                    hideHeaderDetailForLeave();
+
+                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
+                   // newFrag = new SetUpFragment();
+
+                    int handle = ((LeaveFragment) f).leaveApproval();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForLeave("Approval");
+                    }
+                    else {
+                        // do not hide header
+                    }
                 }
-                else {
-                    // do not hide header
+                else{
+
+                    int handle = ((LeaveFragment) f).leaveApplication();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForLeave("Application");
+                    }
+                    else {
+                        // do not hide header
+                    }
                 }
+
+
             }
 
         } else {

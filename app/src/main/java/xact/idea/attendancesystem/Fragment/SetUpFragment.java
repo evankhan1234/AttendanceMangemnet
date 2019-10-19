@@ -139,11 +139,7 @@ public class SetUpFragment extends Fragment {
         });
         return mRoot;
     }
-    public int handle() {
-        LeaveFragment f1 = (LeaveFragment) getChildFragmentManager().findFragmentByTag(LeaveFragment.class.getSimpleName());
-        f1.leaveApproval();
-        return 2;
-    }
+
 
 
         private void setDepartment(final int unitId) {

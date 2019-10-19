@@ -1,15 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".Fragment.LeaveApplicationApprovalFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="sssshello_blank_fragment" />
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <HorizontalScrollView
+            android:id="@+id/scr_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20px"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/lnl_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/radioSex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioNew"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:text="New" />
+
+                        <RadioButton
+                            android:id="@+id/radioApproved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Approved" />
+
+                        <RadioButton
+                            android:id="@+id/radioPending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:text="Pending" />
+
+                        <RadioButton
+                            android:id="@+id/radioDenied"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Denied" />
+
+                        <RadioButton
+                            android:id="@+id/radioDeleted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:text="Deleted" />
+
+                        <RadioButton
+                            android:id="@+id/radioAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="50px"
+                            android:text="All" />
+                    </RadioGroup>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_marginTop="110px"
+
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+
+                android:layout_height="match_parent"
+
+
+                android:layout_marginLeft="20px"
+
+                android:layout_marginRight="20px"
+
+                card_view:cardBackgroundColor="#FFFFFF"
+                card_view:cardCornerRadius="5dp"
+                card_view:cardElevation="4dp"
+                card_view:cardUseCompatPadding="true">
+
+                <EditText
+
+
+
+                    android:drawablePadding="25px"
+                    android:id="@+id/edit_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="140px"
+                    android:background="@null"
+                    android:inputType="text|textNoSuggestions"
+                    android:drawableLeft="@drawable/icon_search"
+                    android:hint="Please enter a search word"
+                    android:paddingLeft="40px"
+                    android:paddingTop="20px"
+                    android:paddingBottom="20px"
+                    android:textColorHint="#4D6A6B6B" />
+
+
+            </androidx.cardview.widget.CardView>
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/rcl_approval_in_list"
+        android:layout_width="match_parent"
+
+
+        android:layout_height="match_parent"
+
+        android:layout_marginTop="310px"
+        android:nestedScrollingEnabled="false"
+
+        tools:listitem="@layout/item_punch_in_list"
+
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
