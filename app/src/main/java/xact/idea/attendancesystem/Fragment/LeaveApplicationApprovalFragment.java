@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,10 +26,22 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Adapter.LeaveApprovalAdapter;
 import xact.idea.attendancesystem.Adapter.LeaveSummaryListAdapter;
+import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
+import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
+import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+
+import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
+import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 
 
 public class LeaveApplicationApprovalFragment extends Fragment {
@@ -38,6 +51,14 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     RecyclerView rcl_approval_in_list;
     LeaveApprovalAdapter mAdapters;
     ArrayList<String> arrayList = new ArrayList<>();
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IRetrofitApi mService;
+    RadioButton radioNew;
+    RadioButton radioApproved;
+    RadioButton radioPending;
+    RadioButton radioDenied;
+    RadioButton radioDeleted;
+    RadioButton radioAll;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,20 +74,90 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
+        load();
     }
 
     private void initView() {
+        mService = Common.getApi();
         rcl_approval_in_list=mRootView.findViewById(R.id.rcl_approval_in_list);
+        radioNew=mRootView.findViewById(R.id.radioNew);
+        radioApproved=mRootView.findViewById(R.id.radioApproved);
+        radioPending=mRootView.findViewById(R.id.radioPending);
+        radioDenied=mRootView.findViewById(R.id.radioDenied);
+        radioDeleted=mRootView.findViewById(R.id.radioDeleted);
+        radioAll=mRootView.findViewById(R.id.radioAll);
         LinearLayoutManager lm = new LinearLayoutManager(mActivity);
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         rcl_approval_in_list.setLayoutManager(lm);
-        for(int j = 0; j < 5; j++){
+        radioNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+        radioApproved.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+        radioPending.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+        radioDenied.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+        radioDeleted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+        radioAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                load();
+            }
+        });
+//        for(int j = 0; j < 5; j++){
+//
+//            arrayList.add("House "+j);
+//        }
+//        mAdapters = new LeaveApprovalAdapter(mActivity, arrayList);
+//
+//        rcl_approval_in_list.setAdapter(mAdapters);
+    }
+    private void load() {
+        showLoadingProgress(mActivity);
+        compositeDisposable.add(mService.getLeaveApproval().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveApprovalListEntity>>() {
+            @Override
+            public void accept(ArrayList<LeaveApprovalListEntity> carts) throws Exception {
 
-            arrayList.add("House "+j);
-        }
-        mAdapters = new LeaveApprovalAdapter(mActivity, arrayList);
+                mAdapters = new LeaveApprovalAdapter(mActivity, carts);
 
-        rcl_approval_in_list.setAdapter(mAdapters);
+                rcl_approval_in_list.setAdapter(mAdapters);
+                dismissLoadingProgress();
+            }
+        }));
+
+
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        compositeDisposable.clear();
     }
     public int handleBackPress() {
         if (getFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName()) != null) {

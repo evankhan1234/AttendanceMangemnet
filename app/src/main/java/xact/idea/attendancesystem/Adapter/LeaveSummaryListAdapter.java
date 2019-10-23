@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
@@ -26,9 +27,9 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
 
 
     private Activity mActivity = null;
-    private List<String> messageEntities;
+    private List<LeaveSummaryEntity> messageEntities;
 
-    public LeaveSummaryListAdapter(Activity activity, List<String> messageEntitie) {
+    public LeaveSummaryListAdapter(Activity activity, List<LeaveSummaryEntity> messageEntitie) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
@@ -47,15 +48,20 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
     @Override
     public void onBindViewHolder(final LeaveSummaryListAdapter.LeaveSummaryListiewHolder holder, final int position) {
 
-        Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        Glide.with(mActivity).load("https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2019/03/04/Pictures/_146f44ea-3e38-11e9-92c7-2b8d3185a4e0.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         holder.user_icon.setImageDrawable(resource);
                     }
                 });
-//        holder.text_date.setText(messageEntities.get(position).Date);
+        holder.text_name.setText(messageEntities.get(position).FullName);
+        holder.text_half_day.setText(String.valueOf(messageEntities.get(position).entityLeaves.Halfday));
+        holder.text_casual.setText(String.valueOf(messageEntities.get(position).entityLeaves.Casual));
+        holder.text_sick.setText(String.valueOf(messageEntities.get(position).entityLeaves.Sick));
+        holder.text_unpaid.setText(String.valueOf(messageEntities.get(position).entityLeaves.UnPaid));
+        holder.text_remaining_casual.setText(String.valueOf(messageEntities.get(position).remainingLeaves.Casual));
+        holder.text_remaining_sick.setText(String.valueOf(messageEntities.get(position).remainingLeaves.Sick));
 //        holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
 //        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
 //        holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);
@@ -72,12 +78,12 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
     public class LeaveSummaryListiewHolder extends RecyclerView.ViewHolder {
         private CircleImageView user_icon;
         private TextView text_name;
-        private TextView text_date;
-        private TextView text_punchIn_location;
-        private TextView text_punchIn_time;
-        private TextView text_punchOut_location;
-        private TextView text_punchOut_time;
-        private TextView text_department;
+        private TextView text_half_day;
+        private TextView text_casual;
+        private TextView text_sick;
+        private TextView text_unpaid;
+        private TextView text_remaining_casual;
+        private TextView text_remaining_sick;
 
 
 
@@ -85,6 +91,12 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
             super(itemView);
             user_icon = itemView.findViewById(R.id.user_icon);
             text_name = itemView.findViewById(R.id.text_name);
+            text_half_day = itemView.findViewById(R.id.text_half_day);
+            text_casual = itemView.findViewById(R.id.text_casual);
+            text_sick = itemView.findViewById(R.id.text_sick);
+            text_unpaid = itemView.findViewById(R.id.text_unpaid);
+            text_remaining_casual = itemView.findViewById(R.id.text_remaining_casual);
+            text_remaining_sick = itemView.findViewById(R.id.text_remaining_sick);
 //            text_date = itemView.findViewById(R.id.text_date);
 //            text_punchIn_location = itemView.findViewById(R.id.text_punchIn_location);
 //            text_punchIn_time = itemView.findViewById(R.id.text_punchIn_time);

@@ -4,14 +4,23 @@ import java.util.ArrayList;
 
 import retrofit2.http.GET;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
+import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserDetailsEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
+import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
 
 public interface IRetrofitApi {
     @GET("16jtsp")
     io.reactivex.Observable<ArrayList<UserListEntity>> getUser();
+    @GET("tvbo4")
+    io.reactivex.Observable<UserTotalLeaveEntity> getTotalLeave();
+    @GET("gl55w")
+    io.reactivex.Observable<ArrayList<LeaveSummaryEntity>> getLeaveSummary();
+    @GET("1fjadg")
+    io.reactivex.Observable<ArrayList<LeaveApprovalListEntity>> getLeaveApproval();
 
     @GET("eu7j3")
     io.reactivex.Observable<ArrayList<UserActivityEntity>> getUserActivity();

@@ -14,22 +14,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Adapter.LeaveApprovalAdapter;
 import xact.idea.attendancesystem.Adapter.LeaveSummaryListAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
+import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
+import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
+import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+
+import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
+import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 
 
 public class LeaveFragment extends Fragment {
     Activity mActivity;
     CorrectSizeUtil correctSizeUtil;
-    ArrayList<String> arrayList = new ArrayList<>();
+
     View mRootView;
     LeaveSummaryListAdapter mAdapters;
     RecyclerView rcl_leave_summary_list;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IRetrofitApi mService;
+    TextView text_casual_leave;
+    TextView text_sick_leave;
+    TextView text_total_leave;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,20 +65,67 @@ public class LeaveFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
+        load();
+        loadLeaveTotal();
     }
 
     private void initView() {
+        mService = Common.getApi();
         rcl_leave_summary_list=mRootView.findViewById(R.id.rcl_leave_summary_list);
+        text_casual_leave=mRootView.findViewById(R.id.text_casual_leave);
+        text_sick_leave=mRootView.findViewById(R.id.text_sick_leave);
+        text_total_leave=mRootView.findViewById(R.id.text_total_leave);
         LinearLayoutManager lm = new LinearLayoutManager(mActivity);
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         rcl_leave_summary_list.setLayoutManager(lm);
-        for(int j = 0; j < 5; j++){
+//        for(int j = 0; j < 5; j++){
+//
+//            arrayList.add("House "+j);
+//        }
+//        mAdapters = new LeaveSummaryListAdapter(mActivity, arrayList);
+//
+//        rcl_leave_summary_list.setAdapter(mAdapters);
+    }
+    private void load() {
+        showLoadingProgress(mActivity);
+        compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
+            @Override
+            public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
 
-            arrayList.add("House "+j);
-        }
-        mAdapters = new LeaveSummaryListAdapter(mActivity, arrayList);
+                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
 
-        rcl_leave_summary_list.setAdapter(mAdapters);
+                rcl_leave_summary_list.setAdapter(mAdapters);
+                dismissLoadingProgress();
+            }
+        }));
+
+
+    }
+    private void loadLeaveTotal() {
+        showLoadingProgress(mActivity);
+        compositeDisposable.add(mService.getTotalLeave().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserTotalLeaveEntity>() {
+            @Override
+            public void accept(UserTotalLeaveEntity carts) throws Exception {
+                text_total_leave.setText(String.valueOf(carts.Total));
+                text_sick_leave.setText(String.valueOf(carts.Sick));
+                text_casual_leave.setText(String.valueOf(carts.Casual));
+
+                dismissLoadingProgress();
+            }
+        }));
+
+
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        compositeDisposable.clear();
     }
     public int  leaveApproval(){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
