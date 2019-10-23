@@ -24,6 +24,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import xact.idea.attendancesystem.Activity.LoginActivity;
+import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.CustomDialog;
@@ -33,9 +34,9 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
 
 
     private Activity mActivity = null;
-    private List<String> messageEntities;
+    private List<LeaveApprovalListEntity> messageEntities;
 
-    public LeaveApprovalAdapter(Activity activity, List<String> messageEntitie) {
+    public LeaveApprovalAdapter(Activity activity, List<LeaveApprovalListEntity> messageEntitie) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
@@ -55,7 +56,7 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     public void onBindViewHolder(final LeaveApprovalAdapter.LeaveApprovalListiewHolder holder, final int position) {
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        Glide.with(mActivity).load("https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2019/03/04/Pictures/_146f44ea-3e38-11e9-92c7-2b8d3185a4e0.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -149,6 +150,11 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
                 infoDialog.show();
             }
         });
+        holder.text_name.setText(messageEntities.get(position).FullName);
+        holder.text_backup_name.setText(messageEntities.get(position).BackUp);
+        holder.text_leave_application_date.setText(messageEntities.get(position).ApplicationDate);
+        holder.text_reason.setText(messageEntities.get(position).Reason);
+        holder.text_leave_type.setText(messageEntities.get(position).LeaveType);
 //        holder.text_date.setText(messageEntities.get(position).Date);
 //        holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
 //        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
@@ -168,10 +174,10 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
     public class LeaveApprovalListiewHolder extends RecyclerView.ViewHolder {
         private CircleImageView user_icon;
         private TextView text_name;
-        private TextView text_date;
-        private TextView text_punchIn_location;
-        private TextView text_punchIn_time;
-        private TextView text_punchOut_location;
+        private TextView text_leave_type;
+        private TextView text_leave_application_date;
+        private TextView text_backup_name;
+        private TextView text_reason;
         private TextView text_punchOut_time;
         private ImageView img_accept;
         private ImageView img_attempt;
@@ -186,6 +192,10 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<LeaveApprovalAdap
             img_accept = itemView.findViewById(R.id.img_accept);
             img_attempt = itemView.findViewById(R.id.img_attempt);
             img_cancel = itemView.findViewById(R.id.img_cancel);
+            text_leave_type = itemView.findViewById(R.id.text_leave_type);
+            text_leave_application_date = itemView.findViewById(R.id.text_leave_application_date);
+            text_backup_name = itemView.findViewById(R.id.text_backup_name);
+            text_reason = itemView.findViewById(R.id.text_reason);
 //            text_date = itemView.findViewById(R.id.text_date);
 //            text_punchIn_location = itemView.findViewById(R.id.text_punchIn_location);
 //            text_punchIn_time = itemView.findViewById(R.id.text_punchIn_time);

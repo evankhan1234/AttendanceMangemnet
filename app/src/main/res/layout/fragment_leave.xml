@@ -122,11 +122,11 @@
                 android:gravity="center|center_vertical"
                 android:layout_weight="1"
                 android:background="@drawable/cell_shape"
-                android:id="@+id/text_customer_name" />
+                android:id="@+id/text_casual_leave" />
 
             <TextView
                 android:visibility="visible"
-                android:id="@+id/text_date"
+                android:id="@+id/text_sick_leave"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -154,7 +154,7 @@
                 android:layout_weight="1"
 
                 android:background="@drawable/cell_shape"
-                android:id="@+id/text_amounst" />
+                android:id="@+id/text_total_leave" />
 
 
         </LinearLayout>

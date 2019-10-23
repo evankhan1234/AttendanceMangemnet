@@ -63,10 +63,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="40px"
-                            android:tag="40"
+                            android:tag="45"
                             android:text="Preet Kamal Preet  Kamal"
                             android:textColor="#6A6B6B"
-                            android:textSize="40px" />
+                            android:textSize="45px" />
 
                     </LinearLayout>
 
