@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_margin="0px">
+
+    <LinearLayout
+
+        android:background="@drawable/btn_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50px"
+        android:layout_marginRight="50px"
+        android:layout_marginBottom="50px"
+
+
+
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:padding="0px">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:orientation="vertical"
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            tools:context=".CityFragment">
+
+            <!-- TODO: Update blank fragment layout -->
+
+            <FrameLayout
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:id="@+id/weather_panel"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+
+                        >
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@mipmap/ic_launcher"
+                            android:id="@+id/img_weather"
+
+                            />
+
+
+                    </LinearLayout>
+
+
+
+                    <TextView
+                        android:layout_marginTop="10px"
+                        android:id="@+id/txt_date_time"
+                        android:textColor="#6A6B6B"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Evan Khan"/>
+                    <TableLayout
+                        android:background="@drawable/border"
+                        android:layout_marginTop="10dp"
+                        android:stretchColumns="*"
+                        android:padding="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_wind"
+                                android:text="Pending"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Leave Type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_pressure"
+                                android:text="Casual Leave"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_humidity"
+                                android:text="20-12-2019"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Reason"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_sunrise"
+                                android:text="Personal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Reporting Senior"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_sunset"
+                                android:text="MD. SARAWERR JAHAN Evan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="BackUp Personnel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_coord"
+                                android:text="MD. SARAWERR JAHAN Evan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            >
+
+
+                            <TextView
+                                android:background="@drawable/cell"
+                                android:text="Action By"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_column="1"
+                                android:id="@+id/txt_coords"
+                                android:text="MD. SARAWERR JAHAN Evan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                />
+                        </TableRow>
+                    </TableLayout>
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+        <TextView
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            android:layout_marginTop="0px"
+
+            android:tag="45"
+            android:textSize="45px"
+            android:textColor="#6A6B6B"
+            android:text="Note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <EditText
+
+            android:layout_marginLeft="20px"
+            android:layout_marginRight="20px"
+            android:focusable="false"
+
+            android:layout_marginTop="20px"
+            android:gravity="top"
+            android:tag="35"
+            android:textSize="35px"
+
+            android:drawablePadding="25px"
+            android:id="@+id/edit_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="280px"
+            android:background="@drawable/edit_border_background"
+            android:inputType="text|textMultiLine"
+            android:textColor="#6A6B6B"
+
+            android:text="Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note.Please Take a Note"
+            android:paddingLeft="40px"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:textColorHint="#4D6A6B6B" />
+
+
+        <Button
+            android:textColorHint="@color/white"
+            android:layout_marginBottom="30px"
+            android:layout_marginLeft="70px"
+            android:layout_marginRight="70px"
+            android:layout_marginTop="30px"
+            android:hint="Send"
+            android:background="@drawable/capsule_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -13,12 +13,14 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,6 +40,7 @@ import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
+import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
@@ -50,7 +53,7 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     View mRootView;
     RecyclerView rcl_approval_in_list;
     LeaveApprovalAdapter mAdapters;
-    ArrayList<String> arrayList = new ArrayList<>();
+    ArrayList<LeaveApprovalListEntity> arrayList = new ArrayList<>();
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
     RadioButton radioNew;
@@ -59,6 +62,7 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     RadioButton radioDenied;
     RadioButton radioDeleted;
     RadioButton radioAll;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,7 +78,7 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
-        load();
+        load("");
     }
 
     private void initView() {
@@ -92,37 +96,43 @@ public class LeaveApplicationApprovalFragment extends Fragment {
         radioNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("NEW");
+              //  Constant.LEAVE="NEW";
             }
         });
         radioApproved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("APPROVED");
+                //Constant.LEAVE="APPROVED";
             }
         });
         radioPending.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("PENDING");
+             //   Constant.LEAVE="PENDING";
             }
         });
         radioDenied.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("DENIED");
+                //Constant.LEAVE="DENIED";
             }
         });
         radioDeleted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("DELETED");
+                //Constant.LEAVE="DELETED";
             }
         });
         radioAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                load();
+                load("ALL");
+               // Constant.LEAVE="ALL";
             }
         });
 //        for(int j = 0; j < 5; j++){
@@ -133,13 +143,30 @@ public class LeaveApplicationApprovalFragment extends Fragment {
 //
 //        rcl_approval_in_list.setAdapter(mAdapters);
     }
-    private void load() {
+    private void load(final String value) {
         showLoadingProgress(mActivity);
+        arrayList.clear();
         compositeDisposable.add(mService.getLeaveApproval().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveApprovalListEntity>>() {
             @Override
             public void accept(ArrayList<LeaveApprovalListEntity> carts) throws Exception {
 
-                mAdapters = new LeaveApprovalAdapter(mActivity, carts);
+                for (LeaveApprovalListEntity leaveApprovalListEntitys : carts){
+
+                    String test=leaveApprovalListEntitys.ApplicationDate;
+                    LeaveApprovalListEntity leaveApprovalListEntity= new LeaveApprovalListEntity();
+                    Log.e("test","test"+test);
+                    leaveApprovalListEntity.ApplicationDate=leaveApprovalListEntitys.ApplicationDate;
+                   // Toast.makeText(mActivity, leaveApprovalListEntity.ApplicationDate, Toast.LENGTH_SHORT).show();
+                    leaveApprovalListEntity.BackUp=leaveApprovalListEntitys.BackUp;
+                    leaveApprovalListEntity.FullName=leaveApprovalListEntitys.FullName;
+                    leaveApprovalListEntity.LeaveType=leaveApprovalListEntitys.LeaveType;
+                    leaveApprovalListEntity.UserIcon=leaveApprovalListEntitys.UserIcon;
+                    leaveApprovalListEntity.Reason=leaveApprovalListEntitys.Reason;
+                    leaveApprovalListEntity.Type=value;
+                    arrayList.add(leaveApprovalListEntity);
+                }
+
+                mAdapters = new LeaveApprovalAdapter(mActivity, arrayList);
 
                 rcl_approval_in_list.setAdapter(mAdapters);
                 dismissLoadingProgress();

@@ -37,7 +37,6 @@
             android:padding="10px"
             android:visibility="visible">
 
-
             <LinearLayout
                 android:visibility="visible"
                 android:layout_width="match_parent"
@@ -132,7 +131,6 @@
                             android:textSize="40px" />
 
                     </LinearLayout>
-
                     <LinearLayout
 
 
@@ -180,6 +178,12 @@
 
             </LinearLayout>
 
+
+
+
+
+
+
             <LinearLayout
                 android:layout_marginBottom="10px"
                 android:layout_gravity="center"
@@ -187,32 +191,16 @@
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <LinearLayout
 
-                    android:layout_width="120px"
-                    android:layout_height="120px">
-                    <ImageView
-
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="25px"
-
-                        android:id="@+id/img_accept"
-                        android:layout_width="70px"
-                        android:layout_height="70px"
-                        android:src="@drawable/check"
-
-
-                        />
-
-                </LinearLayout>
                 <LinearLayout
                     android:layout_marginLeft="30px"
                     android:layout_marginTop="28px"
-                    android:background="@drawable/white_circle_drawable"
-                    android:layout_width="70px"
+
+                    android:layout_width="wrap_content"
                     android:layout_height="70px">
                     <TextView
 
+                        android:textStyle="bold"
                         android:layout_gravity="center"
                         android:layout_marginLeft="25px"
 
@@ -222,13 +210,15 @@
 
                         android:tag="40"
                         android:text="P"
-                        android:textColor="@color/white"
+                        android:textColor="#6A6B6B"
                         android:textSize="40px"
 
                         />
 
                 </LinearLayout>
+
                 <LinearLayout
+                    android:id="@+id/linear"
                     android:layout_marginLeft="30px"
 
                     android:layout_width="120px"
@@ -236,13 +226,14 @@
 
                     <ImageView
 
-                        android:id="@+id/img_attempt"
-                        android:layout_width="70px"
 
-                        android:layout_height="70px"
+
                         android:layout_gravity="center"
                         android:layout_marginLeft="20px"
-                        android:src="@drawable/exclamation_mark"
+                        android:id="@+id/img_accept"
+                        android:layout_width="70px"
+                        android:layout_height="70px"
+                        android:src="@drawable/check"
 
 
                         />
@@ -256,13 +247,13 @@
 
                     <ImageView
 
-                        android:id="@+id/img_cancel"
+                        android:id="@+id/img_attempt"
                         android:layout_width="70px"
 
                         android:layout_height="70px"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20px"
-                        android:src="@drawable/error"
+                        android:src="@drawable/exclamation_mark"
 
 
                         />
