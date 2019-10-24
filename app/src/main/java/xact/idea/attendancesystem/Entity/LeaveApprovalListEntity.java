@@ -17,4 +17,6 @@ public class LeaveApprovalListEntity {
     public String  ApplicationDate;
     @SerializedName("UserIcon")
     public String  UserIcon;
+    @SerializedName("Type")
+    public String  Type;
 }
