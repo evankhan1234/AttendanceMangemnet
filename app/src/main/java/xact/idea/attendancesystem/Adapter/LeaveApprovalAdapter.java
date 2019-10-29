@@ -140,13 +140,27 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<RecyclerView.View
                     infoDialog.setContentView(v);
                     infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
-                    //Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
-
+                    Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+                    TextView txt_name = infoDialog.findViewById(R.id.txt_name);
+                    final CircleImageView image = infoDialog.findViewById(R.id.img_avatar);
                     CorrectSizeUtil.getInstance(mActivity).correctSize(main_root);
                     //correctSizeUtil = correctSizeUtil.getInstance(getActivity());
                     //  CorrectSizeUtil.setWidthOriginal(1080);
                     // correctSizeUtil.correctSize(view);
-
+                    Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                            .into(new SimpleTarget<GlideDrawable>() {
+                                @Override
+                                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                    image.setImageDrawable(resource);
+                                }
+                            });
+                    btn_yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            infoDialog.dismiss();
+                        }
+                    });
+                    txt_name.setText(messageEntities.get(position).FullName);
                     infoDialog.show();
                 }
             });
@@ -268,13 +282,27 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<RecyclerView.View
                     infoDialog.setContentView(v);
                     infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                     RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
-                    //Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
-
+                    final CircleImageView image = infoDialog.findViewById(R.id.img_avatar);
+                    final Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+                    TextView txt_name = infoDialog.findViewById(R.id.txt_name);
                     CorrectSizeUtil.getInstance(mActivity).correctSize(main_root);
                     //correctSizeUtil = correctSizeUtil.getInstance(getActivity());
                     //  CorrectSizeUtil.setWidthOriginal(1080);
                     // correctSizeUtil.correctSize(view);
-
+                    btn_yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            infoDialog.dismiss();
+                        }
+                    });
+                    txt_name.setText(messageEntities.get(position).FullName);
+                    Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                            .into(new SimpleTarget<GlideDrawable>() {
+                                @Override
+                                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                    image.setImageDrawable(resource);
+                                }
+                            });
                     infoDialog.show();
                 }
             });
@@ -472,7 +500,12 @@ public class LeaveApprovalAdapter extends RecyclerView.Adapter<RecyclerView.View
         else if (messageEntities.get(position).Type.equals("NEW")) {
             return TYPE_NEW;
 
-        }else {
+        }
+        else if (messageEntities.get(position).Type.equals("NEW")) {
+            return TYPE_NEW;
+
+        }
+        else {
             return TYPE_ALL;
         }
     }

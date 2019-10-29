@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10px">
+
+    <Button
+        android:id="@+id/btn_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="100px"
+        android:background="@drawable/btn_more_background_unit"
+        android:hint="DCO"
+        android:padding="10px"
+        android:textColorHint="@color/white" />
+</LinearLayout>

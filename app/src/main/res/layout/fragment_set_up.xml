@@ -5,7 +5,7 @@
     android:id="@+id/rlt_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     >
     <ScrollView
 
@@ -23,26 +23,62 @@
 
     android:orientation="vertical"
     >
-
-    <TextView
-
-        android:textStyle="bold"
-        android:tag="40"
-        android:textSize="40px"
-        android:layout_marginLeft="60px"
+    <androidx.cardview.widget.CardView
         android:layout_marginTop="30px"
-        android:text="List Of Units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Spinner
 
-       android:background="@drawable/test"
-        android:layout_marginTop="20px"
-        android:layout_marginLeft="60px"
-        android:layout_marginRight="50px"
-        android:id="@+id/spinnerUnit"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="120px"/>
+
+        android:layout_height="match_parent"
+
+
+        android:layout_marginLeft="20px"
+
+        android:layout_marginRight="20px"
+
+        card_view:cardBackgroundColor="#FFFFFF"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="4dp"
+        card_view:cardUseCompatPadding="true">
+
+        <EditText
+
+
+
+            android:drawablePadding="25px"
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="140px"
+            android:background="@null"
+            android:inputType="text|textNoSuggestions"
+            android:drawableLeft="@drawable/icon_search"
+            android:hint="Please enter a search word"
+            android:paddingLeft="40px"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:textColorHint="#4D6A6B6B" />
+
+
+    </androidx.cardview.widget.CardView>
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:layout_marginTop="25px"
+
+        android:nestedScrollingEnabled="false"
+        android:id="@+id/rcl_this_unit_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="50px"
+
+        android:layout_marginRight="50px"
+        android:layout_marginBottom="0px"
+
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <HorizontalScrollView
         android:visibility="gone"
         android:layout_marginTop="50px"
@@ -113,26 +149,25 @@
                 android:visibility="visible" />
         </LinearLayout>
     </HorizontalScrollView>
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
 
-        android:textStyle="bold"
-        android:tag="40"
-        android:textSize="40px"
-        android:layout_marginLeft="60px"
-        android:layout_marginTop="30px"
-        android:text="List Of Departments"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_marginTop="25px"
 
-    <Spinner
-
-        android:layout_marginTop="20px"
-        android:background="@drawable/test"
-        android:layout_marginLeft="60px"
-        android:layout_marginRight="50px"
-        android:id="@+id/spinnerDepartments"
+        android:nestedScrollingEnabled="false"
+        android:id="@+id/rcl_this_department_list"
         android:layout_width="match_parent"
-        android:layout_height="120px"/>
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="50px"
+
+        android:layout_marginRight="50px"
+        android:layout_marginBottom="0px"
+
+
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <HorizontalScrollView
         android:visibility="gone"
         android:layout_marginTop="50px"

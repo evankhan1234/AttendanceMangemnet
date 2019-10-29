@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
+import xact.idea.attendancesystem.Fragment.DashboardFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
 import xact.idea.attendancesystem.Fragment.LeaveApplicationApprovalFragment;
 import xact.idea.attendancesystem.Fragment.LeaveApplicationFragment;
@@ -60,11 +61,13 @@ public class MainActivity extends AppCompatActivity {
     private View view_header_details;
     private ImageButton btn_header_back_;
     private ImageButton btn_header_application;
+    private ImageButton btn_header_application_create;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btn_header_application=findViewById(R.id.btn_header_application);
+        btn_header_application_create=findViewById(R.id.btn_header_application_create);
         title=findViewById(R.id.title);
         btn_header_back_=findViewById(R.id.btn_header_back_);
         view_header_details=findViewById(R.id.view_header_details);
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         rlt_header_details=findViewById(R.id.rlt_header_details);
         tv_home_menu=findViewById(R.id.tv_home_menu);
         tv_setup_menu=findViewById(R.id.tv_setup_menus);
-        tv_user_activity_menu=findViewById(R.id.tv_user_menu);
+        tv_user_activity_menu=findViewById(R.id.tv_home_menu);
         tv_more_menu=findViewById(R.id.tv_more_menus);
         mContext = this;
         CorrectSizeUtil.getInstance(this).correctSize();
@@ -101,6 +104,15 @@ public class MainActivity extends AppCompatActivity {
                 onLeaveApplication();
             }
         });
+        btn_header_application_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+           //     Toast.makeText(mContext, "dfdf", Toast.LENGTH_SHORT).show();
+
+               onLeaveApplicationCreate();
+            }
+        });
     }
     @Override
     public void onBackPressed() {
@@ -109,6 +121,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    private void onBackForPunch(){
+        Fragment f = getVisibleFragment();
+        Log.e("frag","frag"+f);
+        if (f != null)
+        {
+            if (f instanceof MoreFragment) {
+                int handle = ((MoreFragment) f).handleBackPress(2);
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+            }
+
+            }
+    }
     private void onBack(){
         Fragment f = getVisibleFragment();
         Log.e("frag","frag"+f);
@@ -116,9 +147,19 @@ public class MainActivity extends AppCompatActivity {
         {
             if (f instanceof MoreFragment) {
 
-                int handle = ((MoreFragment) f).handleBackPress();
+                if (f instanceof PunchInFragment){
+                    Toast.makeText(mContext, "true", Toast.LENGTH_SHORT).show();
+                }
+                int handle = ((MoreFragment) f).handleBackPress(1);
                 if (handle == 0) {
                     finish();
+                }
+                else if (handle == 1) {
+                    int handles = ((MoreFragment) f).handleBackPress(2);
+                    if (handles==2){
+                        hideHeaderDetail();
+                    }
+
                 } else if (handle == 2) {
                     hideHeaderDetail();
                 } else {
@@ -141,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 if (handle == 0) {
                     finish();
                 } else if (handle == 2) {
-                    hideHeaderDetail();
+                    hideHeaderDetailForApplication();
                 } else {
                     // do not hide header
                 }
@@ -197,6 +238,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public void hideHeaderDetailForApplication() {
+        rlt_header.setVisibility(View.GONE);
+        title.setVisibility(View.GONE);
+        //card_view.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.VISIBLE);
+        rlt_header_details.setVisibility(View.VISIBLE);
+        btn_header_application_create.setVisibility(View.GONE);
+        details_title.setText("Leave Approval");
+
+    }
     public void hideHeaderDetailForLeave(String name) {
         if (name.equals("Approval")){
             rlt_header.setVisibility(View.GONE);
@@ -205,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
             view_header_details.setVisibility(View.VISIBLE);
             rlt_header_details.setVisibility(View.VISIBLE);
             details_title.setText("Leave Approval");
+            btn_header_application_create.setVisibility(View.VISIBLE);
         }
         else if (name.equals("Application")){
             rlt_header.setVisibility(View.GONE);
@@ -213,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
             view_header_details.setVisibility(View.VISIBLE);
             rlt_header_details.setVisibility(View.VISIBLE);
             details_title.setText("Leave Application");
+            btn_header_application_create.setVisibility(View.GONE);
         }
 
 
@@ -363,6 +416,30 @@ public class MainActivity extends AppCompatActivity {
             // finish();
         }
     }
+    public void onLeaveApplicationCreate(){
+
+        Fragment f = getVisibleFragment();
+        Log.e("frag","frag"+f);
+        if (f != null)
+        {
+            if (f instanceof LeaveApplicationApprovalFragment) {
+                int handle = ((LeaveApplicationApprovalFragment) f).leaveApplication();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetailForLeave("Application");
+                }
+                else {
+                    // do not hide header
+                }
+
+
+            }
+
+        } else {
+            // finish();
+        }
+    }
     public void hideHeaderDetails() {
         rlt_header.setVisibility(View.GONE);
         btn_header_application.setVisibility(View.GONE);
@@ -403,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
         switch (fragId) {
             case Constant.FRAG_HOME:
                 if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
-                    newFrag = new SetUpFragment();
+                    newFrag = new DashboardFragment();
                 }
               else{
                     newFrag = new HomeFragment();
@@ -417,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
                 //  setUnreadMessage();
                 break;
             case Constant.FRAG_USER_ACTIVTY:
-                newFrag = new UserActivityFragment();
+                newFrag = new SetUpFragment();
                 // newFrag = new ChatCategoryFragment();
                 //setUpHeader(Constant.FRAG_CHAT);
 
@@ -456,14 +533,14 @@ public class MainActivity extends AppCompatActivity {
             rlt_header.setVisibility(View.GONE);
           rlt_header_details.setVisibility(View.GONE);
             view_header_details.setVisibility(View.GONE);
-
+            btn_header_application_create.setVisibility(View.VISIBLE);
             title.setVisibility(View.GONE);
         }
         else if (titles.equals("rrr")){
             rlt_header.setVisibility(View.GONE);
             rlt_header_details.setVisibility(View.VISIBLE);
             view_header_details.setVisibility(View.VISIBLE);
-
+            btn_header_application_create.setVisibility(View.GONE);
             title.setVisibility(View.GONE);
         }
 

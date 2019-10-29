@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlt_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    >
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F9F9F9"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:orientation="vertical"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+
+                    android:layout_marginTop="25px"
+
+                    android:nestedScrollingEnabled="false"
+                    android:id="@+id/rcl_this_unit_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="50px"
+
+                    android:layout_marginRight="50px"
+                    android:layout_marginBottom="0px"
+
+
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <HorizontalScrollView
+                    android:visibility="gone"
+                    android:layout_marginTop="50px"
+                    android:layout_marginLeft="50px"
+                    android:id="@+id/scr_categoryz"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+
+                        <Button
+                            android:background="@drawable/round_button_blue"
+                            android:id="@+id/btn_1"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="300px"
+                            android:layout_height="130px"
+                            android:layout_gravity="end|center"
+
+                            android:text="DCO"
+
+                            android:textColor="@color/white"
+                            android:visibility="visible" />
+
+                        <Button
+                            android:layout_marginLeft="20px"
+                            android:background="@drawable/round_button_blue"
+                            android:id="@+id/btn_finishs"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="300px"
+                            android:layout_height="130px"
+                            android:layout_gravity="end|center"
+
+                            android:text="DFB"
+
+                            android:textColor="@color/white"
+                            android:visibility="visible" />
+                        <Button
+                            android:layout_marginLeft="20px"
+                            android:background="@drawable/round_button_blue"
+                            android:id="@+id/btn_finishsSs"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="300px"
+                            android:layout_height="130px"
+                            android:layout_gravity="end|center"
+
+                            android:text="DBD"
+
+                            android:textColor="@color/white"
+                            android:visibility="visible" />
+                        <Button
+                            android:layout_marginLeft="20px"
+                            android:background="@drawable/round_button_blue"
+                            android:id="@+id/btn_finishsssd"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
+                            android:minWidth="300px"
+                            android:layout_height="130px"
+                            android:layout_gravity="end|center"
+                            android:text="MIS"
+
+                            android:textColor="@color/white"
+                            android:visibility="visible" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+
+                    android:layout_marginTop="25px"
+
+                    android:nestedScrollingEnabled="false"
+                    android:id="@+id/rcl_this_department_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginLeft="50px"
+
+                    android:layout_marginRight="50px"
+                    android:layout_marginBottom="0px"
+
+
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:layout_weight="1"
+                    android:layout_marginTop="20px"
+
+                    android:layout_marginLeft="50px"
+
+                    android:layout_marginRight="50px"
+                    android:layout_width="match_parent"
+                    android:layout_height="450px"
+                    android:id="@+id/pieEmployeeStatus"
+
+
+
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    />
+
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:layout_marginTop="20px"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="50px"
+
+                    android:layout_marginRight="50px"
+                    android:layout_width="match_parent"
+                    android:layout_height="450px"
+                    android:id="@+id/pieAttendanceStatus"
+
+
+                    android:layout_below="@+id/relativeLayout4"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    />
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <HorizontalScrollView
+
+                        android:layout_gravity="center"
+                        android:id="@+id/scr_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="20px"
+                        android:overScrollMode="never"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/lnl_category"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RadioGroup
+                                    android:id="@+id/radioSex"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:checked="true"
+                                        android:id="@+id/radioAll"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingRight="50px"
+                                        android:text="All" />
+                                    <RadioButton
+                                        android:id="@+id/radioPresent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+
+                                        android:text="Present" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioAbsent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Absent" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioleave"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+
+                                        android:text="Leave" />
+
+
+
+                                </RadioGroup>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <HorizontalScrollView
+
+                        android:layout_gravity="center"
+                        android:id="@+id/scr_categoryss"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="20px"
+                        android:overScrollMode="never"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/lnl_categoryzz"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RadioGroup
+                                    android:id="@+id/radioPresents"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:checked="true"
+                                        android:id="@+id/radioAllPresent"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:paddingRight="50px"
+                                        android:text="All" />
+                                    <RadioButton
+                                        android:id="@+id/radioPresentOnTime"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+
+                                        android:text="Present" />
+
+                                    <RadioButton
+                                        android:id="@+id/radioPresentLate"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Absent" />
+
+
+
+
+
+                                </RadioGroup>
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+                <androidx.cardview.widget.CardView
+                    android:layout_marginTop="30px"
+
+                    android:id="@+id/card_view"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="match_parent"
+
+
+                    android:layout_marginLeft="20px"
+
+                    android:layout_marginRight="20px"
+
+                    card_view:cardBackgroundColor="#FFFFFF"
+                    card_view:cardCornerRadius="5dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <EditText
+
+
+
+                        android:drawablePadding="25px"
+                        android:id="@+id/edit_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="140px"
+                        android:background="@null"
+                        android:inputType="text|textNoSuggestions"
+                        android:drawableLeft="@drawable/icon_search"
+                        android:hint="Please enter a search word"
+                        android:paddingLeft="40px"
+                        android:paddingTop="20px"
+                        android:paddingBottom="20px"
+                        android:textColorHint="#4D6A6B6B" />
+
+
+                </androidx.cardview.widget.CardView>
+                <LinearLayout
+                    android:layout_marginTop="25px"
+                    android:background="@color/colorPrimary"
+
+
+                    android:layout_below="@+id/filter"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="100px"
+                    android:orientation="horizontal"
+                    android:weightSum="5"
+                    android:id="@+id/layout_header"
+
+                    >
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:textSize="35px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Name"
+                        android:gravity="center|center_vertical"
+                        android:layout_weight="1"
+                        android:background="@drawable/cell_shape"
+                        android:id="@+id/text_customer_name" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/text_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/cell_shape"
+                        android:gravity="center|center_vertical"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:text="Punch In "
+                        android:textColor="@color/white"
+                        android:textSize="35px"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:textSize="35px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Punch In"
+                        android:gravity="center|center_vertical"
+                        android:layout_weight="1"
+
+                        android:background="@drawable/cell_shape"
+                        android:id="@+id/text_amounst" />
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:textSize="35px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Punch Out"
+                        android:gravity="center|center_vertical"
+                        android:layout_weight="1"
+
+                        android:background="@drawable/cell_shape"
+                        android:id="@+id/text_amount" />
+
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:textSize="35px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Duration"
+                        android:gravity="center|center_vertical"
+                        android:layout_weight="1"
+
+                        android:background="@drawable/cell_shape"
+                        android:id="@+id/text_amounsvt" />
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:paddingTop="10px"
+                        android:paddingBottom="10px"
+                        android:tag="35"
+                        android:textSize="35px"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Location"
+                        android:gravity="center|center_vertical"
+                        android:layout_weight="1"
+
+                        android:background="@drawable/cell_shape"
+                        android:id="@+id/text_amouvnt" />
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+
+                    android:id="@+id/rcl_approval_in_list"
+                    android:layout_width="match_parent"
+
+
+                    android:layout_height="match_parent"
+
+
+                    android:nestedScrollingEnabled="false"
+
+                    tools:listitem="@layout/item_punch_in_list"
+
+
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <RelativeLayout
+                    android:id="@+id/rlt_detail_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
