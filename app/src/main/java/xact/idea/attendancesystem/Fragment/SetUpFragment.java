@@ -35,6 +35,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
+import xact.idea.attendancesystem.Adapter.DepartmentAdapter;
+import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
@@ -64,7 +66,12 @@ public class SetUpFragment extends Fragment {
     int[] rainbow;
     ArrayList<String> arrayList = new ArrayList<>();
     private RecyclerView rcl_this_place_list;
+    private RecyclerView rcl_this_unit_list;
+    private RecyclerView rcl_this_department_list;
     private UnitDepartmentAdapter mAdapters = null;
+    private UnitAdapter mUnitAdapter = null;
+    private DepartmentAdapter mDepartmentAdapter = null;
+
     Button btn_1;
     Button btn_2;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -87,8 +94,8 @@ public class SetUpFragment extends Fragment {
         correctSizeUtil.correctSize(mRoot);
         //   initView();
         mService = Common.getApi();
-        spinnerDepartments = mRoot.findViewById(R.id.spinnerDepartments);
-        spinnerUnit = mRoot.findViewById(R.id.spinnerUnit);
+//        spinnerDepartments = mRoot.findViewById(R.id.spinnerDepartments);
+//        spinnerUnit = mRoot.findViewById(R.id.spinnerUnit);
         btn_2 = mRoot.findViewById(R.id.btn_2);
         btn_1 = mRoot.findViewById(R.id.btn_1);
         btn_1.setOnClickListener(new View.OnClickListener() {
@@ -104,10 +111,20 @@ public class SetUpFragment extends Fragment {
             }
         });
         rcl_this_place_list = mRoot.findViewById(R.id.rcl_this_place_list);
+        rcl_this_unit_list = mRoot.findViewById(R.id.rcl_this_unit_list);
+        rcl_this_department_list = mRoot.findViewById(R.id.rcl_this_department_list);
 
         LinearLayoutManager lm = new LinearLayoutManager(mActivity);
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         rcl_this_place_list.setLayoutManager(lm);
+
+        LinearLayoutManager lm1 = new LinearLayoutManager(mActivity);
+        lm1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rcl_this_unit_list.setLayoutManager(lm1);
+
+        LinearLayoutManager lm2 = new LinearLayoutManager(mActivity);
+        lm2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rcl_this_department_list.setLayoutManager(lm2);
 
 
         for (int j = 0; j < 7; j++) {
@@ -116,59 +133,59 @@ public class SetUpFragment extends Fragment {
         }
 
 
-        unitListData();
-        DepartmentListData();
 
-        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                if (position > 0) {
-                    Log.e("sp_div", "" + position);
-                    setDepartment(unitListEntityList.get(position).Id);
-                } else {
-
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//
+//        spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//
+//                if (position > 0) {
+//                    Log.e("sp_div", "" + position);
+//                    setDepartment(unitListEntityList.get(position).Id);
+//                } else {
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
         return mRoot;
     }
 
 
 
-        private void setDepartment(final int unitId) {
-
-
-        //sp_dis.setSelection(getDisIndex(((NewMemberActivity)mActivity).groupInfoMember.getDisId()),false);
-        spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//if(position>0)
-                {
-                    //Toast.makeText(mActivity, String.valueOf(unitId)+String.valueOf(departmentListEntityList.get(position).Id), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
-    }
+//        private void setDepartment(final int unitId) {
+//
+//
+//        //sp_dis.setSelection(getDisIndex(((NewMemberActivity)mActivity).groupInfoMember.getDisId()),false);
+//        spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+////if(position>0)
+//                {
+//                    //Toast.makeText(mActivity, String.valueOf(unitId)+String.valueOf(departmentListEntityList.get(position).Id), Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+//
+//
+//    }
     @Override
     public void onResume() {
         super.onResume();
         loadData();
-
+        unitListData();
+        DepartmentListData();
     }
 
 
@@ -211,27 +228,35 @@ public class SetUpFragment extends Fragment {
     }
     private void unitListData(){
 
+        showLoadingProgress(mActivity);
         compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
             @Override
             public void accept(ArrayList<UnitListEntity> carts) throws Exception {
                 unitListEntityList=carts;
+                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityList);
 
+                rcl_this_unit_list.setAdapter(mUnitAdapter);
+                dismissLoadingProgress();
 
-                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
             }
         }));
     }
     private void DepartmentListData(){
-
+        showLoadingProgress(mActivity);
         compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
             @Override
             public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
                 departmentListEntityList=carts;
-                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
-                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
+//                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
+//                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
+                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityList);
+
+                rcl_this_department_list.setAdapter(mDepartmentAdapter);
+                dismissLoadingProgress();
             }
         }));
     }

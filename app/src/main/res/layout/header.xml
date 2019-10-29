@@ -110,6 +110,20 @@
             android:text="Details"
             android:textColor="@color/black"
             android:textSize="46px" />
+        <ImageButton
+            android:id="@+id/btn_header_application_create"
+            android:layout_width="126px"
+            android:layout_height="105px"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="75px"
+            android:background="@color/transparent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:paddingBottom="3px"
+
+            android:stateListAnimator="@null"
+            android:visibility="gone"
+            app:srcCompat="@drawable/order" />
     </RelativeLayout>
 
     <View

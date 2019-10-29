@@ -51,6 +51,13 @@
         <item>Al-Amin Seikh</item>
         <item>MD.Rafiqul Islam</item>
     </string-array>
+    <string-array name="office_lists">
+        <item>Head Office</item>
+        <item>Chittagong</item>
+        <item>Ghulshan</item>
+        <item>Banaani</item>
+        <item>Others</item>
+    </string-array>
     <string-array name="timeline_categorys">
         <item>#000</item>
         <item>#CCCC</item>

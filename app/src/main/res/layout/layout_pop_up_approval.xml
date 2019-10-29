@@ -58,7 +58,7 @@
                             android:layout_width="80dp"
                             android:layout_height="80dp"
                             android:src="@mipmap/ic_launcher"
-                            android:id="@+id/img_weather"
+                            android:id="@+id/img_avatar"
 
                             />
 
@@ -69,7 +69,7 @@
 
                     <TextView
                         android:layout_marginTop="10px"
-                        android:id="@+id/txt_date_time"
+                        android:id="@+id/txt_name"
                         android:textColor="#6A6B6B"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -296,7 +296,8 @@
             android:layout_marginLeft="70px"
             android:layout_marginRight="70px"
             android:layout_marginTop="30px"
-            android:hint="Send"
+            android:hint="Ok"
+            android:id="@+id/btn_yes"
             android:background="@drawable/capsule_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
