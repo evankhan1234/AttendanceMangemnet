@@ -12,7 +12,7 @@
 
         android:background="@drawable/oval_background"
         android:hint="Buisness Development"
-        android:padding="20px"
+        android:paddingLeft="20px"
         android:textColorHint="@color/black" />
 
 

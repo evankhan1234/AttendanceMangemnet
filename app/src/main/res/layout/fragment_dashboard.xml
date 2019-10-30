@@ -132,39 +132,47 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:layout_weight="1"
-                    android:layout_marginTop="20px"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <com.github.mikephil.charting.charts.PieChart
 
-                    android:layout_marginLeft="50px"
-
-                    android:layout_marginRight="50px"
-                    android:layout_width="match_parent"
-                    android:layout_height="450px"
-                    android:id="@+id/pieEmployeeStatus"
+                        android:layout_marginTop="20px"
+                        android:layout_marginLeft="20px"
 
 
 
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    />
+
+                        android:layout_width="520px"
+                        android:layout_height="600px"
+                        android:id="@+id/pieEmployeeStatus"
 
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:layout_marginTop="20px"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="50px"
 
-                    android:layout_marginRight="50px"
-                    android:layout_width="match_parent"
-                    android:layout_height="450px"
-                    android:id="@+id/pieAttendanceStatus"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        />
 
 
-                    android:layout_below="@+id/relativeLayout4"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    />
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:layout_marginTop="20px"
+
+
+
+                        android:layout_marginRight="50px"
+                        android:layout_width="460px"
+                        android:layout_height="600px"
+                        android:id="@+id/pieAttendanceStatus"
+
+
+                        android:layout_below="@+id/relativeLayout4"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        />
+
+                </LinearLayout>
+
                 <LinearLayout
 
                     android:layout_width="match_parent"
@@ -245,9 +253,10 @@
                     android:orientation="vertical">
 
                     <HorizontalScrollView
+                        android:visibility="gone"
 
                         android:layout_gravity="center"
-                        android:id="@+id/scr_categoryss"
+                        android:id="@+id/scr_category_present"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 

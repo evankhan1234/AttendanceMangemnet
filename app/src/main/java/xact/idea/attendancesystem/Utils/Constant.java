@@ -12,6 +12,7 @@ public class Constant {
     public static final int FRAG_USER_ACTIVTY= 3;
 
     public static final int FRAG_MORE = 4;
+    public static final int FRAG_SET_UP_USER = 5;
     public static  String LEAVE;
 
     public static class API {

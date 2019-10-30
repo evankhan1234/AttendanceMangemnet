@@ -12,6 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/relativelayoutPunch"
         android:layout_marginTop="50px"
         android:layout_marginRight="30px"
@@ -45,6 +46,7 @@
             android:layout_width="wrap_content"/>
     </RelativeLayout>
     <View
+        android:visibility="gone"
 
         android:id="@+id/view_headers"
         android:layout_width="match_parent"

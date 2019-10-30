@@ -76,6 +76,78 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Evan Khan"/>
+                    <TextView
+                        android:layout_marginTop="10px"
+                        android:id="@+id/txt_phone"
+                        android:textColor="#6A6B6B"
+                        android:textSize="15sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+8801677182084"/>
+                    <LinearLayout
+                        android:layout_below="@+id/lineats"
+                        android:id="@+id/lin"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="0px"
+                        android:layout_marginTop="10px"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_marginTop="5px"
+                            android:layout_marginLeft="20px"
+                            android:id="@+id/indicator_01"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+
+                            android:background="@drawable/indicator_unselected" />
+                        <TextView
+                            android:layout_marginLeft="20px"
+                            android:id="@+id/text_department"
+                            android:tag="35"
+                            android:textSize="35px"
+
+                            android:text="Executive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <ImageView
+                            android:layout_marginTop="5px"
+                            android:layout_marginLeft="20px"
+                            android:id="@+id/indicator_0sz1s"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+
+
+                            android:background="@drawable/indicator_unselected" />
+                        <TextView
+                            android:layout_marginLeft="20px"
+                            android:id="@+id/text_departments"
+                            android:tag="35"
+                            android:textSize="35px"
+
+                            android:text="Buisness Development "
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <ImageView
+                            android:layout_marginTop="5px"
+                            android:layout_marginLeft="20px"
+                            android:id="@+id/indicator_0s1s"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+
+
+                            android:background="@drawable/indicator_unselected" />
+                        <TextView
+                            android:id="@+id/text_units"
+                            android:layout_marginLeft="20px"
+                            android:tag="35"
+                            android:textSize="35px"
+                            android:text="(1166)"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                     <TableLayout
                         android:background="@drawable/border"
                         android:layout_marginTop="10dp"

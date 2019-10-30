@@ -116,6 +116,22 @@ public class LeaveFragment extends Fragment {
 
 
     }
+    public int handleBackPress() {
+        if (getFragmentManager().findFragmentByTag(LeaveFragment.class.getSimpleName()) != null) {
+            LeaveFragment f = (LeaveFragment) getFragmentManager()
+                    .findFragmentByTag(LeaveFragment.class.getSimpleName());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+            transaction.remove(f);
+            transaction.commit();
+            getFragmentManager().popBackStack();
+
+
+            return 2;
+
+        }
+        return 2;
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -129,7 +145,7 @@ public class LeaveFragment extends Fragment {
     }
     public int  leaveApproval(){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        Fragment f = new LeaveApplicationApprovalFragment();
+        Fragment f = new LeaveApplicationFragment();
 
         Log.e("test1", "test1" + f.getClass().getSimpleName());
         //String test = f.getClass().getSimpleName();

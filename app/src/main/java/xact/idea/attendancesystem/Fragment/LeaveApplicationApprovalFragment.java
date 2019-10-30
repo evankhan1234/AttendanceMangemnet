@@ -204,7 +204,7 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     }
     public int  leaveApplication(){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        Fragment f = new LeaveApplicationFragment();
+        Fragment f = new LeaveFragment();
 
         Log.e("test1", "test1" + f.getClass().getSimpleName());
         //String test = f.getClass().getSimpleName();

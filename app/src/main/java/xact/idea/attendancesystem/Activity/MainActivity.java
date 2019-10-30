@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import xact.idea.attendancesystem.Fragment.LeaveApplicationFragment;
 import xact.idea.attendancesystem.Fragment.LeaveFragment;
 import xact.idea.attendancesystem.Fragment.MoreFragment;
 import xact.idea.attendancesystem.Fragment.ProfileDetailsFragment;
+import xact.idea.attendancesystem.Fragment.PunchFragment;
 import xact.idea.attendancesystem.Fragment.PunchInFragment;
 import xact.idea.attendancesystem.Fragment.SetUpFragment;
 import xact.idea.attendancesystem.Fragment.UserActivityFragment;
@@ -46,13 +48,16 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatImageView btn_footer_setUp;
     private AppCompatImageView btn_footer_user_activity;
     private AppCompatImageView btn_footer_more;
+    private AppCompatImageView btn_footer_setup_user;
     private TextView tv_home_menu;
     private TextView tv_setup_menu;
     private TextView tv_user_activity_menu;
     private TextView tv_more_menu;
+    private TextView tv_user_setup_menus;
     private TextView title;
     public static final int HOME_BTN = 0;
     public static final int SET_UP_BTN = 1;
+    public static final int SET_UP_USER_BTN = 4;
     public static final int USER_BTN = 2;
     public static final int MORE_BTN = 3;
     private RelativeLayout rlt_header;
@@ -62,10 +67,16 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btn_header_back_;
     private ImageButton btn_header_application;
     private ImageButton btn_header_application_create;
+    private LinearLayout linear;
+    private RelativeLayout relative;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        linear=findViewById(R.id.linear);
+        btn_footer_setup_user=findViewById(R.id.btn_footer_setup_user);
+        tv_user_setup_menus=findViewById(R.id.tv_user_setup_menus);
+        relative=findViewById(R.id.relative);
         btn_header_application=findViewById(R.id.btn_header_application);
         btn_header_application_create=findViewById(R.id.btn_header_application_create);
         title=findViewById(R.id.title);
@@ -100,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                onLeaveApplicationCreate();
 
-                onLeaveApplication();
             }
         });
         btn_header_application_create.setOnClickListener(new View.OnClickListener() {
@@ -109,10 +120,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
            //     Toast.makeText(mContext, "dfdf", Toast.LENGTH_SHORT).show();
+                onLeaveApplication();
 
-               onLeaveApplicationCreate();
             }
         });
+        if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
+
+        }
+        else{
+            linear.setWeightSum(5f);
+            relative.setVisibility(View.VISIBLE);
+        }
+
     }
     @Override
     public void onBackPressed() {
@@ -167,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-            else if (f instanceof LeaveApplicationApprovalFragment){
-                int handle = ((LeaveApplicationApprovalFragment) f).handleBackPress();
+            else if (f instanceof LeaveFragment){
+                int handle = ((LeaveFragment) f).handleBackPress();
                 if (handle == 0) {
                     finish();
                 } else if (handle == 2) {
@@ -244,8 +263,8 @@ public class MainActivity extends AppCompatActivity {
         //card_view.setVisibility(View.GONE);
         view_header_details.setVisibility(View.VISIBLE);
         rlt_header_details.setVisibility(View.VISIBLE);
-        btn_header_application_create.setVisibility(View.GONE);
-        details_title.setText("Leave Approval");
+        btn_header_application_create.setVisibility(View.VISIBLE);
+        details_title.setText("Leave Summary");
 
     }
     public void hideHeaderDetailForLeave(String name) {
@@ -255,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
             //card_view.setVisibility(View.GONE);
             view_header_details.setVisibility(View.VISIBLE);
             rlt_header_details.setVisibility(View.VISIBLE);
-            details_title.setText("Leave Approval");
+            details_title.setText("Leave Summary");
             btn_header_application_create.setVisibility(View.VISIBLE);
         }
         else if (name.equals("Application")){
@@ -288,12 +307,14 @@ public class MainActivity extends AppCompatActivity {
         tv_setup_menu.setSelected(false);
         tv_user_activity_menu.setSelected(false);
         tv_more_menu.setSelected(false);
+        tv_user_setup_menus.setSelected(false);
 
 
         btn_footer_home.setSelected(false);
         btn_footer_setUp.setSelected(false);
         btn_footer_user_activity.setSelected(false);
         btn_footer_more.setSelected(false);
+        btn_footer_setup_user.setSelected(false);
 
     }
 
@@ -316,6 +337,10 @@ public class MainActivity extends AppCompatActivity {
                 tv_more_menu.setSelected(true);
                 btn_footer_more.setSelected(true);
                 break;
+            case 4:
+                tv_user_setup_menus.setSelected(true);
+                btn_footer_setup_user.setSelected(true);
+                break;
 
         }
 
@@ -333,9 +358,25 @@ public class MainActivity extends AppCompatActivity {
         rlt_header_details.setVisibility(View.GONE);
         view_header_details.setVisibility(View.GONE);
         btn_header_application.setVisibility(View.GONE);
+        btn_header_application_create.setVisibility(View.GONE);
         rlt_header.setVisibility(View.VISIBLE);
         title.setVisibility(View.VISIBLE);
 
+    }
+    public void btn_setup_user_clicked(View view) {
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = true;
+        setUpFooter(SET_UP_USER_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+        // checkToGetTicket(false);
+        title.setText("Status");
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        btn_header_application.setVisibility(View.GONE);
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        btn_header_application_create.setVisibility(View.GONE);
     }
 
     public void btn_setup_clicked(View view) {
@@ -363,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
         afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
         // checkToGetTicket(false);
         title.setText("User Activity");
+        btn_header_application_create.setVisibility(View.GONE);
+        btn_header_application.setVisibility(View.GONE);
     }
     public void btn_more_clicked(View view) {
 
@@ -374,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
         // checkToGetTicket(false);
         title.setText("More");
         btn_header_application.setVisibility(View.GONE);
+        btn_header_application_create.setVisibility(View.GONE);
     }
     public void onLeaveApplication(){
 
@@ -390,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
                     if (handle == 0) {
                         finish();
                     } else if (handle == 2) {
-                        hideHeaderDetailForLeave("Approval");
+                        hideHeaderDetailForLeave("Application");
                     }
                     else {
                         // do not hide header
@@ -427,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
                 if (handle == 0) {
                     finish();
                 } else if (handle == 2) {
-                    hideHeaderDetailForLeave("Application");
+                    hideHeaderDetailForLeave("Approval");
                 }
                 else {
                     // do not hide header
@@ -483,11 +527,12 @@ public class MainActivity extends AppCompatActivity {
                     newFrag = new DashboardFragment();
                 }
               else{
-                    newFrag = new HomeFragment();
+                    newFrag = new PunchFragment();
+
                 }
                 break;
             case Constant.FRAG_SET_UP:
-                newFrag = new LeaveFragment();
+                newFrag = new LeaveApplicationApprovalFragment();
 
                 //   newFrag = new AlertFragment();
                 //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
@@ -501,6 +546,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case Constant.FRAG_MORE:
                 newFrag = new MoreFragment();
+                // newFrag = new ChatCategoryFragment();
+                //setUpHeader(Constant.FRAG_CHAT);
+
+                break;
+            case Constant.FRAG_SET_UP_USER:
+                newFrag = new HomeFragment();
                 // newFrag = new ChatCategoryFragment();
                 //setUpHeader(Constant.FRAG_CHAT);
 
