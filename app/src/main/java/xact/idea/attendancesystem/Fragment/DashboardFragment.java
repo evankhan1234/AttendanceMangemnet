@@ -10,9 +10,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.RadioButton;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -57,8 +62,11 @@ public class DashboardFragment extends Fragment {
     List<Integer> ydataAttendance = new ArrayList<>();
     private String[] xdata = {"Present", "Absent","Leave"};
     private String[] xdataAttendance = {"On-Time","Late"};
+    EditText edit_content;
     PieChart pieChart;
     PieChart pieAttendanceStatus;
+    RadioButton radioPresent;
+    HorizontalScrollView scr_category_present;
     IRetrofitApi mService;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     private RecyclerView rcl_this_unit_list;
@@ -84,6 +92,9 @@ public class DashboardFragment extends Fragment {
 
     private void initView() {
 
+        edit_content = view.findViewById(R.id.edit_content);
+        radioPresent = view.findViewById(R.id.radioPresent);
+        scr_category_present = view.findViewById(R.id.scr_category_present);
         rcl_approval_in_list = view.findViewById(R.id.rcl_approval_in_list);
         rcl_this_unit_list = view.findViewById(R.id.rcl_this_unit_list);
         rcl_this_department_list = view.findViewById(R.id.rcl_this_department_list);
@@ -136,6 +147,29 @@ public class DashboardFragment extends Fragment {
         l1.setYEntrySpace(5);
         l1.setForm(Legend.LegendForm.CIRCLE);
         l1.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+
+        radioPresent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scr_category_present.setVisibility(View.VISIBLE);
+            }
+        });
+        edit_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mAdapters.getFilter().filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
     private void addDataSet() {
 
@@ -150,10 +184,10 @@ public class DashboardFragment extends Fragment {
 
             XEntry.add(xdata[j]);
         }
-        PieDataSet pie = new PieDataSet(YEntry, "Employee");
+        PieDataSet pie = new PieDataSet(YEntry, "");
         pie.setSliceSpace(3);
         pie.setSelectionShift(5);
-        pie.setValueTextSize(45);
+        pie.setValueTextSize(35);
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(Color.parseColor("#21a839"));
         colors.add(Color.RED);
@@ -166,9 +200,14 @@ public class DashboardFragment extends Fragment {
         legend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
         legend.setTextSize(13);
         pie.setValueFormatter(new MyValueFormatter());
-        PieData pieData = new PieData(xdata, pie);
-        pieData.setValueTextSize(13f);
-        pieData.setValueTextColor(Color.WHITE);
+        PieData pieData = null;
+        try {
+            pieData = new PieData(xdata, pie);
+            pieData.setValueTextSize(10f);
+            pieData.setValueTextColor(Color.WHITE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         pieChart.setData(pieData);
         pieChart.invalidate();
@@ -236,7 +275,7 @@ public class DashboardFragment extends Fragment {
 
             XEntry.add(xdataAttendance[j]);
         }
-        PieDataSet pie = new PieDataSet(YEntry, "Attendance");
+        PieDataSet pie = new PieDataSet(YEntry, "");
         pie.setSliceSpace(3);
         pie.setSelectionShift(5);
         pie.setValueTextSize(45);
@@ -252,9 +291,14 @@ public class DashboardFragment extends Fragment {
         legend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
         legend.setTextSize(13);
         pie.setValueFormatter(new MyValueFormatter());
-        PieData pieData = new PieData(xdataAttendance, pie);
-        pieData.setValueTextSize(13f);
-        pieData.setValueTextColor(Color.WHITE);
+        PieData pieData = null;
+        try {
+            pieData = new PieData(xdataAttendance, pie);
+            pieData.setValueTextSize(10f);
+            pieData.setValueTextColor(Color.WHITE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         pieAttendanceStatus.setData(pieData);
         pieAttendanceStatus.invalidate();
