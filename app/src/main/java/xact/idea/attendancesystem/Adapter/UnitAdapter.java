@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
+import xact.idea.attendancesystem.Interface.UnitClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
@@ -20,12 +22,14 @@ public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitListiewHol
 
 
     private Activity mActivity = null;
-    private List<UnitListEntity> messageEntities;
+    private List<Unit> messageEntities;
     int row_index=-1;
-    public UnitAdapter(Activity activity, List<UnitListEntity> messageEntitie) {
+    UnitClickInterface unitClickInterface;
+    public UnitAdapter(Activity activity, List<Unit> messageEntitie,UnitClickInterface unitClickInterfaces) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
+        unitClickInterface=unitClickInterfaces;
     }
 
 
@@ -49,6 +53,7 @@ public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitListiewHol
             public void onClick(View view) {
                 row_index=position;
                 notifyDataSetChanged();
+                unitClickInterface.onItemClick(messageEntities.get(position).Id);
 
             }
         });

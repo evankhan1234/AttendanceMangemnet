@@ -33,7 +33,13 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
+import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
+import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
+import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
+import xact.idea.attendancesystem.Database.Local.MainDatabase;
+import xact.idea.attendancesystem.Database.Local.UnitDataSource;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.DLog;
@@ -66,8 +72,14 @@ public class LoginActivity extends AppCompatActivity {
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
         InitView();
         initLoading();
+        initDB();
     }
+    private void initDB() {
+        Common.mainDatabase = MainDatabase.getInstance(this);
+        Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
+        Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
 
+    }
     private void InitView() {
         btn_show_password=findViewById(R.id.btn_show_password);
         input_password=findViewById(R.id.input_password);
