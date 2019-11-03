@@ -38,10 +38,14 @@ import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.DepartmentAdapter;
 import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
+import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Interface.ClickInterface;
+import xact.idea.attendancesystem.Interface.DepartmentClickInterface;
+import xact.idea.attendancesystem.Interface.UnitClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
@@ -78,7 +82,9 @@ public class SetUpFragment extends Fragment {
     IRetrofitApi mService;
     ArrayList<UserListEntity> userListEntities = new ArrayList<>();
     List<DepartmentListEntity> departmentListEntityList  = new ArrayList<>();;
+    List<Department> departmentListEntityLists  = new ArrayList<>();;
     List<UnitListEntity> unitListEntityList  = new ArrayList<>();
+    List<Unit> unitListEntityLists  = new ArrayList<>();
     ArrayAdapter<UnitListEntity> unitListEntityArrayAdapter;
     ArrayAdapter<DepartmentListEntity> departmentListEntityArrayAdapter;
     Spinner spinnerDepartments;
@@ -210,6 +216,26 @@ public class SetUpFragment extends Fragment {
 
         }
     };
+    private DepartmentClickInterface mClickDepartment = new DepartmentClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+
+            Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
+            loadData();
+
+
+        }
+    };
+    private UnitClickInterface mClickUnit = new UnitClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+
+            Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
+            loadData();
+
+
+        }
+    };
 
     private void loadData() {
         showLoadingProgress(mActivity);
@@ -233,7 +259,7 @@ public class SetUpFragment extends Fragment {
             @Override
             public void accept(ArrayList<UnitListEntity> carts) throws Exception {
                 unitListEntityList=carts;
-                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityList);
+                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityLists,mClickUnit);
 
                 rcl_this_unit_list.setAdapter(mUnitAdapter);
                 dismissLoadingProgress();
@@ -253,7 +279,7 @@ public class SetUpFragment extends Fragment {
 //                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
 //                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
-                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityList);
+                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityLists,mClickDepartment);
 
                 rcl_this_department_list.setAdapter(mDepartmentAdapter);
                 dismissLoadingProgress();

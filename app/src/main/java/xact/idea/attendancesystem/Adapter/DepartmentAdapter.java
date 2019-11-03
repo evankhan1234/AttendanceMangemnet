@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Interface.ClickInterface;
+import xact.idea.attendancesystem.Interface.DepartmentClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
@@ -19,13 +22,14 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
 
 
     private Activity mActivity = null;
-    private List<DepartmentListEntity> messageEntities;
+    private List<Department> messageEntities;
     int row_index = -1;
-
-    public DepartmentAdapter(Activity activity, List<DepartmentListEntity> messageEntitie) {
+    DepartmentClickInterface clickInterface;
+    public DepartmentAdapter(Activity activity, List<Department> messageEntitie, DepartmentClickInterface  clickInterfaces) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
+        clickInterface=clickInterfaces;
     }
 
 
@@ -49,6 +53,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
             public void onClick(View view) {
                 row_index = position;
                 notifyDataSetChanged();
+                clickInterface.onItemClick( messageEntities.get(position).Id);
                 //holder.btn_department.setPadding(20,0,20,0);
             }
         });

@@ -1,15 +1,8 @@
 package xact.idea.attendancesystem.Fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,15 +12,17 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ValueFormatter;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +31,16 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Adapter.DepartmentAdapter;
-import xact.idea.attendancesystem.Adapter.PunchInAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
 import xact.idea.attendancesystem.Adapter.UnitAdapter;
-import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
+import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
+import xact.idea.attendancesystem.Interface.DepartmentClickInterface;
+import xact.idea.attendancesystem.Interface.UnitClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
@@ -66,6 +63,9 @@ public class DashboardFragment extends Fragment {
     PieChart pieChart;
     PieChart pieAttendanceStatus;
     RadioButton radioPresent;
+    RadioButton radioAbsent;
+    RadioButton radioleave;
+    RadioButton radioAll;
     HorizontalScrollView scr_category_present;
     IRetrofitApi mService;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -77,6 +77,8 @@ public class DashboardFragment extends Fragment {
     private DepartmentAdapter mDepartmentAdapter = null;
     List<DepartmentListEntity> departmentListEntityList  = new ArrayList<>();;
     List<UnitListEntity> unitListEntityList  = new ArrayList<>();
+    static int unitValue;
+    static int departmentValue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,6 +94,9 @@ public class DashboardFragment extends Fragment {
 
     private void initView() {
 
+        radioAll = view.findViewById(R.id.radioAll);
+        radioAbsent = view.findViewById(R.id.radioAbsent);
+        radioleave = view.findViewById(R.id.radioleave);
         edit_content = view.findViewById(R.id.edit_content);
         radioPresent = view.findViewById(R.id.radioPresent);
         scr_category_present = view.findViewById(R.id.scr_category_present);
@@ -154,6 +159,26 @@ public class DashboardFragment extends Fragment {
                 scr_category_present.setVisibility(View.VISIBLE);
             }
         });
+
+        radioAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scr_category_present.setVisibility(View.GONE);
+            }
+        });
+        radioAbsent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scr_category_present.setVisibility(View.GONE);
+            }
+        });
+        radioleave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scr_category_present.setVisibility(View.GONE);
+            }
+        });
+
         edit_content.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -171,6 +196,27 @@ public class DashboardFragment extends Fragment {
             }
         });
     }
+    private DepartmentClickInterface mClickDepartment = new DepartmentClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+            departmentValue=position;
+          //  Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
+//           Common.departmentRepository.emptyCart();
+//            DepartmentListData();
+            loadLeaveTotal();
+
+        }
+    };
+    private UnitClickInterface mClickUnit = new UnitClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+            unitValue=position;
+           // Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
+            loadLeaveTotal();
+
+
+        }
+    };
     private void addDataSet() {
 
         ArrayList<Entry> YEntry = new ArrayList<>();
@@ -215,52 +261,82 @@ public class DashboardFragment extends Fragment {
     }
     private void loadDataActivity() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
-            @Override
-            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
+        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(
+                new Consumer<ArrayList<UserActivityEntity>>() {
+                    @Override
+                    public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
 
-                mAdapters = new PunchInAdapterForAdmin(mActivity, carts);
+                        mAdapters = new PunchInAdapterForAdmin(mActivity, carts);
 
-                rcl_approval_in_list.setAdapter(mAdapters);
-                dismissLoadingProgress();
-            }
-        }));
+                        rcl_approval_in_list.setAdapter(mAdapters);
+                        dismissLoadingProgress();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissLoadingProgress();
+                    }
+                }));
 
 
     }
-    private void unitListData(){
 
-        showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
-            @Override
-            public void accept(ArrayList<UnitListEntity> carts) throws Exception {
-                unitListEntityList=carts;
-                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityList);
-
-                rcl_this_unit_list.setAdapter(mUnitAdapter);
-                dismissLoadingProgress();
-
-//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-            }
-        }));
-    }
     private void DepartmentListData(){
-        showLoadingProgress(mActivity);
+
         compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
             @Override
             public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
-                departmentListEntityList=carts;
-//                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
-//                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
-                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityList);
+               // departmentListEntityList=carts;
+                Department department = new Department();
+                for (DepartmentListEntity departmentListEntity:carts){
+                    department.Id=departmentListEntity.Id;
+                    department.DepartmentName=departmentListEntity.DepartmentName;
+                    department.UnitId=departmentListEntity.UnitId;
+                    Common.departmentRepository.insertToDepartment(department);
+                }
 
-                rcl_this_department_list.setAdapter(mDepartmentAdapter);
-                dismissLoadingProgress();
             }
         }));
+
+    }
+    private void loadUnitItems() {
+
+        compositeDisposable.add(Common.unitRepository.getUnitItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {
+            @Override
+            public void accept(List<Unit> units) throws Exception {
+                displayUnitItems(units);
+            }
+        }));
+
+    }
+
+
+    private void displayUnitItems(List<Unit> units) {
+        showLoadingProgress(mActivity);
+        mUnitAdapter = new UnitAdapter(mActivity, units,mClickUnit);
+
+        rcl_this_unit_list.setAdapter(mUnitAdapter);
+        dismissLoadingProgress();
+
+    }
+    private void loadDepartmentItems() {
+
+        compositeDisposable.add(Common.departmentRepository.getCartItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Department>>() {
+            @Override
+            public void accept(List<Department> departments) throws Exception {
+                displayDepartmentItems(departments);
+            }
+        }));
+
+    }
+
+
+    private void displayDepartmentItems(List<Department> departments) {
+        showLoadingProgress(mActivity);
+        mDepartmentAdapter = new DepartmentAdapter(mActivity, departments,mClickDepartment);
+
+        rcl_this_department_list.setAdapter(mDepartmentAdapter);
+        dismissLoadingProgress();
     }
     private void addDataSetAttendance() {
 
@@ -312,34 +388,42 @@ public class DashboardFragment extends Fragment {
             return "" + ((int) value);
         }
     }
+
     @Override
     public void onResume() {
         super.onResume();
         loadLeaveTotal();
-        unitListData();
-        DepartmentListData();
+      loadUnitItems();
+        //DepartmentListData();
         loadDataActivity();
+        loadDepartmentItems();
     }
 
     private void loadLeaveTotal() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getTotalLeave().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserTotalLeaveEntity>() {
-            @Override
-            public void accept(UserTotalLeaveEntity carts) throws Exception {
-                ydata.add(Integer.valueOf(carts.Total));
-                ydata.add(Integer.valueOf(carts.Sick));
-                ydata.add(Integer.valueOf(carts.Casual));
-                ydataAttendance.add(Integer.valueOf(carts.Casual));
-                ydataAttendance.add(Integer.valueOf(carts.Total));
+        compositeDisposable.add(mService.getTotalLeave().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(
+                new Consumer<UserTotalLeaveEntity>() {
+                    @Override
+                    public void accept(UserTotalLeaveEntity carts) {
+                        ydata.add(Integer.valueOf(carts.Total));
+                        ydata.add(Integer.valueOf(carts.Sick));
+                        ydata.add(Integer.valueOf(carts.Casual));
+                        ydataAttendance.add(Integer.valueOf(carts.Casual));
+                        ydataAttendance.add(Integer.valueOf(carts.Total));
 
 
 //                text_sick_leave.setText(String.valueOf(carts.Sick));
 //                text_casual_leave.setText(String.valueOf(carts.Casual));
-                addDataSet();
-                addDataSetAttendance();
-                dismissLoadingProgress();
-            }
-        }));
+                        addDataSet();
+                        addDataSetAttendance();
+                        dismissLoadingProgress();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissLoadingProgress();
+                    }
+                }));
 
 
     }

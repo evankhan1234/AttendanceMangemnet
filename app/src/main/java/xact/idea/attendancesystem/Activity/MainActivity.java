@@ -17,9 +17,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
+import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
+import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
+import xact.idea.attendancesystem.Database.Local.MainDatabase;
+import xact.idea.attendancesystem.Database.Local.UnitDataSource;
+import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.DashboardFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
@@ -33,10 +47,15 @@ import xact.idea.attendancesystem.Fragment.PunchInFragment;
 import xact.idea.attendancesystem.Fragment.SetUpFragment;
 import xact.idea.attendancesystem.Fragment.UserActivityFragment;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
+import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
+
+import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
+import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = getClass().getSimpleName();
@@ -69,11 +88,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btn_header_application_create;
     private LinearLayout linear;
     private RelativeLayout relative;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    IRetrofitApi mService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         linear=findViewById(R.id.linear);
+        mService=Common.getApi();
         btn_footer_setup_user=findViewById(R.id.btn_footer_setup_user);
         tv_user_setup_menus=findViewById(R.id.tv_user_setup_menus);
         relative=findViewById(R.id.relative);
@@ -133,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     public void onBackPressed() {
           super.onBackPressed();
@@ -141,6 +164,63 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initDB();
+        DepartmentData();
+        unitListData();
+    }
+    private void initDB() {
+        Common.mainDatabase = MainDatabase.getInstance(this);
+        Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
+        Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
+
+    }
+    private void DepartmentData(){
+
+        showLoadingProgress(this);
+        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
+            @Override
+            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
+                // departmentListEntityList=carts;
+                Department department = new Department();
+
+                for (DepartmentListEntity departmentListEntity:carts){
+                    department.Id=departmentListEntity.Id;
+                    department.DepartmentName=departmentListEntity.DepartmentName;
+                    department.UnitId=departmentListEntity.UnitId;
+                    Common.departmentRepository.insertToDepartment(department);
+                }
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+            }
+        }));
+
+
+    }
+    private void unitListData(){
+        showLoadingProgress(this);
+
+        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
+            @Override
+            public void accept(ArrayList<UnitListEntity> unitListEntities) throws Exception {
+                Unit unit = new Unit();
+                for (UnitListEntity unitListEntity:unitListEntities){
+                    unit.Id=unitListEntity.Id;
+                    unit.UnitName=unitListEntity.UnitName;
+                    Common.unitRepository.insertToUnit(unit);
+                }
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+
+//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+            }
+
+        }));
+    }
     private void onBackForPunch(){
         Fragment f = getVisibleFragment();
         Log.e("frag","frag"+f);
