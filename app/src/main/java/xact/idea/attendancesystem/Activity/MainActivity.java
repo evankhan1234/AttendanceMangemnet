@@ -25,14 +25,26 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Adapter.LeaveSummaryListAdapter;
 import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
+import xact.idea.attendancesystem.Database.DataSources.EntityLeaveRepository;
+import xact.idea.attendancesystem.Database.DataSources.ILeaveSummaryDataSource;
+import xact.idea.attendancesystem.Database.DataSources.LeaveSummaryRepository;
+import xact.idea.attendancesystem.Database.DataSources.RemainingLeaveRepository;
 import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
 import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
+import xact.idea.attendancesystem.Database.Local.EntityLeaveDataSource;
+import xact.idea.attendancesystem.Database.Local.LeaveSummaryDataSource;
 import xact.idea.attendancesystem.Database.Local.MainDatabase;
+import xact.idea.attendancesystem.Database.Local.RemainingLeaveDataSource;
 import xact.idea.attendancesystem.Database.Local.UnitDataSource;
 import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.EntityLeave;
+import xact.idea.attendancesystem.Database.Model.LeaveSummary;
+import xact.idea.attendancesystem.Database.Model.RemainingLeave;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.DashboardFragment;
@@ -168,13 +180,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         initDB();
-        DepartmentData();
-        unitListData();
+        if (Common.unitRepository.size()>0){
+            //loadUnitItems();
+        }
+        else {
+            DepartmentData();
+            unitListData();
+            load();
+        }
+
     }
     private void initDB() {
         Common.mainDatabase = MainDatabase.getInstance(this);
         Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
         Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
+        Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
+        Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
+        Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
 
     }
     private void DepartmentData(){
@@ -220,6 +242,45 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }));
+    }
+
+
+    private void load() {
+        showLoadingProgress(this);
+        compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
+            @Override
+            public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
+                LeaveSummary leaveSummary = new LeaveSummary();
+                EntityLeave entityLeave = new EntityLeave();
+                RemainingLeave remainingLeave = new RemainingLeave();
+                for (LeaveSummaryEntity leaveSummaryEntity : carts) {
+                    leaveSummary.FullName = leaveSummaryEntity.FullName;
+                    leaveSummary.UserIcon = leaveSummaryEntity.UserIcon;
+                    leaveSummary.UserId = leaveSummaryEntity.UserId;
+                    entityLeave.Casual = leaveSummaryEntity.entityLeaves.Casual;
+                    entityLeave.Halfday = leaveSummaryEntity.entityLeaves.Halfday;
+                    entityLeave.Sick = leaveSummaryEntity.entityLeaves.Sick;
+                    entityLeave.UnPaid = leaveSummaryEntity.entityLeaves.UnPaid;
+                    remainingLeave.Casual = leaveSummaryEntity.remainingLeaves.Casual;
+                    remainingLeave.Sick = leaveSummaryEntity.remainingLeaves.Sick;
+
+                    Common.leaveSummaryRepository.insertToLeaveSummary(leaveSummary);
+                    Common.entityLeaveRepository.insertToEntityLeave(entityLeave);
+                    Common.remainingLeaveRepository.insertToRemainingLeave(remainingLeave);
+                }
+//                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
+//
+//                rcl_leave_summary_list.setAdapter(mAdapters);
+                dismissLoadingProgress();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                dismissLoadingProgress();
+            }
+        }));
+
+
     }
     private void onBackForPunch(){
         Fragment f = getVisibleFragment();

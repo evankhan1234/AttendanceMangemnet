@@ -15,6 +15,7 @@ public interface IUnitDataSource {
 
 
     void emptyCart();
+    int size();
 
 
     void insertToUnit(Unit... units);

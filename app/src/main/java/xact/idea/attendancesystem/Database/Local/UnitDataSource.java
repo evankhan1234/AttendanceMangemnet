@@ -38,6 +38,11 @@ public class UnitDataSource implements IUnitDataSource {
     }
 
     @Override
+    public int size() {
+        return UnitDao.value();
+    }
+
+    @Override
     public void insertToUnit(Unit... carts) {
 
         UnitDao.insertToUnit(carts);

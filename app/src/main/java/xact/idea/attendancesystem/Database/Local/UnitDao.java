@@ -25,6 +25,9 @@ public interface UnitDao {
     @Query("DELETE  FROM Unit")
     void emptyUnit();
 
+    @Query("Select Count(ids)  FROM Unit")
+    int value();
+
     @Insert
     void insertToUnit(Unit...Units);
 
