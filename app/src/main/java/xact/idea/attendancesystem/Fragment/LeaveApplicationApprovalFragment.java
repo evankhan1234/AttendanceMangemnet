@@ -150,25 +150,30 @@ public class LeaveApplicationApprovalFragment extends Fragment {
             @Override
             public void accept(ArrayList<LeaveApprovalListEntity> carts) throws Exception {
 
-                for (LeaveApprovalListEntity leaveApprovalListEntitys : carts){
+                for (LeaveApprovalListEntity leaveApprovalListEntitys : carts) {
 
-                    String test=leaveApprovalListEntitys.ApplicationDate;
-                    LeaveApprovalListEntity leaveApprovalListEntity= new LeaveApprovalListEntity();
-                    Log.e("test","test"+test);
-                    leaveApprovalListEntity.ApplicationDate=leaveApprovalListEntitys.ApplicationDate;
-                   // Toast.makeText(mActivity, leaveApprovalListEntity.ApplicationDate, Toast.LENGTH_SHORT).show();
-                    leaveApprovalListEntity.BackUp=leaveApprovalListEntitys.BackUp;
-                    leaveApprovalListEntity.FullName=leaveApprovalListEntitys.FullName;
-                    leaveApprovalListEntity.LeaveType=leaveApprovalListEntitys.LeaveType;
-                    leaveApprovalListEntity.UserIcon=leaveApprovalListEntitys.UserIcon;
-                    leaveApprovalListEntity.Reason=leaveApprovalListEntitys.Reason;
-                    leaveApprovalListEntity.Type=value;
+                    String test = leaveApprovalListEntitys.ApplicationDate;
+                    LeaveApprovalListEntity leaveApprovalListEntity = new LeaveApprovalListEntity();
+                    Log.e("test", "test" + test);
+                    leaveApprovalListEntity.ApplicationDate = leaveApprovalListEntitys.ApplicationDate;
+                    // Toast.makeText(mActivity, leaveApprovalListEntity.ApplicationDate, Toast.LENGTH_SHORT).show();
+                    leaveApprovalListEntity.BackUp = leaveApprovalListEntitys.BackUp;
+                    leaveApprovalListEntity.FullName = leaveApprovalListEntitys.FullName;
+                    leaveApprovalListEntity.LeaveType = leaveApprovalListEntitys.LeaveType;
+                    leaveApprovalListEntity.UserIcon = leaveApprovalListEntitys.UserIcon;
+                    leaveApprovalListEntity.Reason = leaveApprovalListEntitys.Reason;
+                    leaveApprovalListEntity.Type = value;
                     arrayList.add(leaveApprovalListEntity);
                 }
 
                 mAdapters = new LeaveApprovalAdapter(mActivity, arrayList);
 
                 rcl_approval_in_list.setAdapter(mAdapters);
+                dismissLoadingProgress();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
                 dismissLoadingProgress();
             }
         }));

@@ -16,7 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -25,7 +28,11 @@ import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Adapter.LeaveApprovalAdapter;
 import xact.idea.attendancesystem.Adapter.LeaveSummaryListAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Database.Model.EntityLeave;
+import xact.idea.attendancesystem.Database.Model.LeaveSummary;
+import xact.idea.attendancesystem.Database.Model.RemainingLeave;
 import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
+import xact.idea.attendancesystem.Entity.LeaveEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
 import xact.idea.attendancesystem.R;
@@ -49,6 +56,9 @@ public class LeaveFragment extends Fragment {
     TextView text_casual_leave;
     TextView text_sick_leave;
     TextView text_total_leave;
+    static List<LeaveSummary> leaveSummaries= new ArrayList<>();
+    static List<EntityLeave> entityLeaves= new ArrayList<>();
+  static   List<RemainingLeave> remainingLeaves= new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +75,8 @@ public class LeaveFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
-        load();
+        loadLeaveItems();
+
         loadLeaveTotal();
     }
 
@@ -86,18 +97,26 @@ public class LeaveFragment extends Fragment {
 //
 //        rcl_leave_summary_list.setAdapter(mAdapters);
     }
-    private void load() {
+    private void loadLeaveItems() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
+        compositeDisposable.add(Common.leaveSummaryRepository.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<LeaveEntity>>() {
             @Override
-            public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
-
-                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
-
-                rcl_leave_summary_list.setAdapter(mAdapters);
+            public void accept(List<LeaveEntity> units) throws Exception {
+                //displayUnitItems(units);
+               // leaveSummaries=units;
+                load(units);
+                Gson gson= new Gson();
+                Log.e("LeaveEntity","LeaveEntity"+gson.toJson(units));
                 dismissLoadingProgress();
             }
         }));
+
+
+    }
+    private void load(List<LeaveEntity> units) {
+        mAdapters = new LeaveSummaryListAdapter(mActivity, units);
+
+        rcl_leave_summary_list.setAdapter(mAdapters);
 
 
     }
@@ -110,6 +129,11 @@ public class LeaveFragment extends Fragment {
                 text_sick_leave.setText(String.valueOf(carts.Sick));
                 text_casual_leave.setText(String.valueOf(carts.Casual));
 
+                dismissLoadingProgress();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
                 dismissLoadingProgress();
             }
         }));

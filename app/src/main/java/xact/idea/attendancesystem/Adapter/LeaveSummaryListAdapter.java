@@ -18,6 +18,10 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import xact.idea.attendancesystem.Database.Model.EntityLeave;
+import xact.idea.attendancesystem.Database.Model.LeaveSummary;
+import xact.idea.attendancesystem.Database.Model.RemainingLeave;
+import xact.idea.attendancesystem.Entity.LeaveEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
@@ -27,11 +31,13 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
 
 
     private Activity mActivity = null;
-    private List<LeaveSummaryEntity> messageEntities;
+    private List<LeaveEntity> messageEntities;
+;
 
-    public LeaveSummaryListAdapter(Activity activity, List<LeaveSummaryEntity> messageEntitie) {
+    public LeaveSummaryListAdapter(Activity activity, List<LeaveEntity> messageEntitie) {
         mActivity = activity;
         messageEntities = messageEntitie;
+
         //mClick = mClicks;
     }
 
@@ -56,12 +62,12 @@ public class LeaveSummaryListAdapter extends RecyclerView.Adapter<LeaveSummaryLi
                     }
                 });
         holder.text_name.setText(messageEntities.get(position).FullName);
-        holder.text_half_day.setText(String.valueOf(messageEntities.get(position).entityLeaves.Halfday));
-        holder.text_casual.setText(String.valueOf(messageEntities.get(position).entityLeaves.Casual));
-        holder.text_sick.setText(String.valueOf(messageEntities.get(position).entityLeaves.Sick));
-        holder.text_unpaid.setText(String.valueOf(messageEntities.get(position).entityLeaves.UnPaid));
-        holder.text_remaining_casual.setText(String.valueOf(messageEntities.get(position).remainingLeaves.Casual));
-        holder.text_remaining_sick.setText(String.valueOf(messageEntities.get(position).remainingLeaves.Sick));
+        holder.text_half_day.setText(String.valueOf(messageEntities.get(position).Halfday));
+        holder.text_casual.setText(String.valueOf(messageEntities.get(position).Casual));
+        holder.text_sick.setText(String.valueOf(messageEntities.get(position).Sick));
+        holder.text_unpaid.setText(String.valueOf(messageEntities.get(position).UnPaid));
+        holder.text_remaining_casual.setText(String.valueOf(messageEntities.get(position).Casual));
+        holder.text_remaining_sick.setText(String.valueOf(messageEntities.get(position).Sick));
 //        holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
 //        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
 //        holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);

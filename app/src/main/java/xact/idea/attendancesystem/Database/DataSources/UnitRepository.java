@@ -33,6 +33,11 @@ public class UnitRepository implements IUnitDataSource {
     }
 
     @Override
+    public int size() {
+        return iUnitDataSource.size();
+    }
+
+    @Override
     public void insertToUnit(Unit... units) {
         iUnitDataSource.insertToUnit(units);
     }
