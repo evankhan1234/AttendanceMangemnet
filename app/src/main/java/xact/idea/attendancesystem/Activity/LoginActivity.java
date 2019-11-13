@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -33,12 +34,20 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.http.Body;
 import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
 import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
 import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
 import xact.idea.attendancesystem.Database.Local.MainDatabase;
 import xact.idea.attendancesystem.Database.Local.UnitDataSource;
+import xact.idea.attendancesystem.Entity.LoginEntity;
+import xact.idea.attendancesystem.Entity.LoginPostEntity;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
@@ -62,12 +71,15 @@ public class LoginActivity extends AppCompatActivity {
     TextView text_signup;
     View mLoading = null;
     private Context mContext = null;
+    IRetrofitApi mService;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         mContext = this;
+        mService = Common.getApiXact();
         CorrectSizeUtil.getInstance(this).correctSize();
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
         InitView();
@@ -142,9 +154,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //input_password.setError("You need to enter a name");
                 if (verifyInput()) {
-                 //   doLogin("");
-                    SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
-                    goMainScreen();
+                 doLogin();
+
                 }
             }
         });
@@ -178,6 +189,46 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void doLogin(){
+        showLoadingProgress(this);
+        final String email = edt_email.getText().toString().trim();
+        final String password = edt_password.getText().toString();
+        LoginPostEntity loginPostEntity= new LoginPostEntity();
+        loginPostEntity.user_name=email;
+        loginPostEntity.user_pass=password;
+        compositeDisposable.add(mService.Login(loginPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<LoginEntity>() {
+            @Override
+            public void accept(LoginEntity loginEntity) throws Exception {
+                int code=loginEntity.status_code;
+
+                switch (code){
+                    case 200:
+                        SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
+                        goMainScreen();
+                        dismissLoadingProgress();
+                        break;
+                    case 203:
+                        Toast.makeText(mContext, loginEntity.message, Toast.LENGTH_SHORT).show();
+                        dismissLoadingProgress();
+                        break;
+//                        SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
+//                        goMainScreen();
+                }
+
+
+
+            }
+
+
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+
+                Log.e("Exception","Exception"+throwable.getMessage());
+            }
+        }));
+
+    }
 //    private void doLogin(final String token) {
 //        final String email = edt_email.getText().toString().trim();
 //        final String password = edt_password.getText().toString();

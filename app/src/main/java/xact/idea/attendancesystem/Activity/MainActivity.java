@@ -102,12 +102,14 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout relative;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
+    IRetrofitApi mServiceXact;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         linear=findViewById(R.id.linear);
         mService=Common.getApi();
+        mServiceXact=Common.getApiXact();
         btn_footer_setup_user=findViewById(R.id.btn_footer_setup_user);
         tv_user_setup_menus=findViewById(R.id.tv_user_setup_menus);
         relative=findViewById(R.id.relative);
@@ -202,18 +204,19 @@ public class MainActivity extends AppCompatActivity {
     private void DepartmentData(){
 
         showLoadingProgress(this);
-        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
+        compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
             @Override
-            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
+            public void accept(DepartmentListEntity carts) throws Exception {
                 // departmentListEntityList=carts;
                 Department department = new Department();
 
-                for (DepartmentListEntity departmentListEntity:carts){
+                for (DepartmentListEntity.Data departmentListEntity: carts.data){
                     department.Id=departmentListEntity.Id;
                     department.DepartmentName=departmentListEntity.DepartmentName;
                     department.UnitId=departmentListEntity.UnitId;
                     Common.departmentRepository.insertToDepartment(department);
                 }
+
                 dismissLoadingProgress();
                 //   progressBar.setVisibility(View.GONE);
             }
@@ -224,15 +227,18 @@ public class MainActivity extends AppCompatActivity {
     private void unitListData(){
         showLoadingProgress(this);
 
-        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
+        compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
             @Override
-            public void accept(ArrayList<UnitListEntity> unitListEntities) throws Exception {
+            public void accept(UnitListEntity unitListEntities) throws Exception {
                 Unit unit = new Unit();
-                for (UnitListEntity unitListEntity:unitListEntities){
-                    unit.Id=unitListEntity.Id;
-                    unit.UnitName=unitListEntity.UnitName;
+
+                for (UnitListEntity.Data unitList: unitListEntities.data){
+
+                    unit.Id=unitList.Id;
+                    unit.UnitName=unitList.UnitName;
                     Common.unitRepository.insertToUnit(unit);
                 }
+
                 dismissLoadingProgress();
                 //   progressBar.setVisibility(View.GONE);
 
@@ -664,7 +670,7 @@ public class MainActivity extends AppCompatActivity {
         // identify which fragment will be called
         switch (fragId) {
             case Constant.FRAG_HOME:
-                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
+                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("mozahid.hs@gmail.com")){
                     newFrag = new DashboardFragment();
                 }
               else{
