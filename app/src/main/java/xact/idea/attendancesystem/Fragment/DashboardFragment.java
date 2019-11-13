@@ -281,24 +281,24 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private void DepartmentListData(){
-
-        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
-            @Override
-            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
-               // departmentListEntityList=carts;
-                Department department = new Department();
-                for (DepartmentListEntity departmentListEntity:carts){
-                    department.Id=departmentListEntity.Id;
-                    department.DepartmentName=departmentListEntity.DepartmentName;
-                    department.UnitId=departmentListEntity.UnitId;
-                    Common.departmentRepository.insertToDepartment(department);
-                }
-
-            }
-        }));
-
-    }
+//    private void DepartmentListData(){
+//
+//        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
+//            @Override
+//            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
+//               // departmentListEntityList=carts;
+//                Department department = new Department();
+//                for (DepartmentListEntity departmentListEntity:carts){
+//                    department.Id=departmentListEntity.Id;
+//                    department.DepartmentName=departmentListEntity.DepartmentName;
+//                    department.UnitId=departmentListEntity.UnitId;
+//                    Common.departmentRepository.insertToDepartment(department);
+//                }
+//
+//            }
+//        }));
+//
+//    }
     private void loadUnitItems() {
 
         compositeDisposable.add(Common.unitRepository.getUnitItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {

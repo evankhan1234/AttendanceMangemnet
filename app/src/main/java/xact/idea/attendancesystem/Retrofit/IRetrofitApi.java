@@ -2,15 +2,21 @@ package xact.idea.attendancesystem.Retrofit;
 
 import java.util.ArrayList;
 
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Field;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
+import xact.idea.attendancesystem.Entity.LoginEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserDetailsEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
+import xact.idea.attendancesystem.Entity.LoginPostEntity;
 
 public interface IRetrofitApi {
     @GET("16jtsp")
@@ -24,13 +30,19 @@ public interface IRetrofitApi {
 
     @GET("eu7j3")
     io.reactivex.Observable<ArrayList<UserActivityEntity>> getUserActivity();
-    @GET("lr4y7")
-    io.reactivex.Observable<ArrayList<UnitListEntity>> getUnitList();
-    @GET("1620of")
-    io.reactivex.Observable<ArrayList<DepartmentListEntity>> getDepartmentList();
+
+    @POST("unit/unit_list.php")
+    io.reactivex.Observable<UnitListEntity> getUnitList();
+
+    @POST("department/department_list.php")
+    io.reactivex.Observable<DepartmentListEntity> getDepartmentList();
     @GET("1h2jdb")
     io.reactivex.Observable<UserDetailsEntity> getProfileDetails();
-//
+
+
+    @POST("auth/auth.php")
+    io.reactivex.Observable<LoginEntity> Login(@Body LoginPostEntity loginPostEntity);
+
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")
 //    io.reactivex.Observable<String> addNewCategory(@Field("name") String name, @Field("imgPath") String imgPath);

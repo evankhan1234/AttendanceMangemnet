@@ -190,8 +190,8 @@ public class SetUpFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadData();
-        unitListData();
-        DepartmentListData();
+//        unitListData();
+//        DepartmentListData();
     }
 
 
@@ -252,40 +252,40 @@ public class SetUpFragment extends Fragment {
 
 
     }
-    private void unitListData(){
-
-        showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
-            @Override
-            public void accept(ArrayList<UnitListEntity> carts) throws Exception {
-                unitListEntityList=carts;
-                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityLists,mClickUnit);
-
-                rcl_this_unit_list.setAdapter(mUnitAdapter);
-                dismissLoadingProgress();
-
-//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-            }
-        }));
-    }
-    private void DepartmentListData(){
-        showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
-            @Override
-            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
-                departmentListEntityList=carts;
-//                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
-//                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
-                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityLists,mClickDepartment);
-
-                rcl_this_department_list.setAdapter(mDepartmentAdapter);
-                dismissLoadingProgress();
-            }
-        }));
-    }
+//    private void unitListData(){
+//
+//        showLoadingProgress(mActivity);
+//        compositeDisposable.add(mService.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UnitListEntity>>() {
+//            @Override
+//            public void accept(ArrayList<UnitListEntity> carts) throws Exception {
+//                unitListEntityList=carts;
+//                mUnitAdapter = new UnitAdapter(mActivity, unitListEntityLists,mClickUnit);
+//
+//                rcl_this_unit_list.setAdapter(mUnitAdapter);
+//                dismissLoadingProgress();
+//
+////                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+////                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+//            }
+//        }));
+//    }
+//    private void DepartmentListData(){
+//        showLoadingProgress(mActivity);
+//        compositeDisposable.add(mService.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<DepartmentListEntity>>() {
+//            @Override
+//            public void accept(ArrayList<DepartmentListEntity> carts) throws Exception {
+//                departmentListEntityList=carts;
+////                departmentListEntityArrayAdapter = new ArrayAdapter<DepartmentListEntity>(getActivity(), android.R.layout.simple_spinner_item, departmentListEntityList);
+////                departmentListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                spinnerDepartments.setAdapter(departmentListEntityArrayAdapter);
+//                mDepartmentAdapter = new DepartmentAdapter(mActivity, departmentListEntityLists,mClickDepartment);
+//
+//                rcl_this_department_list.setAdapter(mDepartmentAdapter);
+//                dismissLoadingProgress();
+//            }
+//        }));
+//    }
     @Override
     public void onDestroy() {
         super.onDestroy();

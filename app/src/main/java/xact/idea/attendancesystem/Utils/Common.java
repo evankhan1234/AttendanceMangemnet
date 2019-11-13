@@ -17,9 +17,13 @@ public class Common {
     public static EntityLeaveRepository entityLeaveRepository;
     public static RemainingLeaveRepository remainingLeaveRepository;
     public static final String BASE_URL="https://api.myjson.com/bins/";
+    public static final String BASE_URL_XACT="http://emp.xactidea.com/mobile-app/api/";
     //   private static final String BASE_URL="http://192.168.1.244:8888/drinkshop/";
 
     public static IRetrofitApi getApi(){
         return RetrofitClient.getClient(BASE_URL).create(IRetrofitApi.class);
+    }
+    public static IRetrofitApi getApiXact(){
+        return RetrofitClient.getClient(BASE_URL_XACT).create(IRetrofitApi.class);
     }
 }
