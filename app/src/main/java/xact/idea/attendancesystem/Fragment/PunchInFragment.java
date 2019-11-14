@@ -12,25 +12,32 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
+import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.R;
@@ -51,31 +58,43 @@ public class PunchInFragment extends Fragment {
     PunchInAdapter mAdapters;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
-    EditText  edit_start_date;
-    EditText  edit_end_date;
+    EditText edit_start_date;
+    EditText edit_end_date;
     Button btn_yes;
+    String UserId;
+    String FullName;
+    String UnitName;
+    String OfficeExt;
+    String DepartmentName;
+    String Designation;
+
+    TextView text_name;
+    TextView text_unit;
+    TextView text_department;
+    TextView text_designation;
+    TextView text_office_text;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mRoot= inflater.inflate(R.layout.fragment_unity, container, false);
-        mActivity=getActivity();
-        correctSizeUtil= correctSizeUtil.getInstance(getActivity());
+        mRoot = inflater.inflate(R.layout.fragment_unity, container, false);
+        mActivity = getActivity();
+        correctSizeUtil = correctSizeUtil.getInstance(getActivity());
         correctSizeUtil.setWidthOriginal(1080);
         correctSizeUtil.correctSize(mRoot);
-        rcl_punch_in_list=mRoot.findViewById(R.id.rcl_punch_in_list);
+        rcl_punch_in_list = mRoot.findViewById(R.id.rcl_punch_in_list);
         LinearLayoutManager lm = new LinearLayoutManager(mActivity);
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         rcl_punch_in_list.setLayoutManager(lm);
 
         mService = Common.getApi();
-        for(int j = 0; j < 20; j++){
+        for (int j = 0; j < 20; j++) {
 
-            arrayList.add("House "+j);
+            arrayList.add("House " + j);
         }
 
 
-      //  mAdapters = new PunchInAdapter(mActivity, arrayList);
+        //  mAdapters = new PunchInAdapter(mActivity, arrayList);
 
         rcl_punch_in_list.setAdapter(mAdapters);
         return mRoot;
@@ -84,16 +103,31 @@ public class PunchInFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        //loadData();
         initView();
     }
 
     private void initView() {
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            UserId = bundle.getString("UserId", null);
+            FullName = bundle.getString("FullName", null);
+            UnitName = bundle.getString("UnitName", null);
+            OfficeExt = bundle.getString("OfficeExt", null);
+            DepartmentName = bundle.getString("DepartmentName", null);
+            Designation = bundle.getString("Designation", null);
+            Log.e("FullName", "FullName" + FullName);
+            Log.e("UserId", "UserId" + UserId);
+        }
+        text_name = mRoot.findViewById(R.id.text_name);
+        text_unit = mRoot.findViewById(R.id.text_unit);
+        text_department = mRoot.findViewById(R.id.text_department);
+        text_designation = mRoot.findViewById(R.id.text_designation);
+        text_office_text = mRoot.findViewById(R.id.text_office_text);
+        edit_start_date = mRoot.findViewById(R.id.edit_start_date);
 
-        edit_start_date =  mRoot.findViewById(R.id.edit_start_date);
-
-        edit_end_date =  mRoot.findViewById(R.id.edit_end_date);
-        btn_yes =  mRoot.findViewById(R.id.btn_yes);
+        edit_end_date = mRoot.findViewById(R.id.edit_end_date);
+        btn_yes = mRoot.findViewById(R.id.btn_yes);
         btn_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,10 +148,21 @@ public class PunchInFragment extends Fragment {
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
+        text_name.setText(FullName);
+        UnitName = UnitName != null ? UnitName : "N/A";
+        DepartmentName = DepartmentName != null ? DepartmentName : "N/A";
+        Designation = Designation != null ? Designation : "N/A";
+        OfficeExt = OfficeExt != null ? OfficeExt : "N/A";
+
+
+        text_unit.setText(UnitName);
+        text_department.setText(DepartmentName);
+        text_designation.setText(Designation);
+        text_office_text.setText(OfficeExt);
 
     }
-    public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
-    {
+
+    public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -173,19 +218,41 @@ public class PunchInFragment extends Fragment {
     }
     private void loadData() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
+        compositeDisposable.add(Common.userActivityRepository.getList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
-            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
-
-                mAdapters = new PunchInAdapter(mActivity, carts);
-
-                rcl_punch_in_list.setAdapter(mAdapters);
+            public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                displayUnitItems(userActivities);
                 dismissLoadingProgress();
             }
         }));
 
+    }
+
+
+    private void displayUnitItems(List<AttendanceEntity> userActivities) {
+        showLoadingProgress(mActivity);
+        mAdapters = new PunchInAdapter(mActivity, userActivities,"");
+
+        rcl_punch_in_list.setAdapter(mAdapters);
+        dismissLoadingProgress();
 
     }
+//    private void loadData() {
+//        showLoadingProgress(mActivity);
+//        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
+//            @Override
+//            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
+//
+//                mAdapters = new PunchInAdapter(mActivity, carts);
+//
+//                rcl_punch_in_list.setAdapter(mAdapters);
+//                dismissLoadingProgress();
+//            }
+//        }));
+//
+//
+//    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

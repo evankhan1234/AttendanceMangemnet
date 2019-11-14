@@ -31,7 +31,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -44,6 +48,8 @@ import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
 import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
 import xact.idea.attendancesystem.Database.Local.MainDatabase;
 import xact.idea.attendancesystem.Database.Local.UnitDataSource;
+import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.LoginEntity;
 import xact.idea.attendancesystem.Entity.LoginPostEntity;
 import xact.idea.attendancesystem.R;
@@ -196,38 +202,75 @@ public class LoginActivity extends AppCompatActivity {
         LoginPostEntity loginPostEntity= new LoginPostEntity();
         loginPostEntity.user_name=email;
         loginPostEntity.user_pass=password;
-        compositeDisposable.add(mService.Login(loginPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<LoginEntity>() {
-            @Override
-            public void accept(LoginEntity loginEntity) throws Exception {
-                int code=loginEntity.status_code;
 
-                switch (code){
-                    case 200:
-                        SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
-                        goMainScreen();
-                        dismissLoadingProgress();
-                        break;
-                    case 203:
-                        Toast.makeText(mContext, loginEntity.message, Toast.LENGTH_SHORT).show();
-                        dismissLoadingProgress();
-                        break;
+        String md5Password=getHashPassWordMD5(password);
+        UserList userList;
+         userList=Common.userListRepository.login(email,md5Password);
+        if (userList!=null){
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_ADMIN, String.valueOf(userList.AdminStatus) + "");
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.USER_ID, userList.UserId + "");
+            goMainScreen();
+            dismissLoadingProgress();
+        }
+        else {
+            Toast.makeText(mContext, "Username and Password Incorrect", Toast.LENGTH_SHORT).show();
+            dismissLoadingProgress();
+        }
+//        compositeDisposable.add(Common.userListRepository.login(email,password).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {
+//            @Override
+//            public void accept(List<Unit> units) throws Exception {
+//                displayUnitItems(units);
+//            }
+//        }));
+//        compositeDisposable.add(mService.Login(loginPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<LoginEntity>() {
+//            @Override
+//            public void accept(LoginEntity loginEntity) throws Exception {
+//                int code=loginEntity.status_code;
+//
+//                switch (code){
+//                    case 200:
 //                        SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
 //                        goMainScreen();
-                }
+//                        dismissLoadingProgress();
+//                        break;
+//                    case 203:
+//                        Toast.makeText(mContext, loginEntity.message, Toast.LENGTH_SHORT).show();
+//                        Log.e("pass","pass"+getHashPassWordMD5(password));
+//                        dismissLoadingProgress();
+//                        break;
+////                        SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
+////                        goMainScreen();
+//                }
+//
+//
+//
+//            }
+//
+//
+//        }, new Consumer<Throwable>() {
+//            @Override
+//            public void accept(Throwable throwable) throws Exception {
+//
+//                Log.e("Exception","Exception"+throwable.getMessage());
+//            }
+//        }));
 
+    }
+    private String getHashPassWordMD5(String password){
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        byte[] hashInBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
-
-            }
-
-
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-
-                Log.e("Exception","Exception"+throwable.getMessage());
-            }
-        }));
-
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashInBytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
     }
 //    private void doLogin(final String token) {
 //        final String email = edt_email.getText().toString().trim();

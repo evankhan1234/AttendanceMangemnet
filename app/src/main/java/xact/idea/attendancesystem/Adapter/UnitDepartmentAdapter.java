@@ -33,6 +33,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import xact.idea.attendancesystem.Activity.MainActivity;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.R;
@@ -42,10 +43,10 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
 
     private Activity mActivity = null;
-    private List<UserListEntity> messageEntities;
+    private List<UserList> messageEntities;
     ClickInterface  clickInterface;
 
-    public UnitDepartmentAdapter(Activity activity, List<UserListEntity> messageEntitie,ClickInterface  clickInterfaces) {
+    public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, ClickInterface  clickInterfaces) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
@@ -67,21 +68,58 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
         Log.e("SDFsf", "SDfs" + messageEntities.get(position));
 
-        Glide.with(mActivity).load(messageEntities.get(position).UserIcon).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        holder.user_icon.setImageDrawable(resource);
-                    }
-                });
+        if (messageEntities.get(position).ProfilePhoto!=null){
+            Glide.with(mActivity).load(messageEntities.get(position).ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            holder.user_icon.setImageDrawable(resource);
+                        }
+                    });
+        }else {
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            holder.user_icon.setImageDrawable(resource);
+                        }
+                    });
+        }
+
         holder.text_name.setText(messageEntities.get(position).FullName);
         holder.text_email.setText(messageEntities.get(position).Email);
-        holder.text_office_text.setText(messageEntities.get(position).OfficeExt);
-        holder.text_phone_number.setText(messageEntities.get(position).PhoneNumber);
+        if (messageEntities.get(position).OfficeExt!=null){
+            holder.text_office_text.setText("("+messageEntities.get(position).OfficeExt+")");
+        }
+        else {
 
-        holder.text_department.setText(messageEntities.get(position).Designation);
-        holder.text_unit.setText(messageEntities.get(position).UnitName);
-        holder.text_department.setText(messageEntities.get(position).DepartmentName);
+        }
+
+        holder.text_phone_number.setText(messageEntities.get(position).PersonalMobileNumber);
+
+        if (messageEntities.get(position).Designation!=null){
+            holder.text_department.setText(messageEntities.get(position).Designation);
+        }
+        else {
+            holder.text_department.setText("N/A");
+        }
+
+        if (messageEntities.get(position).UnitName!=null){
+            holder.text_unit.setText(messageEntities.get(position).UnitName);
+        }
+        else {
+            holder.text_unit.setText("N/A");
+        }
+
+        if (messageEntities.get(position).DepartmentName!=null){
+            holder.text_department.setText(messageEntities.get(position).DepartmentName);
+        }
+        else {
+            holder.text_department.setText("N/A");
+        }
+
+
+
 
         holder.img_email.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,14 +130,14 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         holder.img_sms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendSMS(messageEntities.get(position).PhoneNumber);
+                sendSMS(messageEntities.get(position).PersonalMobileNumber);
             }
         });
         holder.img_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:"+messageEntities.get(position).PhoneNumber));
+                intent.setData(Uri.parse("tel:"+messageEntities.get(position).PersonalMobileNumber));
                 mActivity. startActivity(intent);
             }
         });

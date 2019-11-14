@@ -28,7 +28,10 @@ public class DepartmentRepository implements IDepartmentDataSource {
     public Flowable<List<Department>> getCartItemById(int cartItemId) {
         return iDepartmentDataSource.getCartItemById(cartItemId);
     }
-
+    @Override
+    public int size() {
+        return iDepartmentDataSource.size();
+    }
 
     @Override
     public  Flowable<List<Department>> getCart(int favoriteid) {

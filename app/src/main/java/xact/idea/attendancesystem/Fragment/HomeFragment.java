@@ -41,6 +41,8 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
@@ -203,17 +205,27 @@ public class HomeFragment extends Fragment {
     }
     private void loadDataActivity() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
+        compositeDisposable.add(Common.userActivityRepository.getList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
-            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
-
-                mAdapters = new PunchInAdapter(mActivity, carts);
-
-                rcl_punch_in_list.setAdapter(mAdapters);
+            public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                displayUnitItems(userActivities);
                 dismissLoadingProgress();
             }
         }));
 
+
+    }
+
+
+
+
+
+    private void displayUnitItems(List<AttendanceEntity> userActivities) {
+        showLoadingProgress(mActivity);
+        mAdapters = new PunchInAdapter(mActivity, userActivities,"");
+
+        rcl_punch_in_list.setAdapter(mAdapters);
+        dismissLoadingProgress();
 
     }
     public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener

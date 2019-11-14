@@ -5,6 +5,8 @@ import xact.idea.attendancesystem.Database.DataSources.EntityLeaveRepository;
 import xact.idea.attendancesystem.Database.DataSources.LeaveSummaryRepository;
 import xact.idea.attendancesystem.Database.DataSources.RemainingLeaveRepository;
 import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
+import xact.idea.attendancesystem.Database.DataSources.UserActivityRepository;
+import xact.idea.attendancesystem.Database.DataSources.UserListRepository;
 import xact.idea.attendancesystem.Database.Local.MainDatabase;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Retrofit.RetrofitClient;
@@ -12,6 +14,8 @@ import xact.idea.attendancesystem.Retrofit.RetrofitClient;
 public class Common {
     public static MainDatabase mainDatabase;
     public static DepartmentRepository departmentRepository;
+    public static UserListRepository userListRepository;
+    public static UserActivityRepository userActivityRepository;
     public static UnitRepository unitRepository;
     public static LeaveSummaryRepository leaveSummaryRepository;
     public static EntityLeaveRepository entityLeaveRepository;
