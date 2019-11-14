@@ -40,6 +40,7 @@ import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
 import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
@@ -80,7 +81,7 @@ public class SetUpFragment extends Fragment {
     Button btn_2;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
-    ArrayList<UserListEntity> userListEntities = new ArrayList<>();
+    List<UserList> userListEntities = new ArrayList<>();
     List<DepartmentListEntity> departmentListEntityList  = new ArrayList<>();;
     List<Department> departmentListEntityLists  = new ArrayList<>();;
     List<UnitListEntity> unitListEntityList  = new ArrayList<>();
@@ -202,8 +203,12 @@ public class SetUpFragment extends Fragment {
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(PunchInFragment.class.getSimpleName(), userListEntities.get(position));
-          //  bundle.putInt("position",pos);
+             bundle.putString("UserId",userListEntities.get(position).UserId);
+             bundle.putString("FullName",userListEntities.get(position).FullName);
+             bundle.putString("OfficeExt",userListEntities.get(position).OfficeExt);
+             bundle.putString("UnitName",userListEntities.get(position).UnitName);
+             bundle.putString("DepartmentName",userListEntities.get(position).DepartmentName);
+             bundle.putString("Designation",userListEntities.get(position).Designation);
             Fragment f = new PunchInFragment();
             f.setArguments(bundle);
             transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
@@ -236,22 +241,42 @@ public class SetUpFragment extends Fragment {
 
         }
     };
-
     private void loadData() {
-        showLoadingProgress(mActivity);
-        compositeDisposable.add(mService.getUser().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserListEntity>>() {
-            @Override
-            public void accept(ArrayList<UserListEntity> carts) throws Exception {
-                userListEntities=carts;
-                mAdapters = new UnitDepartmentAdapter(mActivity, carts,mClick);
 
-                rcl_this_place_list.setAdapter(mAdapters);
-                dismissLoadingProgress();
+        compositeDisposable.add(Common.userListRepository.getUserListItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+            @Override
+            public void accept(List<UserList> userLists) throws Exception {
+                userListEntities=userLists;
+                displayUserList(userLists);
             }
         }));
 
+    }
+
+
+    private void displayUserList(List<UserList> userLists) {
+        showLoadingProgress(mActivity);
+        mAdapters = new UnitDepartmentAdapter(mActivity, userLists,mClick);
+
+        rcl_this_place_list.setAdapter(mAdapters);
+        dismissLoadingProgress();
 
     }
+//    private void loadData() {
+//        showLoadingProgress(mActivity);
+//        compositeDisposable.add(mService.getUser().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserListEntity>>() {
+//            @Override
+//            public void accept(ArrayList<UserListEntity> carts) throws Exception {
+//                userListEntities=carts;
+//                mAdapters = new UnitDepartmentAdapter(mActivity, carts,mClick);
+//
+//                rcl_this_place_list.setAdapter(mAdapters);
+//                dismissLoadingProgress();
+//            }
+//        }));
+//
+//
+//    }
 //    private void unitListData(){
 //
 //        showLoadingProgress(mActivity);

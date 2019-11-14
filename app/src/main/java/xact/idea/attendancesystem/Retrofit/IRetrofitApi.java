@@ -7,12 +7,15 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Field;
+import xact.idea.attendancesystem.Entity.AllUserListEntity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.LoginEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
+import xact.idea.attendancesystem.Entity.UserActivityListEntity;
+import xact.idea.attendancesystem.Entity.UserActivityPostEntity;
 import xact.idea.attendancesystem.Entity.UserDetailsEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
@@ -42,6 +45,10 @@ public interface IRetrofitApi {
 
     @POST("auth/auth.php")
     io.reactivex.Observable<LoginEntity> Login(@Body LoginPostEntity loginPostEntity);
+    @POST("user/user_list.php")
+    io.reactivex.Observable<AllUserListEntity> getUserList();
+    @POST("user/user_activity.php")
+    io.reactivex.Observable<UserActivityListEntity> getUserActivityList(@Body UserActivityPostEntity userActivityPostEntity);
 
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")

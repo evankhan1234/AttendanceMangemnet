@@ -19,7 +19,8 @@ public interface DepartmentDao {
     @Query("SELECT * FROM Department WHERE id=:DepartmentItemId")
     Flowable<List<Department>> getDepartmentItemById(int DepartmentItemId);
 
-
+    @Query("Select Count(ids)  FROM Department")
+    int value();
 
 
     @Query("DELETE  FROM Department")

@@ -43,7 +43,7 @@ public class LoadingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loading);
         progressBar=findViewById(R.id.progress_bar);
         mService=Common.getApi();
-        initDB();
+     //   initDB();
         new Handler().postDelayed(new Runnable() {
                         @Override
             public void run() {
@@ -55,12 +55,6 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
 
-    private void initDB() {
-        Common.mainDatabase = MainDatabase.getInstance(this);
-        Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
-        Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
-
-    }
 
     private void goToMainPage() {
 

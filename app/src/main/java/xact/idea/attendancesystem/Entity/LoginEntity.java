@@ -5,8 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class LoginEntity extends APIMessage {
     @SerializedName("data")
     public Data  data;
-    @SerializedName("message")
-    public String  message;
+
 
     public class Data {
         @SerializedName("id")

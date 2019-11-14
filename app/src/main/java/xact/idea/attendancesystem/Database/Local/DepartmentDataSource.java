@@ -42,6 +42,11 @@ public class DepartmentDataSource implements IDepartmentDataSource {
     }
 
     @Override
+    public int size() {
+        return DepartmentDao.value();
+    }
+
+    @Override
     public void insertToDepartment(Department... carts) {
 
         DepartmentDao.insertToDepartment(carts);

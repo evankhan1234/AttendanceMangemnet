@@ -11,8 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.siyamed.shapeimageview.CircularImageView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
@@ -21,12 +25,14 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
 
 
     private Activity mActivity = null;
-    private List<UserActivityEntity> messageEntities;
+    private List<AttendanceEntity> messageEntities;
+    private String names;
 
-    public PunchInAdapter(Activity activity, List<UserActivityEntity> messageEntitie) {
+    public PunchInAdapter(Activity activity, List<AttendanceEntity> messageEntitie,String name) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
+        names=name;
     }
 
 
@@ -43,12 +49,28 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
     public void onBindViewHolder(PunchInAdapter.PlaceTagListiewHolder holder, final int position) {
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        holder.text_date.setText(messageEntities.get(position).Date);
-        holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
-        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
-        holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);
-        holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
-        holder.text_duration.setText(messageEntities.get(position).Duration);
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(System.currentTimeMillis());
+        String currentDate=formatter.format(date);
+        if (names.equals("absent")||names.equals("leave")) {
+            holder.text_date.setText(messageEntities.get(position).FullName);
+            holder.text_punchIn_location.setText("N/A");
+            holder.text_punchIn_time.setText("N/A");
+            holder.text_punchOut_location.setText("N/A");
+            holder.text_punchOut_time.setText("N/A");
+            holder.text_duration.setText("N/A");
+
+
+
+        }else {
+            holder.text_date.setText(messageEntities.get(position).FullName);
+            holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
+            holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
+            holder.text_punchOut_location.setText(messageEntities.get(position).PunchInLocation);
+            holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
+            holder.text_duration.setText(messageEntities.get(position).Duration);
+        }
+
 
     }
 

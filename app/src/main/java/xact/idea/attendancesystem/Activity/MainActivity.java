@@ -32,20 +32,26 @@ import xact.idea.attendancesystem.Database.DataSources.ILeaveSummaryDataSource;
 import xact.idea.attendancesystem.Database.DataSources.LeaveSummaryRepository;
 import xact.idea.attendancesystem.Database.DataSources.RemainingLeaveRepository;
 import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
+import xact.idea.attendancesystem.Database.DataSources.UserActivityRepository;
 import xact.idea.attendancesystem.Database.Local.DepartmentDataSource;
 import xact.idea.attendancesystem.Database.Local.EntityLeaveDataSource;
 import xact.idea.attendancesystem.Database.Local.LeaveSummaryDataSource;
 import xact.idea.attendancesystem.Database.Local.MainDatabase;
 import xact.idea.attendancesystem.Database.Local.RemainingLeaveDataSource;
 import xact.idea.attendancesystem.Database.Local.UnitDataSource;
+import xact.idea.attendancesystem.Database.Local.UserActivityDataSource;
 import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.EntityLeave;
 import xact.idea.attendancesystem.Database.Model.LeaveSummary;
 import xact.idea.attendancesystem.Database.Model.RemainingLeave;
 import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
+import xact.idea.attendancesystem.Entity.LoginPostEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
+import xact.idea.attendancesystem.Entity.UserActivityListEntity;
+import xact.idea.attendancesystem.Entity.UserActivityPostEntity;
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.DashboardFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")){
+        if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("mozahid.hs@gmail.com")){
 
         }
         else{
@@ -182,14 +188,70 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         initDB();
-        if (Common.unitRepository.size()>0){
-            //loadUnitItems();
+
+        if (Common.userActivityRepository.size()>0){
+
         }
         else {
-            DepartmentData();
-            unitListData();
+//            DepartmentData();
+//            unitListData();
             load();
+            UserActivityData();
         }
+
+    }
+    private void UserActivityData(){
+
+        showLoadingProgress(this);
+        UserActivityPostEntity userActivityPostEntity= new UserActivityPostEntity();
+//        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")){
+//            userActivityPostEntity.user_id=SharedPreferenceUtil.getUser(MainActivity.this);
+//        }
+//        loginPostEntity.user_name=email;
+//        loginPostEntity.user_pass=password;
+        compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
+            @Override
+            public void accept(UserActivityListEntity carts) throws Exception {
+                // departmentListEntityList=carts;
+                UserActivity userActivity = new UserActivity();
+
+                for (UserActivityListEntity.Data userActivityListEntity: carts.data){
+                    userActivity.UserId=userActivityListEntity.UserId;
+                    userActivity.WorkingDate=userActivityListEntity.WorkingDate;
+                    userActivity.PunchInLocation=userActivityListEntity.PunchInLocation;
+
+                    String str = userActivityListEntity.PunchInTime;
+                    if (str==null || str.equals("")){
+                        userActivity.PunchInTime= 0.0;
+                    }else {
+                        String firstFourChars = "";     //substring containing first 4 characters
+
+
+                        firstFourChars = str.substring(0, 5);
+
+                        int index = 2;
+                        char ch = '.';
+
+                        StringBuilder string = new StringBuilder(firstFourChars);
+                        string.setCharAt(index, ch);
+                        userActivity.PunchInTime= Double.parseDouble(string.toString());
+
+                    }
+
+                   // userActivity.PunchInTime= Double.parseDouble(str);
+                    userActivity.PunchOutLocation=userActivityListEntity.PunchOutLocation;
+                    userActivity.PunchOutTime=userActivityListEntity.PunchOutTime;
+                    userActivity.Duration=userActivityListEntity.Duration;
+                    userActivity.PunchInTimeLate=userActivityListEntity.PunchInTime;
+                    Common.userActivityRepository.insertToUserActivity(userActivity);
+
+                }
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+            }
+        }));
+
 
     }
     private void initDB() {
@@ -199,55 +261,7 @@ public class MainActivity extends AppCompatActivity {
         Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
         Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
         Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
-
-    }
-    private void DepartmentData(){
-
-        showLoadingProgress(this);
-        compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
-            @Override
-            public void accept(DepartmentListEntity carts) throws Exception {
-                // departmentListEntityList=carts;
-                Department department = new Department();
-
-                for (DepartmentListEntity.Data departmentListEntity: carts.data){
-                    department.Id=departmentListEntity.Id;
-                    department.DepartmentName=departmentListEntity.DepartmentName;
-                    department.UnitId=departmentListEntity.UnitId;
-                    Common.departmentRepository.insertToDepartment(department);
-                }
-
-                dismissLoadingProgress();
-                //   progressBar.setVisibility(View.GONE);
-            }
-        }));
-
-
-    }
-    private void unitListData(){
-        showLoadingProgress(this);
-
-        compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
-            @Override
-            public void accept(UnitListEntity unitListEntities) throws Exception {
-                Unit unit = new Unit();
-
-                for (UnitListEntity.Data unitList: unitListEntities.data){
-
-                    unit.Id=unitList.Id;
-                    unit.UnitName=unitList.UnitName;
-                    Common.unitRepository.insertToUnit(unit);
-                }
-
-                dismissLoadingProgress();
-                //   progressBar.setVisibility(View.GONE);
-
-//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-            }
-
-        }));
+        Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
     }
 
 

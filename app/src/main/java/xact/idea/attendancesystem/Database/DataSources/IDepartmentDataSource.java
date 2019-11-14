@@ -15,6 +15,7 @@ public interface IDepartmentDataSource {
     Flowable<List<Department>> getCart(int favoriteid);
 
     void emptyCart();
+    int size();
 
 
     void insertToDepartment(Department... carts);
