@@ -3,15 +3,7 @@ package xact.idea.attendancesystem.Fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +12,17 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,14 +33,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import xact.idea.attendancesystem.Adapter.PunchInAdapter;
-import xact.idea.attendancesystem.Adapter.UnitAdapter;
-import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
-import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
-import xact.idea.attendancesystem.Entity.AttendanceEntity;
-import xact.idea.attendancesystem.Entity.UserActivityEntity;
-import xact.idea.attendancesystem.Entity.UserListEntity;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
@@ -55,7 +51,7 @@ public class PunchInFragment extends Fragment {
     private View mRoot;
     RecyclerView rcl_punch_in_list;
     ArrayList<String> arrayList = new ArrayList<>();
-    PunchInAdapter mAdapters;
+    PunchInAdapterForAdmin mAdapters;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
     EditText edit_start_date;
@@ -105,6 +101,7 @@ public class PunchInFragment extends Fragment {
         super.onResume();
         //loadData();
         initView();
+        Load();
     }
 
     private void initView() {
@@ -131,20 +128,31 @@ public class PunchInFragment extends Fragment {
         btn_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadData();
+                if (edit_start_date.getText().toString().matches("")) {
+                    Toast.makeText(mActivity, "You did not enter a Start Date", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (edit_end_date.getText().toString().matches("")){
+                    Toast.makeText(mActivity, "You did not enter a End Date", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    loadDataByDate();
+                }
+
+
             }
         });
         edit_start_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment dFragment = new HomeFragment.DatePickerFromFragment();
+                DialogFragment dFragment = new DatePickerFromFragment();
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
         edit_end_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment dFragment = new HomeFragment.DatePickerFromFragment.DatePickerToFragment();
+                DialogFragment dFragment = new DatePickerFromFragment.DatePickerToFragment();
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
@@ -171,7 +179,7 @@ public class PunchInFragment extends Fragment {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, year, month, day);
-            dpd.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
             return dpd;
         }
 
@@ -181,7 +189,7 @@ public class PunchInFragment extends Fragment {
             cal.setTimeInMillis(0);
             cal.set(year, month, day, 0, 0, 0);
             Date chosenDate = cal.getTime();
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = formatter.format(chosenDate);
             EditText startTime2 = (EditText) getActivity().findViewById(R.id.edit_start_date);
             startTime2.setText(formattedDate);
@@ -198,7 +206,7 @@ public class PunchInFragment extends Fragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, year, month, day);
-                dpd.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
                 return dpd;
             }
 
@@ -207,7 +215,7 @@ public class PunchInFragment extends Fragment {
                 cal.setTimeInMillis(0);
                 cal.set(year, month, day, 0, 0, 0);
                 Date chosenDate = cal.getTime();
-                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = formatter.format(chosenDate);
                 EditText endTime2 = (EditText) getActivity().findViewById(R.id.edit_end_date);
                 endTime2.setText(formattedDate);
@@ -216,22 +224,51 @@ public class PunchInFragment extends Fragment {
 
 
     }
-    private void loadData() {
+
+    private void  Load(){
         showLoadingProgress(mActivity);
-        compositeDisposable.add(Common.userActivityRepository.getList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(UserId)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
-            public void accept(List<AttendanceEntity> userActivities) throws Exception {
+            public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
+                Log.e("sss","sss"+new Gson().toJson(userActivities));
                 dismissLoadingProgress();
+            }
+        }));
+    }
+    private void loadDataByDate() {
+
+        String startDate=edit_start_date.getText().toString();
+        String endDate=edit_end_date.getText().toString();
+        Date date1 = null;
+        Date date2 = null;
+        try {
+             date1=new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+             date2=new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+          //    Log.e("sss","sss"+new Gson().toJson(userActivities));
+            }
+        }));
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,UserId).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+                displayUnitItems(userActivities);
+                Log.e("sss","sss"+new Gson().toJson(userActivities));
+
             }
         }));
 
     }
 
 
-    private void displayUnitItems(List<AttendanceEntity> userActivities) {
+    private void displayUnitItems(List<UserActivity> userActivities) {
         showLoadingProgress(mActivity);
-        mAdapters = new PunchInAdapter(mActivity, userActivities,"");
+        mAdapters = new PunchInAdapterForAdmin(mActivity, userActivities);
 
         rcl_punch_in_list.setAdapter(mAdapters);
         dismissLoadingProgress();

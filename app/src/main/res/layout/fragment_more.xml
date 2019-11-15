@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <RelativeLayout
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/relativelayoutPunch"
         android:layout_marginTop="50px"
         android:layout_marginRight="30px"
@@ -21,17 +21,17 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:drawableLeft="@drawable/about_us"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/about_us" />
+
+            android:layout_width="50px"
+            android:layout_height="50px"
+            android:src="@drawable/cloud_computing" />
 
         <TextView
             android:tag="40"
             android:textSize="40px"
             android:layout_marginTop="-5px"
             android:layout_marginLeft="80px"
-            android:text="Punch"
+            android:text="Sync All Data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <ImageView
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"/>
     </RelativeLayout>
     <View
-        android:visibility="gone"
+        android:visibility="visible"
 
         android:id="@+id/view_headers"
         android:layout_width="match_parent"

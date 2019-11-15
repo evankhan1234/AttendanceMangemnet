@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
 import xact.idea.attendancesystem.R;
@@ -22,9 +23,9 @@ public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterF
 
     CustomFilterPunchAdmin filter;
     private Activity mActivity = null;
-    public List<UserActivityEntity> messageEntities;
+    public List<UserActivity> messageEntities;
 
-    public PunchInAdapterForAdmin(Activity activity, List<UserActivityEntity> messageEntitie) {
+    public PunchInAdapterForAdmin(Activity activity, List<UserActivity> messageEntitie) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
@@ -44,9 +45,9 @@ public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterF
     public void onBindViewHolder(PunchInAdapterForAdmin.PlaceTagListiewHolder holder, final int position) {
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        holder.text_date.setText("Md. Sarawer Jahan Evan");
+        holder.text_date.setText(messageEntities.get(position).WorkingDate);
         holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
-        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTime);
+        holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
         holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);
         holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
         holder.text_duration.setText(messageEntities.get(position).Duration);

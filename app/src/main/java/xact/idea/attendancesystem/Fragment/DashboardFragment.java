@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -134,7 +135,8 @@ public class DashboardFragment extends Fragment {
 //            userActivity.PunchInTimeLate="09:40";
 //            Common.userActivityRepository.insertToUserActivity(userActivity);
 
-
+        //loAD();
+      //  Toast.makeText(mActivity, String.valueOf( Common.userActivityRepository.size()), Toast.LENGTH_SHORT).show();
         return view;
     }
 
@@ -324,6 +326,7 @@ public class DashboardFragment extends Fragment {
         pieChart.invalidate();
 
     }
+
     private void loadDataActivity(String value) {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
@@ -430,7 +433,7 @@ public class DashboardFragment extends Fragment {
                 addDataSet();
                 addDataSetAttendance();
             }
-        }, 100);
+        }, 3000);
 
     }
 

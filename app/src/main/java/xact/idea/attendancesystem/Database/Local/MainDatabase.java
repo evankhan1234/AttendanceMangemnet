@@ -9,8 +9,10 @@ import androidx.room.InvalidationTracker;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
+import xact.idea.attendancesystem.Database.DataSources.Converters;
 import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.EntityLeave;
 import xact.idea.attendancesystem.Database.Model.LeaveSummary;
@@ -20,6 +22,7 @@ import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Database.Model.UserList;
 
 @Database(entities = {Department.class, Unit.class, LeaveSummary.class, EntityLeave.class, RemainingLeave.class, UserList.class, UserActivity.class},version = 2)
+@TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
 
    public abstract DepartmentDao departmentDao();

@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -18,8 +19,11 @@ public interface UserActivityDao {
     @Query("SELECT * FROM UserActivity")
     Flowable<List<UserActivity>> getUserActivityItems();
 
-    @Query("SELECT * FROM UserActivity WHERE ids=:UserActivityItemId")
+
+    @Query("SELECT * FROM UserActivity WHERE UserId=:UserActivityItemId")
     Flowable<List<UserActivity>> getUserActivityItemById(int UserActivityItemId);
+    @Query("SELECT * FROM UserActivity WHERE Date BETWEEN :from AND :to AND UserId=:UserId")
+    Flowable<List<UserActivity>> getUserActivityItemByDate(Date from,Date to,String UserId);
 
 
     @Query("Select *  FROM UserActivity")
@@ -28,6 +32,8 @@ public interface UserActivityDao {
 
     @Query("DELETE  FROM UserActivity")
     void emptyUserActivity();
+    @Query("DELETE FROM UserActivity WHERE Date BETWEEN :from AND :to")
+    void emptyUserActivityDateWise(Date from,Date to);
 
     @Insert
     void insertToUserActivity(UserActivity...UserActivitys);

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="0px">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="759px"
+        android:layout_marginLeft="72px"
+        android:layout_marginTop="524px"
+        android:layout_marginRight="69px"
+        android:alpha="1.5"
+        android:background="@drawable/dialog_rounded_bg"
+
+        android:orientation="vertical"
+        android:padding="40px">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10px">
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="match_parent"
+                android:layout_height="80px"
+                android:layout_marginLeft="0px"
+                android:layout_marginTop="46px"
+                android:layout_marginRight="0px"
+                android:gravity="center"
+                android:tag="52"
+
+                android:text="Sync Now "
+                android:textColor="@color/gray_black"
+                android:textSize="52px" />
+        </RelativeLayout>
+
+        <EditText
+
+            android:layout_marginTop="20px"
+            android:layout_marginLeft="70px"
+
+            android:drawableLeft="@drawable/calendar"
+            android:focusable="false"
+            android:drawablePadding="25px"
+            android:id="@+id/edit_date_from"
+
+            android:layout_width="match_parent"
+            android:layout_height="130px"
+            android:background="@drawable/edit_border_background"
+            android:inputType="text|textNoSuggestions"
+            android:textColor="#6A6B6B"
+            android:hint="Date From"
+
+            android:paddingLeft="40px"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:textColorHint="#4D6A6B6B" />
+        <EditText
+
+            android:layout_marginTop="20px"
+            android:layout_marginLeft="70px"
+
+            android:drawableLeft="@drawable/calendar"
+            android:focusable="false"
+            android:drawablePadding="25px"
+            android:id="@+id/edit_date_to"
+
+            android:layout_width="match_parent"
+            android:layout_height="130px"
+            android:background="@drawable/edit_border_background"
+            android:inputType="text|textNoSuggestions"
+            android:textColor="#6A6B6B"
+            android:hint="Date To"
+
+            android:paddingLeft="40px"
+            android:paddingTop="20px"
+            android:paddingBottom="20px"
+            android:textColorHint="#4D6A6B6B" />
+        <Button
+            android:id="@+id/btn_yes"
+            android:textColorHint="@color/white"
+            android:layout_marginBottom="30px"
+            android:layout_marginLeft="70px"
+
+            android:layout_marginTop="30px"
+            android:hint="Send"
+            android:background="@drawable/capsule_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</RelativeLayout>
