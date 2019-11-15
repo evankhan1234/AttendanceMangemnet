@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
 
 
 @Entity(tableName = "UserActivity")
@@ -29,4 +30,6 @@ public class UserActivity {
     public String  PunchOutTime;
     @ColumnInfo(name = "Duration")
     public String  Duration;
+    @ColumnInfo(name = "Date")
+    public Date Date;
 }

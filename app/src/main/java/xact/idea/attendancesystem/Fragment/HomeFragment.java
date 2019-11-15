@@ -142,7 +142,7 @@ public class HomeFragment extends Fragment {
 
     }
         private void initView() {
-        mService = Common.getApi();
+        mService = Common.getApiXact();
         img_next =  mRoot.findViewById(R.id.img_next);
         user_icon =  mRoot.findViewById(R.id.img_avatar);
         edit_start_date =  mRoot.findViewById(R.id.edit_start_date);
@@ -205,13 +205,13 @@ public class HomeFragment extends Fragment {
     }
     private void loadDataActivity() {
         showLoadingProgress(mActivity);
-        compositeDisposable.add(Common.userActivityRepository.getList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
-            @Override
-            public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                displayUnitItems(userActivities);
-                dismissLoadingProgress();
-            }
-        }));
+//        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+//            @Override
+//            public void accept(List<UserActivity> userActivities) throws Exception {
+////                displayUnitItems(userActivities);
+////                dismissLoadingProgress();
+//            }
+//        }));
 
 
     }
@@ -248,7 +248,7 @@ public class HomeFragment extends Fragment {
             cal.setTimeInMillis(0);
             cal.set(year, month, day, 0, 0, 0);
             Date chosenDate = cal.getTime();
-            DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = formatter.format(chosenDate);
             EditText startTime2 = (EditText) getActivity().findViewById(R.id.edit_start_date);
             startTime2.setText(formattedDate);
@@ -274,7 +274,7 @@ public class HomeFragment extends Fragment {
                 cal.setTimeInMillis(0);
                 cal.set(year, month, day, 0, 0, 0);
                 Date chosenDate = cal.getTime();
-                DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String formattedDate = formatter.format(chosenDate);
                 EditText endTime2 = (EditText) getActivity().findViewById(R.id.edit_end_date);
                 endTime2.setText(formattedDate);

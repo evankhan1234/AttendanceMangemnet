@@ -1,5 +1,6 @@
 package xact.idea.attendancesystem.Database.DataSources;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -63,6 +64,16 @@ public class UserActivityRepository implements IUserActivityDataSource {
     @Override
     public Flowable<List<AttendanceEntity>> getOnTimeList(String date, double value) {
         return iDepartmentDataSource.getOnTimeList(date, value);
+    }
+
+    @Override
+    public Flowable<List<UserActivity>> getUserActivityItemByDate(Date from, Date to,String UserId) {
+        return iDepartmentDataSource.getUserActivityItemByDate(from, to,UserId);
+    }
+
+    @Override
+    public void emptyUserActivityDateWise(Date from, Date to) {
+        iDepartmentDataSource.emptyUserActivityDateWise(from, to);
     }
 
     @Override
