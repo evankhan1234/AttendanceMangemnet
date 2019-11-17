@@ -45,6 +45,11 @@ public class UserListDataSource implements IUserListDataSource {
     }
 
     @Override
+    public UserList getUserListById(int UserId) {
+        return userListDao.getUserListById(UserId);
+    }
+
+    @Override
     public void insertToUserList(UserList... UserLists) {
 
         userListDao.insertToUserList(UserLists);

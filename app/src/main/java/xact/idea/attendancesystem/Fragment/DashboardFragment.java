@@ -2,6 +2,7 @@ package xact.idea.attendancesystem.Fragment;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -91,8 +92,8 @@ public class DashboardFragment extends Fragment {
     List<DepartmentListEntity> departmentListEntityList  = new ArrayList<>();;
     List<UnitListEntity> unitListEntityList  = new ArrayList<>();
     List<AttendanceEntity> userActivities= new ArrayList<>();
-    static int unitValue;
-    static int departmentValue;
+     int unitValue;
+     int departmentValue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -207,36 +208,91 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 scr_category_present.setVisibility(View.VISIBLE);
-                loadDataActivity("present");
+
+
+                if (unitValue>0 && departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("present");
+
+                }else if (unitValue>0){
+                    loadDataActivityUnitDepartmentWise("present");
+                }
+                else if (departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("present");
+                }
+                else {
+                    loadDataActivity("present");
+                }
+
             }
         });
 
         radioAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 scr_category_present.setVisibility(View.GONE);
-                loadDataActivity("all");
+                if (unitValue>0 && departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("all");
+                }else if (unitValue>0){
+                    loadDataActivityUnitDepartmentWise("all");
+                }
+                else if (departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("all");
+                }
+                else {
+                    loadDataActivity("all");
+                }
             }
         });
         radioAbsent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 scr_category_present.setVisibility(View.GONE);
-                loadDataActivity("absent");
+                if (unitValue>0 && departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("absent");
+                }else if (unitValue>0){
+                    loadDataActivityUnitDepartmentWise("absent");
+                }
+                else if (departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("absent");
+                }
+                else {
+                    loadDataActivity("absent");
+                }
             }
         });
         radioPresentLate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                loadDataActivity("late");
+                if (unitValue>0 && departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("late");
+                }else if (unitValue>0){
+                    loadDataActivityUnitDepartmentWise("late");
+                }
+                else if (departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("late");
+                }
+                else {
+                    loadDataActivity("late");
+                }
             }
         });
         radioPresentOnTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                loadDataActivity("ontime");
+                if (unitValue>0 && departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("ontime");
+                }else if (unitValue>0){
+                    loadDataActivityUnitDepartmentWise("ontime");
+                }
+                else if (departmentValue>0){
+                    loadDataActivityUnitDepartmentWise("ontime");
+                }
+                else {
+                    loadDataActivity("ontime");
+                }
             }
         });
         radioleave.setOnClickListener(new View.OnClickListener() {
@@ -267,10 +323,13 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onItemClick(int position) {
             departmentValue=position;
+            loadUnitDepartmentWise();
+            EmployeeStausUnitDepartmentWise();
+
           //  Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
 //           Common.departmentRepository.emptyCart();
 //            DepartmentListData();
-            loadLeaveTotal();
+           // loadLeaveTotal();
 
         }
     };
@@ -278,8 +337,10 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onItemClick(int position) {
             unitValue=position;
+            loadUnitDepartmentWise();
+            EmployeeStausUnitDepartmentWise();
            // Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
-            loadLeaveTotal();
+         //   loadLeaveTotal();
 
 
         }
@@ -327,6 +388,342 @@ public class DashboardFragment extends Fragment {
 
     }
 
+    private void loadUnitDepartmentWise(){
+        showLoadingProgress(mActivity);
+
+        if (unitValue>0 && departmentValue>0){
+            compositeDisposable.add(Common.userActivityRepository.getListUnitIdDepartmentId(unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                @Override
+                public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                    display(userActivities,"");
+                    dismissLoadingProgress();
+
+                }
+            }));
+        }else if (unitValue>0){
+            compositeDisposable.add(Common.userActivityRepository.getListUnitId(unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                @Override
+                public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                    display(userActivities,"");
+                    dismissLoadingProgress();
+                }
+            }));
+        }
+        else if (departmentValue>0){
+            compositeDisposable.add(Common.userActivityRepository.getListDepartmentId(departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                @Override
+                public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                    display(userActivities,"");
+                    dismissLoadingProgress();
+                }
+            }));
+        }
+        else {
+            loadDataActivity("all");
+        }
+
+
+    }
+    private void EmployeeStausUnitDepartmentWise(){
+
+
+
+
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(System.currentTimeMillis());
+        String currentDate=formatter.format(date);
+        System.out.println(formatter.format(date));
+
+
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentUnitDepartmentList(currentDate,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        present=userActivities.size();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentUnitList(currentDate,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        present=userActivities.size();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentDepartmentList(currentDate,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        present=userActivities.size();
+                    }
+                }));
+            }
+
+
+
+
+
+
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentUnitDepartmentList(currentDate,departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        absent=userActivities.size();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentUnitList(currentDate,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        absent=userActivities.size();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentDepartmentList(currentDate,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        absent=userActivities.size();
+                    }
+                }));
+            }
+
+
+
+
+
+            if (unitValue > 0 && departmentValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate, 9.30, unitValue, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        late=userActivities.size();
+                    }
+                }));
+            } else if (unitValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate, 9.30, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        late=userActivities.size();
+                    }
+                }));
+            } else if (departmentValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate, 9.30, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        late=userActivities.size();
+                    }
+                }));
+            }
+
+
+            if (unitValue > 0 && departmentValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate, 9.30, unitValue, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        ontime=userActivities.size();
+                    }
+                }));
+            } else if (unitValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate, 9.30, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        ontime=userActivities.size();
+                    }
+                }));
+            } else if (departmentValue > 0) {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate, 9.30, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        ontime=userActivities.size();
+                    }
+                }));
+
+
+        }
+        ydata.clear();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                ydata.add(Integer.valueOf(present));
+                ydata.add(Integer.valueOf(absent));
+                ydata.add(Integer.valueOf(late));
+                ydataAttendance.add(Integer.valueOf(ontime));
+                ydataAttendance.add(Integer.valueOf(late));
+                addDataSet();
+                addDataSetAttendance();
+            }
+        }, 300);
+
+
+
+    }
+    private void loadDataActivityUnitDepartmentWise(String value) {
+
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(System.currentTimeMillis());
+        String currentDate=formatter.format(date);
+        System.out.println(formatter.format(date));
+        if (value.equals("present")){
+            showLoadingProgress(mActivity);
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentUnitDepartmentList(currentDate,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentUnitList(currentDate,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getPresentDepartmentList(currentDate,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+
+
+
+        }
+        else if (value.equals("late")){
+            showLoadingProgress(mActivity);
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate,9.30,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitList(currentDate,9.30,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getLateDepartmentList(currentDate,9.30,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+
+        }
+        else if (value.equals("all")){
+            showLoadingProgress(mActivity);
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getListUnitIdDepartmentId(unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getListUnitId(unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getListDepartmentId(departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else {
+                loadDataActivity("all");
+            }
+
+        }
+        else if (value.equals("ontime")){
+            showLoadingProgress(mActivity);
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate,9.30,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate,9.30,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate,9.30,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+
+        }
+        else if (value.equals("absent")){
+            showLoadingProgress(mActivity);
+            if (unitValue>0 && departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentUnitDepartmentList(currentDate,departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }else if (unitValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentUnitList(currentDate,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+            else if (departmentValue>0){
+                compositeDisposable.add(Common.userActivityRepository.getAbsentDepartmentList(currentDate,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                    @Override
+                    public void accept(List<AttendanceEntity> userActivities) throws Exception {
+                        display(userActivities,"");
+                        dismissLoadingProgress();
+                    }
+                }));
+            }
+        }
+
+
+
+    }
     private void loadDataActivity(String value) {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
@@ -388,10 +785,15 @@ public class DashboardFragment extends Fragment {
 
 
     }
+
     int present;
     int absent;
     int late;
     int ontime;
+    int presentWise;
+    int absentWise;
+    int lateWise;
+    int ontimeWise;
     private void EmployeeStaus(){
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
@@ -400,36 +802,36 @@ public class DashboardFragment extends Fragment {
         compositeDisposable.add(Common.userActivityRepository.getPresentList(currentDate).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
             public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                present=userActivities.size();
+                presentWise=userActivities.size();
             }
         }));
         compositeDisposable.add(Common.userActivityRepository.getAbsentList(currentDate).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
             public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                absent=userActivities.size();
+                absentWise=userActivities.size();
             }
         }));
         compositeDisposable.add(Common.userActivityRepository.getLateList(currentDate,9.30).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
             public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                late=userActivities.size();
+                lateWise=userActivities.size();
             }
         }));
         compositeDisposable.add(Common.userActivityRepository.getOnTimeList(currentDate,9.30).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
             @Override
             public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                ontime=userActivities.size();
+                ontimeWise=userActivities.size();
             }
         }));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
-                ydata.add(Integer.valueOf(present));
-                ydata.add(Integer.valueOf(absent));
-                ydata.add(Integer.valueOf(late));
-                ydataAttendance.add(Integer.valueOf(ontime));
-                ydataAttendance.add(Integer.valueOf(late));
+                ydata.add(Integer.valueOf(presentWise));
+                ydata.add(Integer.valueOf(absentWise));
+                ydata.add(Integer.valueOf(lateWise));
+                ydataAttendance.add(Integer.valueOf(ontimeWise));
+                ydataAttendance.add(Integer.valueOf(lateWise));
                 addDataSet();
                 addDataSetAttendance();
             }
@@ -558,7 +960,7 @@ public class DashboardFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadLeaveTotal();
-      loadUnitItems();
+       loadUnitItems();
         //DepartmentListData();
         loadDataActivity("all");
         loadDepartmentItems();

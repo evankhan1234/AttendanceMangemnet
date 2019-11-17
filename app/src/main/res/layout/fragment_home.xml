@@ -96,7 +96,7 @@
                                         android:textSize="40px" />
 
                                     <TextView
-                                        android:id="@+id/text_office_text"
+                                        android:id="@+id/text_phone_number"
                                         android:layout_width="wrap_content"
 
                                         android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
 
                 android:orientation="horizontal">
                 <TextView
-                    android:id="@+id/text_designation"
+                    android:id="@+id/text_backup_name"
                     android:layout_marginLeft="20px"
                     android:tag="35"
                     android:textSize="35px"
@@ -191,7 +191,7 @@
                     android:background="@drawable/indicator_unselected" />
                 <TextView
                     android:layout_marginLeft="20px"
-                    android:id="@+id/text_department"
+                    android:id="@+id/text_designation"
                     android:tag="35"
                     android:textSize="35px"
 
@@ -209,7 +209,7 @@
                     android:background="@drawable/indicator_unselected" />
                 <TextView
                     android:layout_marginLeft="20px"
-                    android:id="@+id/text_departments"
+                    android:id="@+id/text_department"
                     android:tag="35"
                     android:textSize="35px"
 
@@ -226,7 +226,7 @@
 
                     android:background="@drawable/indicator_unselected" />
                 <TextView
-                    android:id="@+id/text_units"
+                    android:id="@+id/text_office_text"
                     android:layout_marginLeft="20px"
                     android:tag="35"
                     android:textSize="35px"

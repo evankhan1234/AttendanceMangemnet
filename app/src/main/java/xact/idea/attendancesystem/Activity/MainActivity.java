@@ -65,6 +65,8 @@ import xact.idea.attendancesystem.Database.Model.LeaveSummary;
 import xact.idea.attendancesystem.Database.Model.RemainingLeave;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Database.Model.UserList;
+import xact.idea.attendancesystem.Entity.AllUserListEntity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.LoginPostEntity;
@@ -164,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
         afterClickTabItem(Constant.FRAG_HOME, null);
         btn_footer_home.setSelected(true);
         tv_home_menu.setSelected(true);
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")) {
+        Constant.SYNC="Admin";
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
             btn_header_sync.setVisibility(View.VISIBLE);
         }
         btn_header_back_.setOnClickListener(new View.OnClickListener() {
@@ -178,99 +181,105 @@ public class MainActivity extends AppCompatActivity {
         btn_header_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (Constant.SYNC.equals("Admin")){
+                    final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
+                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
 
-                final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
-                LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
+                    infoDialog.setContentView(v);
+                    infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+                    Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+                    final EditText edit_date_from = infoDialog.findViewById(R.id.edit_date_from);
+                    final EditText edit_date_to = infoDialog.findViewById(R.id.edit_date_to);
 
-                infoDialog.setContentView(v);
-                infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
-                Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
-                final EditText edit_date_from = infoDialog.findViewById(R.id.edit_date_from);
-                final EditText edit_date_to = infoDialog.findViewById(R.id.edit_date_to);
+                    CorrectSizeUtil.getInstance(MainActivity.this).correctSize(main_root);
+                    edit_date_from.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Calendar mcurrentDate = Calendar.getInstance();
+                            final int mYear = mcurrentDate.get(Calendar.YEAR);
+                            final int mMonth = mcurrentDate.get(Calendar.MONTH);
+                            final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-                CorrectSizeUtil.getInstance(MainActivity.this).correctSize(main_root);
-                edit_date_from.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar mcurrentDate = Calendar.getInstance();
-                        final int mYear = mcurrentDate.get(Calendar.YEAR);
-                        final int mMonth = mcurrentDate.get(Calendar.MONTH);
-                        final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+                            DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTimeInMillis(0);
+                                    cal.set(mYear, mMonth, mDay, 0, 0, 0);
+                                    Date chosenDate = cal.getTime();
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    String formattedDate = formatter.format(chosenDate);
 
-                        DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                                Calendar cal = Calendar.getInstance();
-                                cal.setTimeInMillis(0);
-                                cal.set(mYear, mMonth, mDay, 0, 0, 0);
-                                Date chosenDate = cal.getTime();
-                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                String formattedDate = formatter.format(chosenDate);
+                                    edit_date_from.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
+                                }
+                            }, mYear, mMonth, mDay);
+                            mDatePicker.setTitle("Select date");
+                            mDatePicker.show();
 
-                                edit_date_from.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
-                            }
-                        }, mYear, mMonth, mDay);
-                        mDatePicker.setTitle("Select date");
-                        mDatePicker.show();
-
-                    }
-
-                });
-                edit_date_to.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar mcurrentDate = Calendar.getInstance();
-                        final int mYear = mcurrentDate.get(Calendar.YEAR);
-                        final int mMonth = mcurrentDate.get(Calendar.MONTH);
-                        final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
-
-                        DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
-                                Calendar cal = Calendar.getInstance();
-                                cal.setTimeInMillis(0);
-                                cal.set(mYear, mMonth, mDay, 0, 0, 0);
-                                Date chosenDate = cal.getTime();
-                                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                String formattedDate = formatter.format(chosenDate);
-
-                                edit_date_to.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
-                            }
-                        }, mYear, mMonth, mDay);
-                        mDatePicker.setTitle("Select date");
-                        mDatePicker.show();
-                    }
-                });
-                btn_yes.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (edit_date_from.getText().toString().matches("")) {
-                            Toast.makeText(MainActivity.this, "You did not enter a Start Date", Toast.LENGTH_SHORT).show();
-
-                        } else if (edit_date_to.getText().toString().matches("")) {
-                            Toast.makeText(MainActivity.this, "You did not enter a End Date", Toast.LENGTH_SHORT).show();
-                        } else {
-                            String startDate = edit_date_from.getText().toString();
-                            String endDate = edit_date_to.getText().toString();
-                            Date date1 = null;
-                            Date date2 = null;
-                            try {
-                                date1 = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-                                date2 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-                            Common.userActivityRepository.emptyUserActivityDateWise(date1, date2);
-                            //Common.userActivityRepository.emptyCart();
-                            syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString());
-                            infoDialog.dismiss();
                         }
 
-                    }
-                });
+                    });
+                    edit_date_to.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Calendar mcurrentDate = Calendar.getInstance();
+                            final int mYear = mcurrentDate.get(Calendar.YEAR);
+                            final int mMonth = mcurrentDate.get(Calendar.MONTH);
+                            final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
 
-                infoDialog.show();
+                            DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTimeInMillis(0);
+                                    cal.set(mYear, mMonth, mDay, 0, 0, 0);
+                                    Date chosenDate = cal.getTime();
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    String formattedDate = formatter.format(chosenDate);
+
+                                    edit_date_to.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
+                                }
+                            }, mYear, mMonth, mDay);
+                            mDatePicker.setTitle("Select date");
+                            mDatePicker.show();
+                        }
+                    });
+                    btn_yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (edit_date_from.getText().toString().matches("")) {
+                                Toast.makeText(MainActivity.this, "You did not enter a Start Date", Toast.LENGTH_SHORT).show();
+
+                            } else if (edit_date_to.getText().toString().matches("")) {
+                                Toast.makeText(MainActivity.this, "You did not enter a End Date", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String startDate = edit_date_from.getText().toString();
+                                String endDate = edit_date_to.getText().toString();
+                                Date date1 = null;
+                                Date date2 = null;
+                                try {
+                                    date1 = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+                                    date2 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Common.userActivityRepository.emptyUserActivityDateWise(date1, date2);
+                                //Common.userActivityRepository.emptyCart();
+                                syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString());
+                                infoDialog.dismiss();
+                            }
+
+                        }
+                    });
+
+                    infoDialog.show();
+                }else if (Constant.SYNC.equals("UserActivitY")){
+                    Common.userListRepository.emptyCart();
+                    getUserData();
+                }
+
+
 
             }
         });
@@ -291,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("mozahid.hs@gmail.com")) {
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 
         } else {
             linear.setWeightSum(5f);
@@ -325,7 +334,51 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    private void getUserData(){
 
+        showLoadingProgress(this);
+        compositeDisposable.add(mServiceXact.getUserList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<AllUserListEntity>() {
+            @Override
+            public void accept(AllUserListEntity carts) throws Exception {
+                // departmentListEntityList=carts;
+                UserList userList = new UserList();
+
+                for (AllUserListEntity.Data data: carts.data){
+                    userList.UserId=data.UserId;
+                    userList.FullName=data.FullName;
+                    userList.Email=data.Email;
+                    userList.OfficeExt=data.OfficeExt;
+                    userList.Password=data.Password;
+                    userList.AdminStatus=data.AdminStatus;
+                    userList.Designation=data.Designation;
+                    userList.JoiningDate=data.JoiningDate;
+                    userList.CorporateMobileNumber=data.CorporateMobileNumber;
+                    userList.PersonalMobileNumber=data.PersonalMobileNumber;
+                    userList.EmergencyContactPerson=data.EmergencyContactPerson;
+                    userList.RelationWithContactPerson=data.RelationWithContactPerson;
+                    userList.BloodGroup=data.BloodGroup;
+                    userList.ProfilePhoto=data.ProfilePhoto;
+                    userList.UnitId=data.UnitId;
+                    userList.UnitName=data.UnitName;
+                    userList.UnitShortName=data.UnitShortName;
+                    userList.DepartmentId=data.DepartmentId;
+                    userList.DepartmentName=data.DepartmentName;
+                    userList.DepartmentShortName=data.DepartmentShortName;
+                    Common.userListRepository.insertToUserList(userList);
+                }
+
+                dismissLoadingProgress();
+
+                //   progressBar.setVisibility(View.GONE);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                dismissLoadingProgress();
+            }
+        }));
+
+    }
     private void syncUserActivityData(String startDate, String endDate) {
         showLoadingProgress(this);
         UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
@@ -702,6 +755,14 @@ public class MainActivity extends AppCompatActivity {
         rlt_header.setVisibility(View.VISIBLE);
         title.setVisibility(View.VISIBLE);
         btn_header_sync.setVisibility(View.VISIBLE);
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            btn_header_sync.setVisibility(View.VISIBLE);
+        } else {
+            btn_header_sync.setVisibility(View.GONE);
+
+
+        }
+
 
     }
 
@@ -754,7 +815,8 @@ public class MainActivity extends AppCompatActivity {
         btn_header_application.setVisibility(View.GONE);
         rlt_header_details.setVisibility(View.GONE);
         view_header_details.setVisibility(View.GONE);
-        btn_header_sync.setVisibility(View.GONE);
+        btn_header_sync.setVisibility(View.VISIBLE);
+        Constant.SYNC="UserActivitY";
     }
 
     public void btn_more_clicked(View view) {
@@ -769,6 +831,8 @@ public class MainActivity extends AppCompatActivity {
         btn_header_application.setVisibility(View.GONE);
         btn_header_application_create.setVisibility(View.GONE);
         btn_header_sync.setVisibility(View.GONE);
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
     }
 
     public void onLeaveApplication() {
@@ -873,9 +937,10 @@ public class MainActivity extends AppCompatActivity {
         // identify which fragment will be called
         switch (fragId) {
             case Constant.FRAG_HOME:
-                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("mozahid.hs@gmail.com")) {
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
                     newFrag = new DashboardFragment();
                 } else {
+                    Constant.SYNC="UserActivitY";
                     newFrag = new PunchFragment();
 
                 }
