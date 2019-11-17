@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
@@ -26,8 +28,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.google.gson.Gson;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,13 +45,16 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
+import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
 import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
@@ -65,12 +72,19 @@ public class HomeFragment extends Fragment {
     CircleImageView user_icon;
     RecyclerView rcl_punch_in_list;
     ArrayList<String> arrayList = new ArrayList<>();
-    PunchInAdapter mAdapters;
+    PunchInAdapterForAdmin mAdapters;
     IRetrofitApi mService;
     ImageView img_next;
     EditText  edit_start_date;
     EditText  edit_end_date;
     Button btn_yes;
+    TextView text_name;
+    TextView text_office_text;
+    TextView text_designation;
+    TextView text_unit;
+    TextView text_department;
+    TextView text_backup_name;
+    TextView text_phone_number;
    // RecyclerView recycler_cart;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Override
@@ -90,7 +104,7 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
-        loadDataActivity();
+        Load();
     }
 
     private void loadData() {
@@ -144,6 +158,13 @@ public class HomeFragment extends Fragment {
         private void initView() {
         mService = Common.getApiXact();
         img_next =  mRoot.findViewById(R.id.img_next);
+        text_name =  mRoot.findViewById(R.id.text_name);
+        text_office_text =  mRoot.findViewById(R.id.text_office_text);
+        text_designation =  mRoot.findViewById(R.id.text_designation);
+        text_unit =  mRoot.findViewById(R.id.text_unit);
+        text_department =  mRoot.findViewById(R.id.text_department);
+        text_backup_name =  mRoot.findViewById(R.id.text_backup_name);
+        text_phone_number =  mRoot.findViewById(R.id.text_phone_number);
         user_icon =  mRoot.findViewById(R.id.img_avatar);
         edit_start_date =  mRoot.findViewById(R.id.edit_start_date);
         edit_end_date =  mRoot.findViewById(R.id.edit_end_date);
@@ -151,7 +172,17 @@ public class HomeFragment extends Fragment {
             btn_yes.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    loadDataActivity();
+                    if (edit_start_date.getText().toString().matches("")) {
+                        Toast.makeText(mActivity, "You did not enter a Start Date", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else if (edit_end_date.getText().toString().matches("")){
+                        Toast.makeText(mActivity, "You did not enter a End Date", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        loadDataByDate();
+                    }
+
                 }
             });
             edit_start_date.setOnClickListener(new View.OnClickListener() {
@@ -176,17 +207,15 @@ public class HomeFragment extends Fragment {
         rcl_punch_in_list.setLayoutManager(lm);
 
 
-        for(int j = 0; j < 20; j++){
 
-            arrayList.add("House "+j);
-        }
             img_next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     momentDetailsFragmnett();
                 }
             });
-
+            UserList userList;
+            userList=Common.userListRepository.getUserListById(Integer.parseInt(SharedPreferenceUtil.getUser(mActivity)));
      //   mAdapters = new PunchInAdapter(mActivity, arrayList);
 
        // rcl_punch_in_list.setAdapter(mAdapters);
@@ -194,39 +223,120 @@ public class HomeFragment extends Fragment {
 //        initPager();
 //        selectCategory(0, true);
 //        mRoot.findViewById(R.id.view_category_selected_run).setBackground(Utils.getGradientColor(getContext()));
-        Glide.with(mActivity).load("https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2019/03/04/Pictures/_146f44ea-3e38-11e9-92c7-2b8d3185a4e0.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        user_icon.setImageDrawable(resource);
-                    }
-                });
+            text_name.setText(userList.FullName);
+            text_backup_name.setText(userList.FullName);
+            text_department.setText(userList.DepartmentName);
+            text_phone_number.setText(userList.PersonalMobileNumber);
+            text_unit.setText(userList.UnitName);
+            text_designation.setText(userList.DepartmentName);
+            if (userList.OfficeExt!=null){
+                text_office_text.setText(userList.OfficeExt);
+            }
+            else {
+                text_office_text.setText("");
+            }
+
+            if (userList.ProfilePhoto!=null){
+                Glide.with(mActivity).load(userList.ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                        .into(new SimpleTarget<GlideDrawable>() {
+                            @Override
+                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                user_icon.setImageDrawable(resource);
+                            }
+                        });
+            }
+            else {
+                Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                        .into(new SimpleTarget<GlideDrawable>() {
+                            @Override
+                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                user_icon.setImageDrawable(resource);
+                            }
+                        });
+            }
+
 
     }
-    private void loadDataActivity() {
-        showLoadingProgress(mActivity);
-//        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
-//            @Override
-//            public void accept(List<UserActivity> userActivities) throws Exception {
-////                displayUnitItems(userActivities);
-////                dismissLoadingProgress();
-//            }
-//        }));
 
+
+
+
+
+    private void  Load(){
+        showLoadingProgress(mActivity);
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(SharedPreferenceUtil.getUser(mActivity))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+                displayUnitItems(userActivities);
+                Log.e("sss","sss"+new Gson().toJson(userActivities));
+                dismissLoadingProgress();
+            }
+        }));
+    }
+    private void loadDataByDate() {
+
+        String startDate=edit_start_date.getText().toString();
+        String endDate=edit_end_date.getText().toString();
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1=new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+            date2=new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+                //    Log.e("sss","sss"+new Gson().toJson(userActivities));
+            }
+        }));
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+                displayUnitItems(userActivities);
+                Log.e("sss","sss"+new Gson().toJson(userActivities));
+
+            }
+        }));
 
     }
 
 
-
-
-
-    private void displayUnitItems(List<AttendanceEntity> userActivities) {
+    private void displayUnitItems(List<UserActivity> userActivities) {
         showLoadingProgress(mActivity);
-        mAdapters = new PunchInAdapter(mActivity, userActivities,"");
+        mAdapters = new PunchInAdapterForAdmin(mActivity, userActivities);
 
         rcl_punch_in_list.setAdapter(mAdapters);
         dismissLoadingProgress();
 
+    }
+//    private void loadData() {
+//        showLoadingProgress(mActivity);
+//        compositeDisposable.add(mService.getUserActivity().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<UserActivityEntity>>() {
+//            @Override
+//            public void accept(ArrayList<UserActivityEntity> carts) throws Exception {
+//
+//                mAdapters = new PunchInAdapter(mActivity, carts);
+//
+//                rcl_punch_in_list.setAdapter(mAdapters);
+//                dismissLoadingProgress();
+//            }
+//        }));
+//
+//
+//    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        compositeDisposable.clear();
     }
     public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
     {
@@ -238,7 +348,7 @@ public class HomeFragment extends Fragment {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, year, month, day);
-            dpd.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
             return dpd;
         }
 
@@ -265,7 +375,7 @@ public class HomeFragment extends Fragment {
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog dpd = new DatePickerDialog(getActivity(), this, year, month, day);
-                dpd.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
                 return dpd;
             }
 
@@ -283,17 +393,7 @@ public class HomeFragment extends Fragment {
 
 
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.clear();
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        compositeDisposable.clear();
-    }
     //    private void initCategoryList(boolean test) {
 //
 //        if (test==true){

@@ -30,12 +30,14 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.MainActivity;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserDetailsEntity;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
 import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
@@ -93,6 +95,15 @@ public class ProfileDetailsFragment extends Fragment {
                 }
             }
         });
+        UserList userList;
+        userList=Common.userListRepository.getUserListById(Integer.parseInt(SharedPreferenceUtil.getUser(mActivity)));
+        edit_name.setText(userList.FullName);
+
+        edit_gender.setText("N/A");
+        edit_dob.setText(userList.JoiningDate);
+        edit_email.setText(userList.Email);
+        edit_phone.setText(userList.PersonalMobileNumber);
+        edit_address.setText("N/A");
         Glide.with(mActivity).load("https://images.pexels.com/photos/212324/pexels-photo-212324.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500").asBitmap().into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -100,13 +111,31 @@ public class ProfileDetailsFragment extends Fragment {
                 cover.setBackground(drawable);
             }
         });
+        if (userList.ProfilePhoto!=null){
+            Glide.with(mActivity).load(userList.ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            img_avatar.setImageDrawable(resource);
+                        }
+                    });
+        }
+        else {
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            img_avatar.setImageDrawable(resource);
+                        }
+                    });
+        }
         mService = Common.getApi();
         return view;
     }
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+      //  loadData();
     }
 
     private void loadData() {

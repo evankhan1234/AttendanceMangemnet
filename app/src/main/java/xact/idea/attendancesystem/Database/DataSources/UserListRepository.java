@@ -44,6 +44,11 @@ public class UserListRepository implements IUserListDataSource {
     }
 
     @Override
+    public UserList getUserListById(int UserId) {
+        return iDepartmentDataSource.getUserListById(UserId);
+    }
+
+    @Override
     public void insertToUserList(UserList... UserLists) {
         iDepartmentDataSource.insertToUserList(UserLists);
     }

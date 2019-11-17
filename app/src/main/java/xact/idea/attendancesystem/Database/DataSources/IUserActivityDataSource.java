@@ -23,6 +23,33 @@ public interface IUserActivityDataSource {
     Flowable<List<AttendanceEntity>> getList();
     Flowable<List<AttendanceEntity>> getOnTimeList(String date,double value);
     Flowable<List<UserActivity>> getUserActivityItemByDate(Date from, Date to,String UserId);
+    Flowable<List<AttendanceEntity>> getListUnitId(int unitId);
+    Flowable<List<AttendanceEntity>> getListDepartmentId(int departmentId);
+    Flowable<List<AttendanceEntity>> getListUnitIdDepartmentId(int unitId,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getPresentUnitList(String date,int unitId);
+
+    Flowable<List<AttendanceEntity>> getPresentDepartmentList(String date,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getPresentUnitDepartmentList(String date,int unitId,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getAbsentUnitList(String date,int unitId);
+
+    Flowable<List<AttendanceEntity>> getAbsentDepartmentList(String date,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getAbsentUnitDepartmentList(String date,int departmentId,int unitId);
+
+    Flowable<List<AttendanceEntity>> getLateUnitList(String date,double value,int unitId);
+
+    Flowable<List<AttendanceEntity>> getLateDepartmentList(String date,double value,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getLateUnitDepartmentList(String date,double value,int departmentId,int unitId);
+
+    Flowable<List<AttendanceEntity>> getOnTimeUnitList(String date,double value,int unitId);
+
+    Flowable<List<AttendanceEntity>> getOnTimeDepartmentList(String date,double value,int departmentId);
+
+    Flowable<List<AttendanceEntity>> getOnTimeUnitDepartmentList(String date,double value,int departmentId,int unitId);
     void emptyUserActivityDateWise(Date from,Date to);
     void insertToUserActivity(UserActivity... UserActivitys);
 

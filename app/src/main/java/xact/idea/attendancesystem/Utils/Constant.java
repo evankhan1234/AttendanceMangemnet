@@ -14,6 +14,7 @@ public class Constant {
     public static final int FRAG_MORE = 4;
     public static final int FRAG_SET_UP_USER = 5;
     public static  String LEAVE;
+    public static  String SYNC;
 
     public static class API {
         public static final String LOGIN = DOMAIN + "users/login"; // done n

@@ -16,7 +16,7 @@ public interface IUserListDataSource {
     void emptyCart();
     int size();
     UserList login(String Username,String Password);
-
+    UserList getUserListById(int UserId);
 
     void insertToUserList(UserList... UserLists);
 

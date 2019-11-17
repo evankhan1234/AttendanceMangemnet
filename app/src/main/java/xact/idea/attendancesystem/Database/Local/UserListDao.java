@@ -18,6 +18,8 @@ public interface UserListDao {
 
     @Query("SELECT * FROM UserList WHERE ids=:UserListItemId")
     Flowable<List<UserList>> getUserListItemById(int UserListItemId);
+    @Query("SELECT * FROM UserList WHERE UserId=:UserId")
+    UserList getUserListById(int UserId);
 
 
     @Query("Select Count(ids)  FROM UserList")
