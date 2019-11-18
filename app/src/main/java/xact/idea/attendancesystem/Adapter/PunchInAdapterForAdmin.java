@@ -43,9 +43,29 @@ public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterF
 
     @Override
     public void onBindViewHolder(PunchInAdapterForAdmin.PlaceTagListiewHolder holder, final int position) {
+        String input = messageEntities.get(position).WorkingDate;     //input string
+        String firstFourChars = "";     //substring containing first 4 characters
+
+
+        firstFourChars = input.substring(2, 3);
+        if (firstFourChars.equals("-")){
+
+            String firstFourOne=input.substring(6,10);
+
+            String firstFourTwo_=input.substring(2,6);
+            String firstFourThree=input.substring(0,2);
+
+
+            holder.text_date.setText(firstFourOne+firstFourTwo_+firstFourThree);
+        }
+        else
+        {
+            holder.text_date.setText(messageEntities.get(position).WorkingDate);
+        }
+
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        holder.text_date.setText(messageEntities.get(position).WorkingDate);
+
         holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
         holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
         holder.text_punchOut_location.setText(messageEntities.get(position).PunchOutLocation);

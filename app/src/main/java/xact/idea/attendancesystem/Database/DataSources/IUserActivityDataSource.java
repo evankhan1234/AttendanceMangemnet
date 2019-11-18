@@ -26,7 +26,9 @@ public interface IUserActivityDataSource {
     Flowable<List<AttendanceEntity>> getListUnitId(int unitId);
     Flowable<List<AttendanceEntity>> getListDepartmentId(int departmentId);
     Flowable<List<AttendanceEntity>> getListUnitIdDepartmentId(int unitId,int departmentId);
-
+    void updatedById(String userId,String PunchOutLocation,String PunchOutTime,String Duration,String Date);
+    void emptyUserActivityDateWiseId(Date from,Date to,String userId);
+    UserActivity getUserActivity(String userId,String Date);
     Flowable<List<AttendanceEntity>> getPresentUnitList(String date,int unitId);
 
     Flowable<List<AttendanceEntity>> getPresentDepartmentList(String date,int departmentId);

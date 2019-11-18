@@ -87,6 +87,21 @@ public class UserActivityRepository implements IUserActivityDataSource {
     }
 
     @Override
+    public void updatedById(String userId, String PunchOutLocation, String PunchOutTime, String Duration,String Date) {
+         iDepartmentDataSource.updatedById(userId, PunchOutLocation, PunchOutTime, Duration,Date);
+    }
+
+    @Override
+    public void emptyUserActivityDateWiseId(Date from, Date to, String userId) {
+        iDepartmentDataSource.emptyUserActivityDateWiseId(from, to, userId);
+    }
+
+    @Override
+    public UserActivity getUserActivity(String userId, String Date) {
+        return iDepartmentDataSource.getUserActivity(userId, Date);
+    }
+
+    @Override
     public Flowable<List<AttendanceEntity>> getPresentUnitList(String date, int unitId) {
         return iDepartmentDataSource.getPresentUnitList(date, unitId);
     }

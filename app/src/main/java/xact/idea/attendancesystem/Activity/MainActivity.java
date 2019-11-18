@@ -178,10 +178,16 @@ public class MainActivity extends AppCompatActivity {
                 onBack();
             }
         });
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            tv_user_setup_menus.setText("Punch");
+        } else {
+            tv_user_setup_menus.setText("Status");
+        }
         btn_header_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Constant.SYNC.equals("Admin")){
+                if (Constant.SYNC.equals("Admin"))
+                {
                     final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
                     LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
@@ -211,7 +217,8 @@ public class MainActivity extends AppCompatActivity {
                                     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                                     String formattedDate = formatter.format(chosenDate);
 
-                                    edit_date_from.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
+                                    int in=selectedmonth+1;
+                                    edit_date_from.setText(selectedyear+"-"+in+"-"+selectedday);
                                 }
                             }, mYear, mMonth, mDay);
                             mDatePicker.setTitle("Select date");
@@ -237,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
                                     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                                     String formattedDate = formatter.format(chosenDate);
 
-                                    edit_date_to.setText(selectedyear+"-"+selectedmonth+"-"+selectedday);
+                                    int in=selectedmonth+1;
+                                    edit_date_to.setText(selectedyear+"-"+in+"-"+selectedday);
                                 }
                             }, mYear, mMonth, mDay);
                             mDatePicker.setTitle("Select date");
@@ -266,7 +274,103 @@ public class MainActivity extends AppCompatActivity {
 
                                 Common.userActivityRepository.emptyUserActivityDateWise(date1, date2);
                                 //Common.userActivityRepository.emptyCart();
-                                syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString());
+                                syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(),"");
+                                infoDialog.dismiss();
+                            }
+
+                        }
+                    });
+
+                    infoDialog.show();
+                }
+                else if (Constant.SYNC.equals("Status")){
+                    final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
+                    LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
+
+                    infoDialog.setContentView(v);
+                    infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+                    Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
+                    final EditText edit_date_from = infoDialog.findViewById(R.id.edit_date_from);
+                    final EditText edit_date_to = infoDialog.findViewById(R.id.edit_date_to);
+
+                    CorrectSizeUtil.getInstance(MainActivity.this).correctSize(main_root);
+                    edit_date_from.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Calendar mcurrentDate = Calendar.getInstance();
+                            final int mYear = mcurrentDate.get(Calendar.YEAR);
+                            final int mMonth = mcurrentDate.get(Calendar.MONTH);
+                            final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                            DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTimeInMillis(0);
+                                    cal.set(mYear, mMonth, mDay, 0, 0, 0);
+                                    Date chosenDate = cal.getTime();
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    String formattedDate = formatter.format(chosenDate);
+
+                                    int in=selectedmonth+1;
+                                    edit_date_from.setText(selectedyear+"-"+in+"-"+selectedday);
+                                }
+                            }, mYear, mMonth, mDay);
+                            mDatePicker.setTitle("Select date");
+                            mDatePicker.show();
+
+                        }
+
+                    });
+                    edit_date_to.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Calendar mcurrentDate = Calendar.getInstance();
+                            final int mYear = mcurrentDate.get(Calendar.YEAR);
+                            final int mMonth = mcurrentDate.get(Calendar.MONTH);
+                            final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                            DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+                                public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTimeInMillis(0);
+                                    cal.set(mYear, mMonth, mDay, 0, 0, 0);
+                                    Date chosenDate = cal.getTime();
+                                    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    String formattedDate = formatter.format(chosenDate);
+
+                                    int in=selectedmonth+1;
+                                    edit_date_to.setText(selectedyear+"-"+in+"-"+selectedday);
+                                }
+                            }, mYear, mMonth, mDay);
+                            mDatePicker.setTitle("Select date");
+                            mDatePicker.show();
+                        }
+                    });
+                    btn_yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (edit_date_from.getText().toString().matches("")) {
+                                Toast.makeText(MainActivity.this, "You did not enter a Start Date", Toast.LENGTH_SHORT).show();
+
+                            } else if (edit_date_to.getText().toString().matches("")) {
+                                Toast.makeText(MainActivity.this, "You did not enter a End Date", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String startDate = edit_date_from.getText().toString();
+                                String endDate = edit_date_to.getText().toString();
+                                Date date1 = null;
+                                Date date2 = null;
+                                try {
+                                    date1 = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+                                    date2 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Common.userActivityRepository.emptyUserActivityDateWiseId(date1, date2,SharedPreferenceUtil.getUser(MainActivity.this));
+                               // Common.userActivityRepository.emptyCart();
+                                syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(),SharedPreferenceUtil.getUser(MainActivity.this));
                                 infoDialog.dismiss();
                             }
 
@@ -301,7 +405,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-
+            linear.setWeightSum(5f);
+            relative.setVisibility(View.VISIBLE);
         } else {
             linear.setWeightSum(5f);
             relative.setVisibility(View.VISIBLE);
@@ -379,11 +484,12 @@ public class MainActivity extends AppCompatActivity {
         }));
 
     }
-    private void syncUserActivityData(String startDate, String endDate) {
+    private void syncUserActivityData(String startDate, String endDate,String userID) {
         showLoadingProgress(this);
         UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
         userActivityPostEntity.from_date = startDate;
         userActivityPostEntity.to_date = endDate;
+        userActivityPostEntity.user_id = userID;
         compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
             @Override
             public void accept(UserActivityListEntity carts) throws Exception {
@@ -392,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
                     userActivity.UserId = userActivityListEntity.UserId;
+                    userActivity.InComment = "";
                     userActivity.WorkingDate = userActivityListEntity.WorkingDate;
                     userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
                     String sDate1 = userActivityListEntity.WorkingDate;
@@ -444,12 +551,33 @@ public class MainActivity extends AppCompatActivity {
 
                 for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
                     userActivity.UserId = userActivityListEntity.UserId;
-                    userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+
                     userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
-                    String sDate1 = userActivityListEntity.WorkingDate;
-                    Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
-                    userActivity.Date = date1;
-                    Log.e("dates", "date" + date1);
+                 //   String sDate1 = userActivityListEntity.WorkingDate;
+
+                    String input = userActivityListEntity.WorkingDate;     //input string
+                    String firstFourCharss = "";     //substring containing first 4 characters
+
+
+                    firstFourCharss = input.substring(2, 3);
+                    if (firstFourCharss.equals("-")){
+
+                        String firstFourOne=input.substring(6,10);
+
+                        String firstFourTwo_=input.substring(2,6);
+                        String firstFourThree=input.substring(0,2);
+                        userActivity.WorkingDate = firstFourOne+firstFourTwo_+firstFourThree;
+                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(firstFourOne+firstFourTwo_+firstFourThree);
+                        userActivity.Date = date1;
+                    }
+                    else
+                    {
+                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(input);
+                        userActivity.Date = date1;
+                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+                    }
+
+
 
                     String str = userActivityListEntity.PunchInTime;
                     if (str == null || str.equals("")) {
@@ -476,6 +604,9 @@ public class MainActivity extends AppCompatActivity {
                     userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                     Common.userActivityRepository.insertToUserActivity(userActivity);
 
+                }
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")){
+                    PunchFragment.show();
                 }
 
                 dismissLoadingProgress();
@@ -773,8 +904,16 @@ public class MainActivity extends AppCompatActivity {
         //show the initial home page
         afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
         // checkToGetTicket(false);
-        title.setText("Status");
-        btn_header_sync.setVisibility(View.GONE);
+
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            title.setText("Punch");
+            btn_header_sync.setVisibility(View.GONE);
+        } else {
+            Constant.SYNC="Status";
+            title.setText("Status");
+            btn_header_sync.setVisibility(View.VISIBLE);
+        }
+
         rlt_header_details.setVisibility(View.GONE);
         view_header_details.setVisibility(View.GONE);
         btn_header_application.setVisibility(View.GONE);
@@ -965,7 +1104,14 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case Constant.FRAG_SET_UP_USER:
-                newFrag = new HomeFragment();
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                    newFrag = new PunchFragment();
+                } else {
+
+                    newFrag = new HomeFragment();
+
+                }
+
                 // newFrag = new ChatCategoryFragment();
                 //setUpHeader(Constant.FRAG_CHAT);
 

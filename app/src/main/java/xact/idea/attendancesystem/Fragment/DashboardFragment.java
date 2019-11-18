@@ -2,6 +2,7 @@ package xact.idea.attendancesystem.Fragment;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.icu.lang.UScript;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.os.Handler;
@@ -138,6 +139,13 @@ public class DashboardFragment extends Fragment {
 
         //loAD();
       //  Toast.makeText(mActivity, String.valueOf( Common.userActivityRepository.size()), Toast.LENGTH_SHORT).show();
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+            @Override
+            public void accept(List<UserActivity> userActivities) throws Exception {
+               Log.e("gosn","gson"+new Gson().toJson(userActivities));
+                dismissLoadingProgress();
+            }
+        }));
         return view;
     }
 

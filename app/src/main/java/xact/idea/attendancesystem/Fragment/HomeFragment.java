@@ -285,12 +285,12 @@ public class HomeFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
-            @Override
-            public void accept(List<UserActivity> userActivities) throws Exception {
-                //    Log.e("sss","sss"+new Gson().toJson(userActivities));
-            }
-        }));
+//        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+//            @Override
+//            public void accept(List<UserActivity> userActivities) throws Exception {
+//                //    Log.e("sss","sss"+new Gson().toJson(userActivities));
+//            }
+//        }));
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {

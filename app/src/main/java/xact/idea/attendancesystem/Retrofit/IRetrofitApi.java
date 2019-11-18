@@ -12,6 +12,8 @@ import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.LeaveApprovalListEntity;
 import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.LoginEntity;
+import xact.idea.attendancesystem.Entity.PunchInOutPostEntity;
+import xact.idea.attendancesystem.Entity.PunchInOutResponseEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserActivityListEntity;
@@ -49,6 +51,8 @@ public interface IRetrofitApi {
     io.reactivex.Observable<AllUserListEntity> getUserList();
     @POST("user/user_activity.php")
     io.reactivex.Observable<UserActivityListEntity> getUserActivityList(@Body UserActivityPostEntity userActivityPostEntity);
+    @POST("user_activity/actions.php")
+    io.reactivex.Observable<PunchInOutResponseEntity> postPunch(@Body PunchInOutPostEntity punchInOutPostEntity);
 
 //    @FormUrlEncoded
 //    @POST("server/category/add_category.php")
