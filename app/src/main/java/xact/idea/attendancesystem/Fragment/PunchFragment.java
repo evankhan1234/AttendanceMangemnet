@@ -20,10 +20,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import java.text.ParseException;
@@ -36,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Activity.SpalashActivity;
 import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
@@ -49,6 +52,7 @@ import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
+import xact.idea.attendancesystem.Utils.Utils;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
 import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
@@ -74,6 +78,7 @@ public class PunchFragment extends Fragment {
     int mUnitId;
     String mUnitStation;
     String mUnitName;
+    LinearLayout rlt_root;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -91,6 +96,7 @@ public class PunchFragment extends Fragment {
     private void initView() {
         text_out_comment=mRootView.findViewById(R.id.text_out_comment);
         text_in_comment=mRootView.findViewById(R.id.text_in_comment);
+        rlt_root=mRootView.findViewById(R.id.rlt_root);
         text_duration=mRootView.findViewById(R.id.text_duration);
         text_unit=mRootView.findViewById(R.id.text_unit);
         text_enter_time=mRootView.findViewById(R.id.text_enter_time);
@@ -126,7 +132,16 @@ public class PunchFragment extends Fragment {
         btn_punch_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserActivityData("in");
+                if (Utils.broadcastIntent(mActivity, rlt_root)){
+                    //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
+                    UserActivityData("in");
+                }
+                else {
+                    Snackbar snackbar = Snackbar
+                            .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+
 
             }
         });
@@ -141,7 +156,16 @@ public class PunchFragment extends Fragment {
                         "Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                UserActivityData("out");
+                                if (Utils.broadcastIntent(mActivity, rlt_root)){
+                                    //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
+                                    UserActivityData("out");
+                                }
+                                else {
+                                    Snackbar snackbar = Snackbar
+                                            .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
+                                    snackbar.show();
+                                }
+
                             }
                         });
 

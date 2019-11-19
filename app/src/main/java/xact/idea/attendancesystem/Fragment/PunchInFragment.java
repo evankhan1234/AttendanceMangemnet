@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ public class PunchInFragment extends Fragment {
     TextView text_department;
     TextView text_designation;
     TextView text_office_text;
+    ProgressBar progress_bar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class PunchInFragment extends Fragment {
             Log.e("UserId", "UserId" + UserId);
         }
         text_name = mRoot.findViewById(R.id.text_name);
+        progress_bar = mRoot.findViewById(R.id.progress_bar);
         text_unit = mRoot.findViewById(R.id.text_unit);
         text_department = mRoot.findViewById(R.id.text_department);
         text_designation = mRoot.findViewById(R.id.text_designation);
@@ -226,18 +229,17 @@ public class PunchInFragment extends Fragment {
     }
 
     private void  Load(){
-        showLoadingProgress(mActivity);
+        progress_bar.setVisibility(View.VISIBLE);
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(UserId)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
-                displayUnitItems(userActivities);
-                Log.e("sss","sss"+new Gson().toJson(userActivities));
-                dismissLoadingProgress();
+               displayUnitItems(userActivities);
+                progress_bar.setVisibility(View.GONE);
             }
         }));
     }
     private void loadDataByDate() {
-
+        progress_bar.setVisibility(View.VISIBLE);
         String startDate=edit_start_date.getText().toString();
         String endDate=edit_end_date.getText().toString();
         Date date1 = null;
@@ -248,17 +250,12 @@ public class PunchInFragment extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
-            @Override
-            public void accept(List<UserActivity> userActivities) throws Exception {
-          //    Log.e("sss","sss"+new Gson().toJson(userActivities));
-            }
-        }));
+
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,UserId).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
-                Log.e("sss","sss"+new Gson().toJson(userActivities));
+                progress_bar.setVisibility(View.GONE);
 
             }
         }));
