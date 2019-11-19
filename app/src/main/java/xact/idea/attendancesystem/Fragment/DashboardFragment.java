@@ -43,6 +43,7 @@ import xact.idea.attendancesystem.Adapter.PunchInAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
 import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.SetUp;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
@@ -95,6 +96,10 @@ public class DashboardFragment extends Fragment {
     List<AttendanceEntity> userActivities= new ArrayList<>();
      int unitValue;
      int departmentValue;
+    SetUp setUp;
+    double inTime;
+    double graceTime;
+    double total;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -139,13 +144,45 @@ public class DashboardFragment extends Fragment {
 
         //loAD();
       //  Toast.makeText(mActivity, String.valueOf( Common.userActivityRepository.size()), Toast.LENGTH_SHORT).show();
-        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
-            @Override
-            public void accept(List<UserActivity> userActivities) throws Exception {
-               Log.e("gosn","gson"+new Gson().toJson(userActivities));
-                dismissLoadingProgress();
-            }
-        }));
+       setUp= Common.setUpDataRepository.getSetUpItems();
+        String str = setUp.OFFICE_IN_TIME;
+        String str_grace = setUp.GRACE_TIME;
+        if (str == null || str.equals("")) {
+            inTime = 0.0;
+        } else {
+            String firstFourChars = "";     //substring containing first 4 characters
+
+
+            firstFourChars = str.substring(0, 5);
+
+            int index = 2;
+            char ch = '.';
+
+            StringBuilder string = new StringBuilder(firstFourChars);
+            string.setCharAt(index, ch);
+            inTime=Double.parseDouble(string.toString());
+
+        }
+        if (str_grace == null || str_grace.equals("")) {
+            graceTime = 0.0;
+        } else {
+            String firstFourChars = "";     //substring containing first 4 characters
+
+
+            firstFourChars = str_grace.substring(0, 5);
+
+            int index = 2;
+            char ch = '.';
+
+            StringBuilder string = new StringBuilder(firstFourChars);
+            string.setCharAt(index, ch);
+            graceTime=Double.parseDouble(string.toString());
+
+
+            total=inTime+graceTime;
+
+        }
+        Log.e("total","total"+total);
         return view;
     }
 
@@ -318,7 +355,7 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-              //  mAdapters.getFilter().filter(charSequence.toString());
+             mAdapters.getFilter().filter(charSequence.toString());
             }
 
             @Override
@@ -502,21 +539,21 @@ public class DashboardFragment extends Fragment {
 
 
             if (unitValue > 0 && departmentValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate, 9.30, unitValue, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate, total, departmentValue, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         late=userActivities.size();
                     }
                 }));
             } else if (unitValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate, 9.30, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitList(currentDate, total, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         late=userActivities.size();
                     }
                 }));
             } else if (departmentValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate, 9.30, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateDepartmentList(currentDate, total, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         late=userActivities.size();
@@ -526,21 +563,21 @@ public class DashboardFragment extends Fragment {
 
 
             if (unitValue > 0 && departmentValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate, 9.30, unitValue, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate, total,  departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         ontime=userActivities.size();
                     }
                 }));
             } else if (unitValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate, 9.30, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate, total, unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         ontime=userActivities.size();
                     }
                 }));
             } else if (departmentValue > 0) {
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate, 9.30, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate, total, departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         ontime=userActivities.size();
@@ -550,13 +587,14 @@ public class DashboardFragment extends Fragment {
 
         }
         ydata.clear();
+        ydataAttendance.clear();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 ydata.add(Integer.valueOf(present));
                 ydata.add(Integer.valueOf(absent));
-                ydata.add(Integer.valueOf(late));
+                ydata.add(Integer.valueOf(0));
                 ydataAttendance.add(Integer.valueOf(ontime));
                 ydataAttendance.add(Integer.valueOf(late));
                 addDataSet();
@@ -609,7 +647,7 @@ public class DashboardFragment extends Fragment {
         else if (value.equals("late")){
             showLoadingProgress(mActivity);
             if (unitValue>0 && departmentValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate,9.30,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate,total,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -617,7 +655,7 @@ public class DashboardFragment extends Fragment {
                     }
                 }));
             }else if (unitValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getLateUnitList(currentDate,9.30,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitList(currentDate,total,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -626,7 +664,7 @@ public class DashboardFragment extends Fragment {
                 }));
             }
             else if (departmentValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getLateDepartmentList(currentDate,9.30,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateDepartmentList(currentDate,total,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -672,7 +710,7 @@ public class DashboardFragment extends Fragment {
         else if (value.equals("ontime")){
             showLoadingProgress(mActivity);
             if (unitValue>0 && departmentValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate,9.30,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitDepartmentList(currentDate,total,departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -680,7 +718,7 @@ public class DashboardFragment extends Fragment {
                     }
                 }));
             }else if (unitValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate,9.30,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeUnitList(currentDate,total,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -689,7 +727,7 @@ public class DashboardFragment extends Fragment {
                 }));
             }
             else if (departmentValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate,9.30,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getOnTimeDepartmentList(currentDate,total,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");
@@ -732,6 +770,7 @@ public class DashboardFragment extends Fragment {
 
 
     }
+
     private void loadDataActivity(String value) {
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(System.currentTimeMillis());
@@ -749,10 +788,11 @@ public class DashboardFragment extends Fragment {
         }
         else if (value.equals("late")){
             showLoadingProgress(mActivity);
-            compositeDisposable.add(Common.userActivityRepository.getLateList(currentDate,9.30).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+            compositeDisposable.add(Common.userActivityRepository.getLateList(currentDate,total).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                 @Override
                 public void accept(List<AttendanceEntity> userActivities) throws Exception {
                     display(userActivities,"late");
+
                     dismissLoadingProgress();
                 }
             }));
@@ -771,7 +811,7 @@ public class DashboardFragment extends Fragment {
         }
         else if (value.equals("ontime")){
             showLoadingProgress(mActivity);
-            compositeDisposable.add(Common.userActivityRepository.getOnTimeList(currentDate,9.30).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+            compositeDisposable.add(Common.userActivityRepository.getOnTimeList(currentDate,total).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                 @Override
                 public void accept(List<AttendanceEntity> userActivities) throws Exception {
                     display(userActivities,"ontime");
@@ -784,6 +824,7 @@ public class DashboardFragment extends Fragment {
             compositeDisposable.add(Common.userActivityRepository.getAbsentList(currentDate).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                 @Override
                 public void accept(List<AttendanceEntity> userActivities) throws Exception {
+
                     display(userActivities,"absent");
                     dismissLoadingProgress();
                 }
@@ -837,7 +878,7 @@ public class DashboardFragment extends Fragment {
 
                 ydata.add(Integer.valueOf(presentWise));
                 ydata.add(Integer.valueOf(absentWise));
-                ydata.add(Integer.valueOf(lateWise));
+                ydata.add(Integer.valueOf(0));
                 ydataAttendance.add(Integer.valueOf(ontimeWise));
                 ydataAttendance.add(Integer.valueOf(lateWise));
                 addDataSet();

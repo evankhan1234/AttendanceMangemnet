@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/rlt_root"
 
     android:layout_height="match_parent"
     tools:context=".Fragment.MoreFragment">
@@ -12,7 +13,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <RelativeLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/relativelayoutPunch"
         android:layout_marginTop="50px"
         android:layout_marginRight="30px"
@@ -46,8 +47,8 @@
             android:layout_width="wrap_content"/>
     </RelativeLayout>
     <View
-        android:visibility="visible"
 
+        android:visibility="gone"
         android:id="@+id/view_headers"
         android:layout_width="match_parent"
         android:layout_height="5px"
@@ -55,6 +56,7 @@
         android:layout_marginTop="20px"
         android:background="@drawable/gradient_color_top" />
     <RelativeLayout
+
         android:id="@+id/relativelayout1"
         android:layout_marginTop="50px"
         android:layout_marginRight="30px"
@@ -88,7 +90,7 @@
             android:layout_width="wrap_content"/>
     </RelativeLayout>
     <View
-
+        android:visibility="gone"
         android:id="@+id/view_header"
         android:layout_width="match_parent"
         android:layout_height="5px"
@@ -96,6 +98,7 @@
         android:layout_marginTop="20px"
         android:background="@drawable/gradient_color_top" />
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/relativelayout"
         android:layout_marginTop="50px"
         android:layout_marginRight="30px"

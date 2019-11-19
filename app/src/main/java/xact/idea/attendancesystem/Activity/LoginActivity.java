@@ -207,7 +207,9 @@ public class LoginActivity extends AppCompatActivity {
         UserList userList;
          userList=Common.userListRepository.login(email,md5Password);
         if (userList!=null){
-            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, edt_email.getText().toString() + "");
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, userList.FullName + "");
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.USER_EMAIL, userList.Email + "");
+            SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.USER_PIC, userList.ProfilePhoto + "");
             SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_ADMIN, String.valueOf(userList.AdminStatus) + "");
             SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.USER_ID, userList.UserId + "");
             goMainScreen();

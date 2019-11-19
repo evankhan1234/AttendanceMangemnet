@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,14 +20,16 @@ import java.util.List;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
+import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
-public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTagListiewHolder> {
+public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTagListiewHolder> implements Filterable {
 
 
+    private CustomFilterPunchAdmin filter;
     private Activity mActivity = null;
-    private List<AttendanceEntity> messageEntities;
+    public List<AttendanceEntity> messageEntities;
     private String names;
 
     public PunchInAdapter(Activity activity, List<AttendanceEntity> messageEntitie,String name) {
@@ -76,9 +80,19 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
 
     @Override
     public int getItemCount() {
-        Log.e("evan", "sd" + messageEntities.size());
+
         return messageEntities.size();
     }
+
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new CustomFilterPunchAdmin(messageEntities, this);
+        }
+        return filter;
+    }
+
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
 
         private TextView text_duration;

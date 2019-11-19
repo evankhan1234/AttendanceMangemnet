@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,15 +37,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.UserListEntity;
+import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
+import xact.idea.attendancesystem.Filter.CustomFilterUserList;
 import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
-public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAdapter.PlaceTagListiewHolder> {
+public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAdapter.PlaceTagListiewHolder> implements Filterable {
 
 
+    CustomFilterUserList filter;
     private Activity mActivity = null;
-    private List<UserList> messageEntities;
+    public List<UserList> messageEntities;
     ClickInterface  clickInterface;
 
     public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, ClickInterface  clickInterfaces) {
@@ -155,7 +160,13 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         Log.e("evan", "sd" + messageEntities.size());
         return messageEntities.size();
     }
-
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new CustomFilterUserList(messageEntities, this);
+        }
+        return filter;
+    }
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
         private CircleImageView user_icon;
         private TextView text_name;

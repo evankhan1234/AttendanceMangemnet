@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
-import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
-import xact.idea.attendancesystem.Database.Model.UserActivity;
+import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
+import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
-import xact.idea.attendancesystem.Entity.UserActivityEntity;
 
-public class CustomFilterPunchAdmin extends Filter {
-    private List<AttendanceEntity> data = null;
-    private PunchInAdapter adapter;
+public class CustomFilterUserList extends Filter {
+    private List<UserList> data = null;
+    private UnitDepartmentAdapter adapter;
 
-    public CustomFilterPunchAdmin(List<AttendanceEntity> filterList, PunchInAdapter adapter) {
+    public CustomFilterUserList(List<UserList> filterList, UnitDepartmentAdapter adapter) {
         this.adapter = adapter;
         this.data = filterList;
     }
@@ -26,7 +25,7 @@ public class CustomFilterPunchAdmin extends Filter {
 
         if (constraint != null && constraint.length() > 0) {
             constraint = constraint.toString().toUpperCase();
-            ArrayList<AttendanceEntity> filteredPlayers = new ArrayList<>();
+            ArrayList<UserList> filteredPlayers = new ArrayList<>();
             for (int i = 0; i < data.size(); i++) {
                 if (data.get(i).FullName.toUpperCase().contains(constraint)) {
                     filteredPlayers.add(data.get(i));
@@ -43,7 +42,7 @@ public class CustomFilterPunchAdmin extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, Filter.FilterResults results) {
-        adapter.messageEntities = (ArrayList<AttendanceEntity>) results.values;
+        adapter.messageEntities = (ArrayList<UserList>) results.values;
         adapter.notifyDataSetChanged();
     }
 }

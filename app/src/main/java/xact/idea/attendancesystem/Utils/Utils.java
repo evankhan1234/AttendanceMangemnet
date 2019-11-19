@@ -2,9 +2,11 @@ package xact.idea.attendancesystem.Utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -37,6 +39,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -55,6 +59,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import xact.idea.attendancesystem.Activity.LoginActivity;
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Reciver.MyReceiver;
 
 
 public class Utils {
@@ -68,30 +73,16 @@ public class Utils {
     };
 
     public static void showInfoDialog(final Context mContext) {
-//        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-//        alertDialog.setTitle("Alert");
-//        alertDialog.setMessage("Alert message to be shown");
-//      //  TextView messageView = alertDialog.findViewById(android.R.id.message);
-//      //  messageView.setGravity(Gravity.CENTER);
-//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        SharedPreferenceUtil.removeShared(mContext,SharedPreferenceUtil.TYPE_USER_ID);
-//                        dialog.dismiss();
-//                        mContext.startActivity(new Intent(mContext, LoginActivity.class));
-//
-//                    }
-//                });
-//        alertDialog.show();
+
         final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
         LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflator.inflate(R.layout.layout_pop_up_message, null);
+        View v = inflator.inflate(R.layout.layout_pop_up_nav, null);
 
         infoDialog.setContentView(v);
         infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
-        Button btn_yes = infoDialog.findViewById(R.id.btn_yes);
-        Button btn_no = infoDialog.findViewById(R.id.btn_no);
+        Button btn_yes = infoDialog.findViewById(R.id.btn_ok);
+        Button btn_no = infoDialog.findViewById(R.id.btn_cancel);
 
         CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
         btn_yes.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +100,32 @@ public class Utils {
                 infoDialog.dismiss();
             }
         });
-        //correctSizeUtil = correctSizeUtil.getInstance(getActivity());
-        //  CorrectSizeUtil.setWidthOriginal(1080);
-        // correctSizeUtil.correctSize(view);
-
         infoDialog.show();
     }
+    public static boolean broadcastIntent(Context context,View view) {
+        // registerReceiver(myReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            Snackbar snackbar = Snackbar
+                    .make(view, "Connected Mobile Network", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return  true;
+        }
+        else  if ( connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED){
+            Snackbar snackbar = Snackbar
+                    .make(view, "Connected WIFI Network", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return  true;
+        }
+        else if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() != NetworkInfo.State.CONNECTED && connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() != NetworkInfo.State.CONNECTED){
+
+            return  false;
+        }
+
+            return  false;
+    }
     public static boolean isAndroid5() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }

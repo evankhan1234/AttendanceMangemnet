@@ -14,6 +14,7 @@ import xact.idea.attendancesystem.Entity.LeaveSummaryEntity;
 import xact.idea.attendancesystem.Entity.LoginEntity;
 import xact.idea.attendancesystem.Entity.PunchInOutPostEntity;
 import xact.idea.attendancesystem.Entity.PunchInOutResponseEntity;
+import xact.idea.attendancesystem.Entity.SetUpDataEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityEntity;
 import xact.idea.attendancesystem.Entity.UserActivityListEntity;
@@ -24,8 +25,8 @@ import xact.idea.attendancesystem.Entity.UserTotalLeaveEntity;
 import xact.idea.attendancesystem.Entity.LoginPostEntity;
 
 public interface IRetrofitApi {
-    @GET("16jtsp")
-    io.reactivex.Observable<ArrayList<UserListEntity>> getUser();
+    @GET("setup/data.php")
+    io.reactivex.Observable<SetUpDataEntity> getSetUpData();
     @GET("tvbo4")
     io.reactivex.Observable<UserTotalLeaveEntity> getTotalLeave();
     @GET("gl55w")

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -90,6 +93,7 @@ public class SetUpFragment extends Fragment {
     ArrayAdapter<DepartmentListEntity> departmentListEntityArrayAdapter;
     Spinner spinnerDepartments;
     Spinner spinnerUnit;
+    EditText edit_content;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +109,7 @@ public class SetUpFragment extends Fragment {
 //        spinnerUnit = mRoot.findViewById(R.id.spinnerUnit);
         btn_2 = mRoot.findViewById(R.id.btn_2);
         btn_1 = mRoot.findViewById(R.id.btn_1);
+        edit_content = mRoot.findViewById(R.id.edit_content);
         btn_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +138,22 @@ public class SetUpFragment extends Fragment {
         lm2.setOrientation(LinearLayoutManager.HORIZONTAL);
         rcl_this_department_list.setLayoutManager(lm2);
 
+        edit_content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mAdapters.getFilter().filter(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         for (int j = 0; j < 7; j++) {
 
             arrayList.add("House " + j);

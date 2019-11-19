@@ -19,7 +19,7 @@ import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
-public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterForAdmin.PlaceTagListiewHolder> implements Filterable {
+public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterForAdmin.PlaceTagListiewHolder> {
 
     CustomFilterPunchAdmin filter;
     private Activity mActivity = null;
@@ -80,13 +80,7 @@ public class PunchInAdapterForAdmin extends RecyclerView.Adapter<PunchInAdapterF
         return messageEntities.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        if (filter == null) {
-            filter = new CustomFilterPunchAdmin(messageEntities, this);
-        }
-        return filter;
-    }
+
 
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
 

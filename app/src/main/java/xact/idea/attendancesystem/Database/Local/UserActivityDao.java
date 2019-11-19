@@ -21,7 +21,7 @@ public interface UserActivityDao {
     Flowable<List<UserActivity>> getUserActivityItems();
 
 
-    @Query("SELECT * FROM UserActivity WHERE UserId=:UserActivityItemId")
+    @Query("SELECT * FROM UserActivity WHERE UserId=:UserActivityItemId ORDER BY Date DESC")
     Flowable<List<UserActivity>> getUserActivityItemById(int UserActivityItemId);
     @Query("SELECT * FROM UserActivity WHERE Date BETWEEN :from AND :to AND UserId=:UserId")
     Flowable<List<UserActivity>> getUserActivityItemByDate(Date from,Date to,String UserId);
@@ -61,9 +61,9 @@ public interface UserActivityDao {
     Flowable<List<AttendanceEntity>> getListUnitIdDepartmentId(int unitId,int departmentId);
     @Query("SELECT  c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId Group by f.FullName ")
     Flowable<List<AttendanceEntity>> getList();
-    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date Group by f.FullName ")
+    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date Group by f.FullName")
     Flowable<List<AttendanceEntity>> getPresentList(String date);
-    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate NOT IN  (:date) Group by f.FullName")
+    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) Group by f.FullName")
     Flowable<List<AttendanceEntity>> getAbsentList(String date);
     @Query("SELECT c.PunchInTime,c.PunchInTimeLate,c.PunchInTimeLate,c.PunchOutTime,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date AND c.PunchInTime>:value Group by f.FullName")
     Flowable<List<AttendanceEntity>> getLateList(String date,double value);
@@ -79,11 +79,11 @@ public interface UserActivityDao {
     @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date AND f.UnitId=:unitId AND f.DepartmentId=:departmentId Group by f.FullName ")
     Flowable<List<AttendanceEntity>> getPresentUnitDepartmentList(String date,int unitId,int departmentId);
 
-    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate NOT IN  (:date) AND f.UnitId=:unitId Group by f.FullName")
+    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) AND f.UnitId=:unitId  Group by f.FullName")
     Flowable<List<AttendanceEntity>> getAbsentUnitList(String date,int unitId);
-    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate NOT IN  (:date) AND f.DepartmentId=:departmentId Group by f.FullName")
+    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) AND f.DepartmentId=:departmentId  Group by f.FullName")
     Flowable<List<AttendanceEntity>> getAbsentDepartmentList(String date,int departmentId);
-    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate NOT IN  (:date) AND f.UnitId=:unitId AND f.DepartmentId=:departmentId Group by f.FullName")
+    @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) AND f.UnitId=:unitId AND f.DepartmentId=:departmentId   Group by f.FullName")
     Flowable<List<AttendanceEntity>> getAbsentUnitDepartmentList(String date,int departmentId,int unitId);
     @Query("SELECT c.PunchInTime,c.PunchInTimeLate,c.PunchInTimeLate,c.PunchOutTime,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date AND c.PunchInTime>:value AND f.UnitId=:unitId Group by f.FullName")
     Flowable<List<AttendanceEntity>> getLateUnitList(String date,double value,int unitId);

@@ -17,16 +17,18 @@ import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.EntityLeave;
 import xact.idea.attendancesystem.Database.Model.LeaveSummary;
 import xact.idea.attendancesystem.Database.Model.RemainingLeave;
+import xact.idea.attendancesystem.Database.Model.SetUp;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Database.Model.UserList;
 
-@Database(entities = {Department.class, Unit.class, LeaveSummary.class, EntityLeave.class, RemainingLeave.class, UserList.class, UserActivity.class},version = 2)
+@Database(entities = {Department.class, Unit.class, LeaveSummary.class, EntityLeave.class, RemainingLeave.class, UserList.class, UserActivity.class, SetUp.class},version = 2)
 @TypeConverters({Converters.class})
 public abstract class MainDatabase extends RoomDatabase {
 
    public abstract DepartmentDao departmentDao();
     public abstract UnitDao unitDao();
+    public abstract SetUpDao setUpDao();
     public abstract UserListDao userListDao();
     public abstract UserActivityDao userActivityDao();
     public abstract LeaveSummaryDao leaveSummaryDao();
