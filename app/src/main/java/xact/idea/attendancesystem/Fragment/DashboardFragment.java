@@ -647,7 +647,7 @@ public class DashboardFragment extends Fragment {
         else if (value.equals("late")){
             showLoadingProgress(mActivity);
             if (unitValue>0 && departmentValue>0){
-                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate,total,unitValue,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
+                compositeDisposable.add(Common.userActivityRepository.getLateUnitDepartmentList(currentDate,total,departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
                         display(userActivities,"");

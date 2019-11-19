@@ -13,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,6 +88,7 @@ public class HomeFragment extends Fragment {
     TextView text_phone_number;
    // RecyclerView recycler_cart;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    ProgressBar progress_bar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -157,6 +159,7 @@ public class HomeFragment extends Fragment {
     }
         private void initView() {
         mService = Common.getApiXact();
+            progress_bar =  mRoot.findViewById(R.id.progress_bar);
         img_next =  mRoot.findViewById(R.id.img_next);
         text_name =  mRoot.findViewById(R.id.text_name);
         text_office_text =  mRoot.findViewById(R.id.text_office_text);
@@ -263,13 +266,13 @@ public class HomeFragment extends Fragment {
 
 
     private void  Load(){
-        showLoadingProgress(mActivity);
+        progress_bar.setVisibility(View.VISIBLE);
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(SharedPreferenceUtil.getUser(mActivity))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
                 Log.e("sss","sss"+new Gson().toJson(userActivities));
-                dismissLoadingProgress();
+                progress_bar.setVisibility(View.GONE);
             }
         }));
     }
@@ -291,10 +294,12 @@ public class HomeFragment extends Fragment {
 //                //    Log.e("sss","sss"+new Gson().toJson(userActivities));
 //            }
 //        }));
+        progress_bar.setVisibility(View.VISIBLE);
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
+                progress_bar.setVisibility(View.GONE);
                 Log.e("sss","sss"+new Gson().toJson(userActivities));
 
             }
@@ -304,11 +309,11 @@ public class HomeFragment extends Fragment {
 
 
     private void displayUnitItems(List<UserActivity> userActivities) {
-        showLoadingProgress(mActivity);
+
         mAdapters = new PunchInAdapterForAdmin(mActivity, userActivities);
 
         rcl_punch_in_list.setAdapter(mAdapters);
-        dismissLoadingProgress();
+
 
     }
 //    private void loadData() {

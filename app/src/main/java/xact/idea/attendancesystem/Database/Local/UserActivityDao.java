@@ -21,7 +21,7 @@ public interface UserActivityDao {
     Flowable<List<UserActivity>> getUserActivityItems();
 
 
-    @Query("SELECT * FROM UserActivity WHERE UserId=:UserActivityItemId ORDER BY Date DESC")
+    @Query("SELECT * FROM UserActivity WHERE UserId=:UserActivityItemId ORDER BY Date DESC LIMIT 30")
     Flowable<List<UserActivity>> getUserActivityItemById(int UserActivityItemId);
     @Query("SELECT * FROM UserActivity WHERE Date BETWEEN :from AND :to AND UserId=:UserId")
     Flowable<List<UserActivity>> getUserActivityItemByDate(Date from,Date to,String UserId);
