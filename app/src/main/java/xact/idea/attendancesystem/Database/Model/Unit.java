@@ -14,4 +14,11 @@ public class Unit {
     public int Id;
     @ColumnInfo(name = "UnitName")
     public String UnitName;
+    @ColumnInfo(name = "ShortName")
+    public String ShortName;
+
+    @Override
+    public String toString() {
+        return UnitName;
+    }
 }

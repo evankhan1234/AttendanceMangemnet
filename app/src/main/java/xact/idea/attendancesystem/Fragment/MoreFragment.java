@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -28,6 +30,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import xact.idea.attendancesystem.Activity.LoginActivity;
 import xact.idea.attendancesystem.Activity.MainActivity;
+import xact.idea.attendancesystem.Activity.SpalashActivity;
 import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
 import xact.idea.attendancesystem.Database.DataSources.UnitRepository;
 import xact.idea.attendancesystem.Database.DataSources.UserActivityRepository;
@@ -38,11 +41,13 @@ import xact.idea.attendancesystem.Database.Local.UnitDataSource;
 import xact.idea.attendancesystem.Database.Local.UserActivityDataSource;
 import xact.idea.attendancesystem.Database.Local.UserListDataSource;
 import xact.idea.attendancesystem.Database.Model.Department;
+import xact.idea.attendancesystem.Database.Model.SetUp;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.AllUserListEntity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
+import xact.idea.attendancesystem.Entity.SetUpDataEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityPostEntity;
@@ -50,6 +55,7 @@ import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
@@ -63,6 +69,7 @@ public class MoreFragment extends Fragment {
     RelativeLayout relativelayout1;
     RelativeLayout relativelayoutPunch;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    RelativeLayout rlt_root;
 
     IRetrofitApi mServiceXact;
     @Override
@@ -75,6 +82,7 @@ public class MoreFragment extends Fragment {
         correctSizeUtil.setWidthOriginal(1080);
         correctSizeUtil.correctSize(view);
         relativelayoutPunch=view.findViewById(R.id.relativelayoutPunch);
+        rlt_root=view.findViewById(R.id.rlt_root);
         relativelayout=view.findViewById(R.id.relativelayout);
         relativelayout1=view.findViewById(R.id.relativelayout1);
         mServiceXact=Common.getApiXact();
@@ -95,16 +103,26 @@ public class MoreFragment extends Fragment {
         relativelayoutPunch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Common.userActivityRepository.emptyCart();
-                Common.departmentRepository.emptyCart();
-                Common.unitRepository.emptyCart();
-                Common.userListRepository.emptyCart();
-                Common.userActivityRepository.emptyCart();
+                if (Utils.broadcastIntent(mActivity, rlt_root)){
+                    //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
+                    Common.userActivityRepository.emptyCart();
+                    Common.departmentRepository.emptyCart();
+                    Common.unitRepository.emptyCart();
+                    Common.userListRepository.emptyCart();
+                    Common.userActivityRepository.emptyCart();
 
-                getUserData();
-                DepartmentData();
-                unitListData();
-                UserActivityData();
+                    getUserData();
+                    DepartmentData();
+                    unitListData();
+                    setUpData();
+                    UserActivityData();
+                }
+                else {
+                    Snackbar snackbar = Snackbar
+                            .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+
 
             }
         });
@@ -128,12 +146,33 @@ public class MoreFragment extends Fragment {
 
                 for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
                     userActivity.UserId = userActivityListEntity.UserId;
-                    userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+
                     userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
-                    String sDate1 = userActivityListEntity.WorkingDate;
-                    Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
-                    userActivity.Date = date1;
-                    Log.e("dates", "date" + date1);
+                    //   String sDate1 = userActivityListEntity.WorkingDate;
+
+                    String input = userActivityListEntity.WorkingDate;     //input string
+                    String firstFourCharss = "";     //substring containing first 4 characters
+
+
+                    firstFourCharss = input.substring(2, 3);
+                    if (firstFourCharss.equals("-")){
+
+                        String firstFourOne=input.substring(6,10);
+
+                        String firstFourTwo_=input.substring(2,6);
+                        String firstFourThree=input.substring(0,2);
+                        userActivity.WorkingDate = firstFourOne+firstFourTwo_+firstFourThree;
+                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(firstFourOne+firstFourTwo_+firstFourThree);
+                        userActivity.Date = date1;
+                    }
+                    else
+                    {
+                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(input);
+                        userActivity.Date = date1;
+                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+                    }
+
+
 
                     String str = userActivityListEntity.PunchInTime;
                     if (str == null || str.equals("")) {
@@ -160,6 +199,9 @@ public class MoreFragment extends Fragment {
                     userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                     Common.userActivityRepository.insertToUserActivity(userActivity);
 
+                }
+                if (SharedPreferenceUtil.getAdmin(mActivity).equals("0")){
+                    PunchFragment.show();
                 }
 
                 dismissLoadingProgress();
@@ -336,8 +378,36 @@ public class MoreFragment extends Fragment {
 
                     unit.Id=unitList.Id;
                     unit.UnitName=unitList.UnitName;
+                    unit.ShortName=unitList.ShortName;
                     Common.unitRepository.insertToUnit(unit);
                 }
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+
+//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+            }
+
+        }));
+    }
+    private void setUpData(){
+        showLoadingProgress(mActivity);
+
+        compositeDisposable.add(mServiceXact.getSetUpData().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<SetUpDataEntity>() {
+            @Override
+            public void accept(SetUpDataEntity unitListEntities) throws Exception {
+                SetUp setUp = new SetUp();
+
+                setUp.EXPECTED_DURATION=unitListEntities.data.EXPECTED_DURATION;
+                setUp.OFFICE_IN_TIME=unitListEntities.data.OFFICE_IN_TIME;
+                setUp.OFFICE_OUT_TIME=unitListEntities.data.OFFICE_OUT_TIME;
+                setUp.GRACE_TIME=unitListEntities.data.GRACE_TIME;
+                setUp.HALFDAY_DURATION=unitListEntities.data.HALFDAY_DURATION;
+                setUp.ENTITLED_LEAVE_CASUAL=unitListEntities.data.ENTITLED_LEAVE_CASUAL;
+                setUp.ENTITLED_LEAVE_SICK=unitListEntities.data.ENTITLED_LEAVE_SICK;
+                setUp.ENTITLED_LEAVE_TOTAL=unitListEntities.data.ENTITLED_LEAVE_TOTAL;
 
                 dismissLoadingProgress();
                 //   progressBar.setVisibility(View.GONE);

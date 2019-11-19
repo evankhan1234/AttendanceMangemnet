@@ -15,6 +15,8 @@ public class SharedPreferenceUtil {
     public static final String   USER_ID = "user";
     public static final String TYPE_USER_NAME = "username";
     public static final String TYPE_ADMIN = "username";
+    public static final String USER_PIC = "pic";
+    public static final String USER_EMAIL = "email";
     public static void saveShared(Context c, String type, String val) {
         SharedPreferences.Editor ed = c.getSharedPreferences(mSharedName, Context.MODE_PRIVATE).edit();
         ed.putString(type, val);
@@ -42,8 +44,8 @@ public class SharedPreferenceUtil {
     public static String getShared(Context c, String type) {
         return c.getSharedPreferences(mSharedName, Context.MODE_PRIVATE).getString(type, "");
     }
-    public static String getToken(Context c) {
-        String val = getShared(c, TYPE_TOKEN);
+    public static String getPic(Context c) {
+        String val = getShared(c, USER_PIC);
         return val;
     }
     public static String getUserID(Context c) {
@@ -53,6 +55,10 @@ public class SharedPreferenceUtil {
         String val = getShared(c, TYPE_USER_NAME);
         return val;
     }
+    public static String getEmail(Context c) {
+    String val = getShared(c, USER_EMAIL);
+    return val;
+}
     public static String getAdmin(Context c) {
         String val = getShared(c, TYPE_ADMIN);
         return val;

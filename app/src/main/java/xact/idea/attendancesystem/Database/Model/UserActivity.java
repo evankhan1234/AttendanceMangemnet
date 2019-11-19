@@ -30,6 +30,8 @@ public class UserActivity {
     public String  PunchOutTime;
     @ColumnInfo(name = "Duration")
     public String  Duration;
+    @ColumnInfo(name = "InComment")
+    public String  InComment;
     @ColumnInfo(name = "Date")
     public Date Date;
 }
