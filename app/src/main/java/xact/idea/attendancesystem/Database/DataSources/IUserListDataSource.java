@@ -1,5 +1,7 @@
 package xact.idea.attendancesystem.Database.DataSources;
 
+import androidx.room.Query;
+
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -17,7 +19,9 @@ public interface IUserListDataSource {
     int size();
     UserList login(String Username,String Password);
     UserList getUserListById(int UserId);
-
+    Flowable<List<UserList>> getUserListByUnit( int unitId);
+    Flowable<List<UserList>> getUserListByDepartment(int departmentId);
+    Flowable<List<UserList>> getUserListByUnitDepartment( int departmentId, int unitId);
     void insertToUserList(UserList... UserLists);
 
 

@@ -50,6 +50,21 @@ public class UserListDataSource implements IUserListDataSource {
     }
 
     @Override
+    public Flowable<List<UserList>> getUserListByUnit( int unitId) {
+        return userListDao.getUserListByUnit( unitId);
+    }
+
+    @Override
+    public Flowable<List<UserList>> getUserListByDepartment(int departmentId) {
+        return userListDao.getUserListByDepartment( departmentId);
+    }
+
+    @Override
+    public Flowable<List<UserList>> getUserListByUnitDepartment( int departmentId, int unitId) {
+        return userListDao.getUserListByUnitDepartment( departmentId, unitId);
+    }
+
+    @Override
     public void insertToUserList(UserList... UserLists) {
 
         userListDao.insertToUserList(UserLists);

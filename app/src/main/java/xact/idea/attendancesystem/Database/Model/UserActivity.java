@@ -32,6 +32,8 @@ public class UserActivity {
     public String  Duration;
     @ColumnInfo(name = "InComment")
     public String  InComment;
+    @ColumnInfo(name = "UnitName")
+    public String  UnitName;
     @ColumnInfo(name = "Date")
     public Date Date;
 }

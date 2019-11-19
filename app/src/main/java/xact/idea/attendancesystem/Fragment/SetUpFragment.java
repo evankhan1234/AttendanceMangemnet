@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
 import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserList;
+import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserListEntity;
@@ -79,7 +81,8 @@ public class SetUpFragment extends Fragment {
     private UnitDepartmentAdapter mAdapters = null;
     private UnitAdapter mUnitAdapter = null;
     private DepartmentAdapter mDepartmentAdapter = null;
-
+    int unitValue;
+    int departmentValue;
     Button btn_1;
     Button btn_2;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -94,6 +97,7 @@ public class SetUpFragment extends Fragment {
     Spinner spinnerDepartments;
     Spinner spinnerUnit;
     EditText edit_content;
+    ProgressBar progress_bar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,6 +111,7 @@ public class SetUpFragment extends Fragment {
         mService = Common.getApi();
 //        spinnerDepartments = mRoot.findViewById(R.id.spinnerDepartments);
 //        spinnerUnit = mRoot.findViewById(R.id.spinnerUnit);
+        progress_bar = mRoot.findViewById(R.id.progress_bar);
         btn_2 = mRoot.findViewById(R.id.btn_2);
         btn_1 = mRoot.findViewById(R.id.btn_1);
         edit_content = mRoot.findViewById(R.id.edit_content);
@@ -211,11 +216,36 @@ public class SetUpFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadData();
+        loadUnitItems();
+        loadDepartmentItems();
 //        unitListData();
 //        DepartmentListData();
     }
 
+    private DepartmentClickInterface mClickDepartment = new DepartmentClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+            departmentValue=position;
+            Data();
 
+            //  Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
+//           Common.departmentRepository.emptyCart();
+//            DepartmentListData();
+            // loadLeaveTotal();
+
+        }
+    };
+    private UnitClickInterface mClickUnit = new UnitClickInterface() {
+        @Override
+        public void onItemClick(int position) {
+            unitValue=position;
+            Data();
+            // Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
+            //   loadLeaveTotal();
+
+
+        }
+    };
         private ClickInterface mClick = new ClickInterface() {
         @Override
         public void onItemClick(int position) {
@@ -241,45 +271,102 @@ public class SetUpFragment extends Fragment {
 
         }
     };
-    private DepartmentClickInterface mClickDepartment = new DepartmentClickInterface() {
-        @Override
-        public void onItemClick(int position) {
 
-            Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
-            loadData();
-
-
-        }
-    };
-    private UnitClickInterface mClickUnit = new UnitClickInterface() {
-        @Override
-        public void onItemClick(int position) {
-
-            Toast.makeText(mActivity, String.valueOf(position), Toast.LENGTH_SHORT).show();
-            loadData();
-
-
-        }
-    };
-    private void loadData() {
-
-        compositeDisposable.add(Common.userListRepository.getUserListItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+    private void loadUnitItems() {
+        progress_bar.setVisibility( View.VISIBLE);
+        compositeDisposable.add(Common.unitRepository.getUnitItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {
             @Override
-            public void accept(List<UserList> userLists) throws Exception {
-                userListEntities=userLists;
-                displayUserList(userLists);
+            public void accept(List<Unit> units) throws Exception {
+                displayUnitItems(units);
+                progress_bar.setVisibility( View.GONE);
             }
         }));
 
     }
 
 
+    private void displayUnitItems(List<Unit> units) {
+
+        mUnitAdapter = new UnitAdapter(mActivity, units,mClickUnit);
+
+        rcl_this_unit_list.setAdapter(mUnitAdapter);
+
+
+    }
+    private void loadDepartmentItems() {
+        progress_bar.setVisibility( View.VISIBLE);
+        compositeDisposable.add(Common.departmentRepository.getCartItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Department>>() {
+            @Override
+            public void accept(List<Department> departments) throws Exception {
+                displayDepartmentItems(departments);
+                progress_bar.setVisibility( View.GONE);
+            }
+        }));
+
+    }
+
+
+    private void displayDepartmentItems(List<Department> departments) {
+
+        mDepartmentAdapter = new DepartmentAdapter(mActivity, departments,mClickDepartment);
+
+        rcl_this_department_list.setAdapter(mDepartmentAdapter);
+
+    }
+    private void loadData() {
+
+        progress_bar.setVisibility( View.VISIBLE);
+
+        compositeDisposable.add(Common.userListRepository.getUserListItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+            @Override
+            public void accept(List<UserList> userLists) throws Exception {
+                userListEntities=userLists;
+                displayUserList(userLists);
+                progress_bar.setVisibility( View.GONE);
+            }
+        }));
+
+    }
+
+    private void Data(){
+        progress_bar.setVisibility( View.VISIBLE);
+        if (unitValue>0 && departmentValue>0){
+            compositeDisposable.add(Common.userListRepository.getUserListByUnitDepartment(departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+                @Override
+                public void accept(List<UserList> userLists) throws Exception {
+                    userListEntities=userLists;
+                    displayUserList(userLists);
+                    progress_bar.setVisibility( View.GONE);
+                }
+            }));
+        }else if (unitValue>0){
+            compositeDisposable.add(Common.userListRepository.getUserListByUnit(unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+                @Override
+                public void accept(List<UserList> userLists) throws Exception {
+                    userListEntities=userLists;
+                    displayUserList(userLists);
+                    progress_bar.setVisibility( View.GONE);
+                }
+            }));
+        }
+        else if (departmentValue>0){
+            compositeDisposable.add(Common.userListRepository.getUserListByDepartment(departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+                @Override
+                public void accept(List<UserList> userLists) throws Exception {
+                    userListEntities=userLists;
+                    displayUserList(userLists);
+                    progress_bar.setVisibility( View.GONE);
+                }
+            }));
+        }
+    }
+
     private void displayUserList(List<UserList> userLists) {
-        showLoadingProgress(mActivity);
+
         mAdapters = new UnitDepartmentAdapter(mActivity, userLists,mClick);
 
         rcl_this_place_list.setAdapter(mAdapters);
-        dismissLoadingProgress();
+
 
     }
 //    private void loadData() {

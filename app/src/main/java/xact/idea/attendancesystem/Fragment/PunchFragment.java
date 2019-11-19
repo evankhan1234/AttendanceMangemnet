@@ -63,11 +63,11 @@ public class PunchFragment extends Fragment {
     CorrectSizeUtil correctSizeUtil;
     View mRootView;
     Spinner spinnerUnit;
-    TextView text_unit;
+    static TextView text_unit;
    static Button btn_punch_in;
     static  Button btn_punch_out;
-    TextView text_enter_time;
-    TextView text_in_comment;
+    static TextView text_enter_time;
+    static   TextView text_in_comment;
     TextView text_out_comment;
     EditText edit_comments;
     TextView text_duration;
@@ -194,7 +194,15 @@ public class PunchFragment extends Fragment {
                 btn_punch_out.setFocusable(true);
                 btn_punch_out.setAlpha(1);
                 btn_punch_in.setFocusable(false);
+                btn_punch_in.setClickable(false);
                 btn_punch_in.setAlpha(0.5f);
+                String text_time = "<font color=#B3202020>You've entered at: </font> <font color=#4983D4>"+userActivitys.PunchInTimeLate+"</font>";
+                String text_units = "<font color=#B3202020>You're working at: </font> <font color=#4983D4>"+userActivitys.UnitName+"</font>";
+                String text_comment = "<font color=#B3202020>In Comment : </font> <font color=#4983D4>"+userActivitys.InComment+"</font>";
+                text_enter_time.setText(Html.fromHtml(text_time));
+                text_unit.setText(Html.fromHtml(text_units));
+                text_in_comment.setText(Html.fromHtml(text_comment));
+
             }
 //            else {
 //                btn_punch_in.setFocusable(true);
@@ -234,7 +242,7 @@ public class PunchFragment extends Fragment {
                         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
                         Date date = new Date(System.currentTimeMillis());
                         String currentDate=formatter.format(date);
-                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm");
+                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm a");
                         Date dates = new Date(System.currentTimeMillis());
                         String currentTime=formatters.format(dates);
                         btn_punch_out.setFocusable(true);
@@ -252,6 +260,7 @@ public class PunchFragment extends Fragment {
 
                         userActivity.UserId = SharedPreferenceUtil.getUser(mActivity);
                         userActivity.InComment = edit_comments.getText().toString();
+                        userActivity.UnitName = mUnitName;
                         userActivity.WorkingDate = currentDate;
                         userActivity.PunchInLocation = "Mobile";
                         Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(currentDate);
@@ -277,7 +286,7 @@ public class PunchFragment extends Fragment {
                         }
 
                         // userActivity.PunchInTime= Double.parseDouble(str);
-                        userActivity.PunchOutLocation = "";
+                        userActivity.PunchOutLocation = "Mobile";
                         userActivity.PunchOutTime = "";
                         userActivity.Duration = "";
                         userActivity.PunchInTimeLate = currentTime;
@@ -304,7 +313,7 @@ public class PunchFragment extends Fragment {
                         Toast.makeText(mActivity, "Successfully Punch Out", Toast.LENGTH_SHORT).show();
 
 
-                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm");
+                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm a");
                         Date dates = new Date(System.currentTimeMillis());
                         String currentTime=formatters.format(dates);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
