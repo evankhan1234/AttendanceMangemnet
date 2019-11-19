@@ -10,6 +10,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import xact.idea.attendancesystem.Database.Model.UserList;
+import xact.idea.attendancesystem.Entity.AttendanceEntity;
 
 @Dao
 public interface UserListDao {
@@ -42,4 +43,10 @@ public interface UserListDao {
     @Query("SELECT * from UserList")
         //@Query("SELECT * from UserList as c Inner  JOIN Favorite as f ON c.Id = f.id  WHERE f.id=:favoriteid")
     Flowable<List<UserList>> getUserList();
+    @Query("SELECT * from UserList where  UnitId=:unitId")
+    Flowable<List<UserList>> getUserListByUnit( int unitId);
+    @Query("SELECT * from UserList where  DepartmentId=:departmentId")
+    Flowable<List<UserList>> getUserListByDepartment(int departmentId);
+    @Query("SELECT * from UserList where   DepartmentId=:departmentId AND UnitId=:unitId")
+    Flowable<List<UserList>> getUserListByUnitDepartment( int departmentId, int unitId);
 }

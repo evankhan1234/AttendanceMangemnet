@@ -49,6 +49,21 @@ public class UserListRepository implements IUserListDataSource {
     }
 
     @Override
+    public Flowable<List<UserList>> getUserListByUnit(int unitId) {
+        return iDepartmentDataSource.getUserListByUnit( unitId);
+    }
+
+    @Override
+    public Flowable<List<UserList>> getUserListByDepartment( int departmentId) {
+        return iDepartmentDataSource.getUserListByDepartment(departmentId);
+    }
+
+    @Override
+    public Flowable<List<UserList>> getUserListByUnitDepartment(int departmentId, int unitId) {
+        return iDepartmentDataSource.getUserListByUnitDepartment(departmentId, unitId);
+    }
+
+    @Override
     public void insertToUserList(UserList... UserLists) {
         iDepartmentDataSource.insertToUserList(UserLists);
     }
