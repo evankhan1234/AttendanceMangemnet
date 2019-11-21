@@ -40,6 +40,7 @@ import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
 import xact.idea.attendancesystem.Filter.CustomFilterUserList;
 import xact.idea.attendancesystem.Interface.ClickInterface;
+import xact.idea.attendancesystem.Interface.UserListClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
@@ -49,11 +50,13 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
     CustomFilterUserList filter;
     private Activity mActivity = null;
     public List<UserList> messageEntities;
-    ClickInterface  clickInterface;
+    public List<UserList> messageEntitiesFilter;
+    UserListClickInterface clickInterface;
 
-    public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, ClickInterface  clickInterfaces) {
+    public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, UserListClickInterface  clickInterfaces) {
         mActivity = activity;
-        messageEntities = messageEntitie;
+        this.messageEntities = messageEntitie;
+        this.messageEntitiesFilter = messageEntitie;
         //mClick = mClicks;
         clickInterface=clickInterfaces;
     }
@@ -70,8 +73,8 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
     @Override
     public void onBindViewHolder(final UnitDepartmentAdapter.PlaceTagListiewHolder holder, final int position) {
-
-        Log.e("SDFsf", "SDfs" + messageEntities.get(position));
+       // UserList messageEntitie= messageEntities.get(position);
+        Log.e("messageEntities", "SDfs" + messageEntities.get(position).UserId);
 
         if (messageEntities.get(position).ProfilePhoto!=null){
             Glide.with(mActivity).load(messageEntities.get(position).ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
@@ -149,7 +152,8 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickInterface.onItemClick(position);
+                clickInterface.onItemClick(messageEntities.get(position));
+                //Toast.makeText(mActivity, messageEntities.get(position).FullName, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -163,10 +167,11 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
     @Override
     public Filter getFilter() {
         if (filter == null) {
-            filter = new CustomFilterUserList(messageEntities, this);
+            filter = new CustomFilterUserList(messageEntitiesFilter, this);
         }
         return filter;
     }
+
     public class PlaceTagListiewHolder extends RecyclerView.ViewHolder {
         private CircleImageView user_icon;
         private TextView text_name;

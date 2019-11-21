@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Range;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
     TextView text_email;
     RelativeLayout relativelayoutPunch;
     RelativeLayout relativelayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         afterClickTabItem(Constant.FRAG_HOME, null);
         btn_footer_home.setSelected(true);
         tv_home_menu.setSelected(true);
-        Constant.SYNC="Admin";
+        Constant.SYNC = "Admin";
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
             btn_header_sync.setVisibility(View.VISIBLE);
         }
@@ -211,10 +214,9 @@ public class MainActivity extends AppCompatActivity {
         btn_header_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utils.broadcastIntent(MainActivity.this, rlt_root)){
+                if (Utils.broadcastIntent(MainActivity.this, rlt_root)) {
                     //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
-                    if (Constant.SYNC.equals("Admin"))
-                    {
+                    if (Constant.SYNC.equals("Admin")) {
                         final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
                         LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
@@ -231,6 +233,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 Calendar mcurrentDate = Calendar.getInstance();
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                try {
+                                    mcurrentDate.setTime(sdf.parse(edit_date_from.getText().toString()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                                 final int mYear = mcurrentDate.get(Calendar.YEAR);
                                 final int mMonth = mcurrentDate.get(Calendar.MONTH);
                                 final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
@@ -238,14 +246,42 @@ public class MainActivity extends AppCompatActivity {
                                 DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                                         Calendar cal = Calendar.getInstance();
+
                                         cal.setTimeInMillis(0);
                                         cal.set(mYear, mMonth, mDay, 0, 0, 0);
                                         Date chosenDate = cal.getTime();
-                                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                         String formattedDate = formatter.format(chosenDate);
 
-                                        int in=selectedmonth+1;
-                                        edit_date_from.setText(selectedyear+"-"+in+"-"+selectedday);
+                                        String a;
+                                        String b;
+                                        int in = selectedmonth + 1;
+                                        String length = Integer.toString(in);
+                                        int lengths=length.length();
+                                        String lengthday = Integer.toString(selectedday);
+                                        int lengthsday=lengthday.length();
+                                        if (lengthsday<2){
+                                            a="0";
+                                        }
+                                        else {
+                                            a="";
+                                        }
+                                        if (lengths<2){
+                                            b="0";
+                                        }
+                                        else {
+                                            b="";
+                                        }
+
+//                                        for (int i=0;i<=in;i++){
+//
+//                                            a="0";
+//                                        }
+//                                        for (int i=0;i<=selectedday;i++){
+//
+//                                            b="0";
+//                                        }
+                                        edit_date_from.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -258,6 +294,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 Calendar mcurrentDate = Calendar.getInstance();
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                try {
+                                    mcurrentDate.setTime(sdf.parse(edit_date_to.getText().toString()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                                 final int mYear = mcurrentDate.get(Calendar.YEAR);
                                 final int mMonth = mcurrentDate.get(Calendar.MONTH);
                                 final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
@@ -268,11 +310,30 @@ public class MainActivity extends AppCompatActivity {
                                         cal.setTimeInMillis(0);
                                         cal.set(mYear, mMonth, mDay, 0, 0, 0);
                                         Date chosenDate = cal.getTime();
-                                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                         String formattedDate = formatter.format(chosenDate);
 
-                                        int in=selectedmonth+1;
-                                        edit_date_to.setText(selectedyear+"-"+in+"-"+selectedday);
+                                        String a;
+                                        String b;
+                                        int in = selectedmonth + 1;
+                                        String length = Integer.toString(in);
+                                        int lengths=length.length();
+                                        String lengthday = Integer.toString(selectedday);
+                                        int lengthsday=lengthday.length();
+                                        if (lengthsday<2){
+                                            a="0";
+                                        }
+                                        else {
+                                            a="";
+                                        }
+                                        if (lengths<2){
+                                            b="0";
+                                        }
+                                        else {
+                                            b="";
+                                        }
+
+                                        edit_date_to.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -293,24 +354,27 @@ public class MainActivity extends AppCompatActivity {
                                     Date date1 = null;
                                     Date date2 = null;
                                     try {
-                                        date1 = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-                                        date2 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+                                        date1 = new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+                                        date2 = new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
 
                                     Common.userActivityRepository.emptyUserActivityDateWise(date1, date2);
+
+
+                                        syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
+                                        infoDialog.dismiss();
+
                                     //Common.userActivityRepository.emptyCart();
-                                    syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(),"");
-                                    infoDialog.dismiss();
+
                                 }
 
                             }
                         });
 
                         infoDialog.show();
-                    }
-                    else if (Constant.SYNC.equals("Status")){
+                    } else if (Constant.SYNC.equals("Status")) {
                         final CustomDialog infoDialog = new CustomDialog(MainActivity.this, R.style.CustomDialogTheme);
                         LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         View v = inflator.inflate(R.layout.layout_pop_up_sync_dashboard, null);
@@ -327,6 +391,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 Calendar mcurrentDate = Calendar.getInstance();
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                try {
+                                    mcurrentDate.setTime(sdf.parse(edit_date_from.getText().toString()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                                 final int mYear = mcurrentDate.get(Calendar.YEAR);
                                 final int mMonth = mcurrentDate.get(Calendar.MONTH);
                                 final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
@@ -334,14 +404,33 @@ public class MainActivity extends AppCompatActivity {
                                 DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                                         Calendar cal = Calendar.getInstance();
+
                                         cal.setTimeInMillis(0);
                                         cal.set(mYear, mMonth, mDay, 0, 0, 0);
                                         Date chosenDate = cal.getTime();
-                                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                         String formattedDate = formatter.format(chosenDate);
 
-                                        int in=selectedmonth+1;
-                                        edit_date_from.setText(selectedyear+"-"+in+"-"+selectedday);
+                                        String a;
+                                        String b;
+                                        int in = selectedmonth + 1;
+                                        String length = Integer.toString(in);
+                                        int lengths=length.length();
+                                        String lengthday = Integer.toString(selectedday);
+                                        int lengthsday=lengthday.length();
+                                        if (lengthsday<2){
+                                            a="0";
+                                        }
+                                        else {
+                                            a="";
+                                        }
+                                        if (lengths<2){
+                                            b="0";
+                                        }
+                                        else {
+                                            b="";
+                                        }
+                                        edit_date_from.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -354,6 +443,12 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 Calendar mcurrentDate = Calendar.getInstance();
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                try {
+                                    mcurrentDate.setTime(sdf.parse(edit_date_to.getText().toString()));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                                 final int mYear = mcurrentDate.get(Calendar.YEAR);
                                 final int mMonth = mcurrentDate.get(Calendar.MONTH);
                                 final int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
@@ -361,14 +456,33 @@ public class MainActivity extends AppCompatActivity {
                                 DatePickerDialog mDatePicker = new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
                                     public void onDateSet(DatePicker datepicker, int selectedyear, int selectedmonth, int selectedday) {
                                         Calendar cal = Calendar.getInstance();
+
                                         cal.setTimeInMillis(0);
                                         cal.set(mYear, mMonth, mDay, 0, 0, 0);
                                         Date chosenDate = cal.getTime();
-                                        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                         String formattedDate = formatter.format(chosenDate);
 
-                                        int in=selectedmonth+1;
-                                        edit_date_to.setText(selectedyear+"-"+in+"-"+selectedday);
+                                        String a;
+                                        String b;
+                                        int in = selectedmonth + 1;
+                                        String length = Integer.toString(in);
+                                        int lengths=length.length();
+                                        String lengthday = Integer.toString(selectedday);
+                                        int lengthsday=lengthday.length();
+                                        if (lengthsday<2){
+                                            a="0";
+                                        }
+                                        else {
+                                            a="";
+                                        }
+                                        if (lengths<2){
+                                            b="0";
+                                        }
+                                        else {
+                                            b="";
+                                        }
+                                        edit_date_to.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -389,34 +503,33 @@ public class MainActivity extends AppCompatActivity {
                                     Date date1 = null;
                                     Date date2 = null;
                                     try {
-                                        date1 = new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-                                        date2 = new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+                                        date1 = new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+                                        date2 = new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
 
-                                    Common.userActivityRepository.emptyUserActivityDateWiseId(date1, date2,SharedPreferenceUtil.getUser(MainActivity.this));
-                                    // Common.userActivityRepository.emptyCart();
-                                    syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(),SharedPreferenceUtil.getUser(MainActivity.this));
+                                    Common.userActivityRepository.emptyUserActivityDateWiseId(date1, date2, SharedPreferenceUtil.getUser(MainActivity.this));
+
+
+                                        syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
                                     infoDialog.dismiss();
+
                                 }
 
                             }
                         });
 
                         infoDialog.show();
-                    }else if (Constant.SYNC.equals("UserActivitY")){
+                    } else if (Constant.SYNC.equals("UserActivitY")) {
                         Common.userListRepository.emptyCart();
                         getUserData();
                     }
-                }
-                else {
+                } else {
                     Snackbar snackbar = Snackbar
                             .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
-
-
 
 
             }
@@ -460,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //String s=SharedPreferenceUtil.getPic(this);
-        if (SharedPreferenceUtil.getPic(this).equals("null") ){
+        if (SharedPreferenceUtil.getPic(this).equals("null")) {
             Glide.with(this).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -469,7 +582,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-        }else {
+        } else {
             Glide.with(this).load(SharedPreferenceUtil.getPic(this)).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -504,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public  void showInfoDialog() {
+    public void showInfoDialog() {
 
         final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
         LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -522,21 +635,20 @@ public class MainActivity extends AppCompatActivity {
         btn_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Utils.broadcastIntent(MainActivity.this, rlt_root)){
+                if (Utils.broadcastIntent(MainActivity.this, rlt_root)) {
                     //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
                     Common.userActivityRepository.emptyCart();
                     Common.departmentRepository.emptyCart();
                     Common.unitRepository.emptyCart();
                     Common.userListRepository.emptyCart();
                     Common.userActivityRepository.emptyCart();
-
+                    AllData();
                     getUserData();
                     DepartmentData();
                     unitListData();
                     setUpData();
                     UserActivityData();
-                }
-                else {
+                } else {
                     Snackbar snackbar = Snackbar
                             .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
                     snackbar.show();
@@ -553,15 +665,27 @@ public class MainActivity extends AppCompatActivity {
         });
         infoDialog.show();
     }
+    private void AllData(){
+        Department department = new Department();
+        department.Id=-1;
+        department.DepartmentName="ALL";
+        department.UnitId=1;
+        Common.departmentRepository.insertToDepartment(department);
 
+        Unit unit = new Unit();
+        unit.Id=-1;
+        unit.UnitName="ALL";
+        unit.ShortName="A";
+        Common.unitRepository.insertToUnit(unit);
+    }
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout ) ;
-        if (drawer.isDrawerOpen(GravityCompat. START )) {
-            drawer.closeDrawer(GravityCompat. START ) ;
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         } else {
-            super .onBackPressed() ;
-            finish();
+            super.onBackPressed();
+            //finish();
         }
 
 
@@ -577,12 +701,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
 //            DepartmentData();
 //            unitListData();
-            if (Utils.broadcastIntent(MainActivity.this, rlt_root)){
+            if (Utils.broadcastIntent(MainActivity.this, rlt_root)) {
                 //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
                 load();
                 UserActivityData();
-            }
-            else {
+            } else {
                 Snackbar snackbar = Snackbar
                         .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
                 snackbar.show();
@@ -591,7 +714,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private void getUserData(){
+
+    private void getUserData() {
 
         showLoadingProgress(MainActivity.this);
         compositeDisposable.add(mServiceXact.getUserList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<AllUserListEntity>() {
@@ -600,27 +724,27 @@ public class MainActivity extends AppCompatActivity {
                 // departmentListEntityList=carts;
                 UserList userList = new UserList();
 
-                for (AllUserListEntity.Data data: carts.data){
-                    userList.UserId=data.UserId;
-                    userList.FullName=data.FullName;
-                    userList.Email=data.Email;
-                    userList.OfficeExt=data.OfficeExt;
-                    userList.Password=data.Password;
-                    userList.AdminStatus=data.AdminStatus;
-                    userList.Designation=data.Designation;
-                    userList.JoiningDate=data.JoiningDate;
-                    userList.CorporateMobileNumber=data.CorporateMobileNumber;
-                    userList.PersonalMobileNumber=data.PersonalMobileNumber;
-                    userList.EmergencyContactPerson=data.EmergencyContactPerson;
-                    userList.RelationWithContactPerson=data.RelationWithContactPerson;
-                    userList.BloodGroup=data.BloodGroup;
-                    userList.ProfilePhoto=data.ProfilePhoto;
-                    userList.UnitId=data.UnitId;
-                    userList.UnitName=data.UnitName;
-                    userList.UnitShortName=data.UnitShortName;
-                    userList.DepartmentId=data.DepartmentId;
-                    userList.DepartmentName=data.DepartmentName;
-                    userList.DepartmentShortName=data.DepartmentShortName;
+                for (AllUserListEntity.Data data : carts.data) {
+                    userList.UserId = data.UserId;
+                    userList.FullName = data.FullName;
+                    userList.Email = data.Email;
+                    userList.OfficeExt = data.OfficeExt;
+                    userList.Password = data.Password;
+                    userList.AdminStatus = data.AdminStatus;
+                    userList.Designation = data.Designation;
+                    userList.JoiningDate = data.JoiningDate;
+                    userList.CorporateMobileNumber = data.CorporateMobileNumber;
+                    userList.PersonalMobileNumber = data.PersonalMobileNumber;
+                    userList.EmergencyContactPerson = data.EmergencyContactPerson;
+                    userList.RelationWithContactPerson = data.RelationWithContactPerson;
+                    userList.BloodGroup = data.BloodGroup;
+                    userList.ProfilePhoto = data.ProfilePhoto;
+                    userList.UnitId = data.UnitId;
+                    userList.UnitName = data.UnitName;
+                    userList.UnitShortName = data.UnitShortName;
+                    userList.DepartmentId = data.DepartmentId;
+                    userList.DepartmentName = data.DepartmentName;
+                    userList.DepartmentShortName = data.DepartmentShortName;
                     Common.userListRepository.insertToUserList(userList);
                 }
 
@@ -636,72 +760,41 @@ public class MainActivity extends AppCompatActivity {
         }));
 
     }
-    private void syncUserActivityData(String startDate, String endDate,String userID) {
+
+    private void syncUserActivityData(String startDate, String endDate, String userID) {
         showLoadingProgress(this);
-        UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
-        userActivityPostEntity.from_date = startDate;
-        userActivityPostEntity.to_date = endDate;
-        userActivityPostEntity.user_id = userID;
-        compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
-            @Override
-            public void accept(UserActivityListEntity carts) throws Exception {
-                // departmentListEntityList=carts;
-                if (carts != null) {
-                    UserActivity userActivity = new UserActivity();
-                    for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
-                        userActivity.UserId = userActivityListEntity.UserId;
-                        userActivity.InComment = "";
-                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
-                        userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
-                        String sDate1 = userActivityListEntity.WorkingDate;
-                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(sDate1);
-                        userActivity.Date = date1;
-                        Log.e("dates", "date" + date1);
-
-                        String str = userActivityListEntity.PunchInTime;
-                        if (str == null || str.equals("")) {
-                            userActivity.PunchInTime = 0.0;
-                        } else {
-                            String firstFourChars = "";     //substring containing first 4 characters
+        String firstFourCharss = "";     //substring containing first 4 characters
+        String firstFourChars2 = "";     //substring containing first 4 characters
 
 
-                            firstFourChars = str.substring(0, 5);
+           String date1=null;
+        String date2 = null;
+        firstFourCharss = startDate.substring(2, 3);
+        firstFourChars2 = endDate.substring(2, 3);
+        if (firstFourCharss.equals("-")) {
 
-                            int index = 2;
-                            char ch = '.';
+            String firstFourOne = startDate.substring(6, 10);
 
-                            StringBuilder string = new StringBuilder(firstFourChars);
-                            string.setCharAt(index, ch);
-                            userActivity.PunchInTime = Double.parseDouble(string.toString());
+            String firstFourTwo_ = startDate.substring(2, 6);
+            String firstFourThree = startDate.substring(0, 2);
 
-                        }
+            date1 = firstFourOne + firstFourTwo_ + firstFourThree;
 
-                        // userActivity.PunchInTime= Double.parseDouble(str);
-                        userActivity.PunchOutLocation = userActivityListEntity.PunchOutLocation;
-                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-                        userActivity.Duration = userActivityListEntity.Duration;
-                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
-                        Common.userActivityRepository.insertToUserActivity(userActivity);
+                   }
+        if (firstFourChars2.equals("-")) {
 
-                    }
+            String firstFourOne = endDate.substring(6, 10);
 
-                    dismissLoadingProgress();
-                }
+            String firstFourTwo_ = endDate.substring(2, 6);
+            String firstFourThree = endDate.substring(0, 2);
 
-                //   progressBar.setVisibility(View.GONE);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
+            date2 = firstFourOne + firstFourTwo_ + firstFourThree;
 
-            }
-        }));
-    }
-
-    private void UserActivityData() {
-
-        showLoadingProgress(this);
-        UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
+        }
+            UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
+            userActivityPostEntity.from_date = date1;
+            userActivityPostEntity.to_date = date2;
+            userActivityPostEntity.user_id = userID;
         compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
             @Override
             public void accept(UserActivityListEntity carts) throws Exception {
@@ -712,30 +805,49 @@ public class MainActivity extends AppCompatActivity {
                     userActivity.UserId = userActivityListEntity.UserId;
 
                     userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
-                 //   String sDate1 = userActivityListEntity.WorkingDate;
+                    //   String sDate1 = userActivityListEntity.WorkingDate;
 
-                    String input = userActivityListEntity.WorkingDate;     //input string
+                    String input = userActivityListEntity.WorkingDate;
+
+                    //input string
                     String firstFourCharss = "";     //substring containing first 4 characters
 
 
-                    firstFourCharss = input.substring(2, 3);
-                    if (firstFourCharss.equals("-")){
+                    firstFourCharss = input.substring(4, 5);
+                    if (firstFourCharss.equals("-")) {
 
-                        String firstFourOne=input.substring(6,10);
+                        String firstFourThree = input.substring(8, 10);
 
-                        String firstFourTwo_=input.substring(2,6);
-                        String firstFourThree=input.substring(0,2);
-                        userActivity.WorkingDate = firstFourOne+firstFourTwo_+firstFourThree;
-                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(firstFourOne+firstFourTwo_+firstFourThree);
+                        String firstFourTwo_ = input.substring(4, 8);
+                        String firstFourOne = input.substring(0, 4);
+
+                        userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
+                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
                         userActivity.Date = date1;
-                    }
-                    else
-                    {
-                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(input);
+                    } else {
+
+                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
                         userActivity.Date = date1;
                         userActivity.WorkingDate = userActivityListEntity.WorkingDate;
                     }
-
+//                    if (firstFourCharss.equals("-")){
+//
+//                        String firstFourOne=input.substring(6,10);
+//
+//                        String firstFourTwo_=input.substring(2,6);
+//                        String firstFourThree=input.substring(0,2);
+//
+//                        userActivity.WorkingDate = firstFourOne+firstFourTwo_+firstFourThree;
+//                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourOne+firstFourTwo_+firstFourThree);
+//                        userActivity.Date = date1;
+//                    }
+//                    else
+//                    {
+//
+//                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
+//                        userActivity.Date = date1;
+//                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+//                    }
 
 
                     String str = userActivityListEntity.PunchInTime;
@@ -764,133 +876,10 @@ public class MainActivity extends AppCompatActivity {
                     Common.userActivityRepository.insertToUserActivity(userActivity);
 
                 }
-                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")){
-                    PunchFragment.show();
-                }
+
 
                 dismissLoadingProgress();
                 //   progressBar.setVisibility(View.GONE);
-            }
-        }));
-
-
-    }
-    private void DepartmentData(){
-
-        showLoadingProgress(MainActivity.this);
-
-        compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
-            @Override
-            public void accept(DepartmentListEntity carts) throws Exception {
-                // departmentListEntityList=carts;
-                Department department = new Department();
-
-                for (DepartmentListEntity.Data departmentListEntity: carts.data){
-                    department.Id=departmentListEntity.Id;
-                    department.DepartmentName=departmentListEntity.DepartmentName;
-                    department.UnitId=departmentListEntity.UnitId;
-                    Common.departmentRepository.insertToDepartment(department);
-                }
-
-                dismissLoadingProgress();
-                //   progressBar.setVisibility(View.GONE);
-            }
-        }));
-
-
-    }
-    private void unitListData(){
-        showLoadingProgress(MainActivity.this);
-
-
-        compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
-            @Override
-            public void accept(UnitListEntity unitListEntities) throws Exception {
-                Unit unit = new Unit();
-
-                for (UnitListEntity.Data unitList: unitListEntities.data){
-
-                    unit.Id=unitList.Id;
-                    unit.UnitName=unitList.UnitName;
-                    unit.ShortName=unitList.ShortName;
-                    Common.unitRepository.insertToUnit(unit);
-                }
-
-                dismissLoadingProgress();
-                //   progressBar.setVisibility(View.GONE);
-
-//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-            }
-
-        }));
-    }
-    private void setUpData(){
-        showLoadingProgress(MainActivity.this);
-
-        compositeDisposable.add(mServiceXact.getSetUpData().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<SetUpDataEntity>() {
-            @Override
-            public void accept(SetUpDataEntity unitListEntities) throws Exception {
-                SetUp setUp = new SetUp();
-
-                setUp.EXPECTED_DURATION=unitListEntities.data.EXPECTED_DURATION;
-                setUp.OFFICE_IN_TIME=unitListEntities.data.OFFICE_IN_TIME;
-                setUp.OFFICE_OUT_TIME=unitListEntities.data.OFFICE_OUT_TIME;
-                setUp.GRACE_TIME=unitListEntities.data.GRACE_TIME;
-                setUp.HALFDAY_DURATION=unitListEntities.data.HALFDAY_DURATION;
-                setUp.ENTITLED_LEAVE_CASUAL=unitListEntities.data.ENTITLED_LEAVE_CASUAL;
-                setUp.ENTITLED_LEAVE_SICK=unitListEntities.data.ENTITLED_LEAVE_SICK;
-                setUp.ENTITLED_LEAVE_TOTAL=unitListEntities.data.ENTITLED_LEAVE_TOTAL;
-
-                dismissLoadingProgress();
-                //   progressBar.setVisibility(View.GONE);
-
-//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
-//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-            }
-
-        }));
-    }
-    private void initDB() {
-        Common.mainDatabase = MainDatabase.getInstance(this);
-        Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
-        Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
-        Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
-        Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
-        Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
-        Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
-    }
-
-
-    private void load() {
-        showLoadingProgress(this);
-        compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
-            @Override
-            public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
-                LeaveSummary leaveSummary = new LeaveSummary();
-                EntityLeave entityLeave = new EntityLeave();
-                RemainingLeave remainingLeave = new RemainingLeave();
-                for (LeaveSummaryEntity leaveSummaryEntity : carts) {
-                    leaveSummary.FullName = leaveSummaryEntity.FullName;
-                    leaveSummary.UserIcon = leaveSummaryEntity.UserIcon;
-                    leaveSummary.UserId = leaveSummaryEntity.UserId;
-                    entityLeave.Casual = leaveSummaryEntity.entityLeaves.Casual;
-                    entityLeave.Halfday = leaveSummaryEntity.entityLeaves.Halfday;
-                    entityLeave.Sick = leaveSummaryEntity.entityLeaves.Sick;
-                    entityLeave.UnPaid = leaveSummaryEntity.entityLeaves.UnPaid;
-                    remainingLeave.Casual = leaveSummaryEntity.remainingLeaves.Casual;
-                    remainingLeave.Sick = leaveSummaryEntity.remainingLeaves.Sick;
-
-                    Common.leaveSummaryRepository.insertToLeaveSummary(leaveSummary);
-                    Common.entityLeaveRepository.insertToEntityLeave(entityLeave);
-                    Common.remainingLeaveRepository.insertToRemainingLeave(remainingLeave);
-                }
-//                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
-//
-//                rcl_leave_summary_list.setAdapter(mAdapters);
-                dismissLoadingProgress();
             }
         }, new Consumer<Throwable>() {
             @Override
@@ -898,97 +887,332 @@ public class MainActivity extends AppCompatActivity {
                 dismissLoadingProgress();
             }
         }));
-
-
-    }
-
-    private void onBackForPunch() {
-        Fragment f = getVisibleFragment();
-        Log.e("frag", "frag" + f);
-        if (f != null) {
-            if (f instanceof MoreFragment) {
-                int handle = ((MoreFragment) f).handleBackPress(2);
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 2) {
-                    hideHeaderDetail();
-                } else {
-                    // do not hide header
-                }
-            }
-
         }
-    }
 
-    private void onBack() {
-        Fragment f = getVisibleFragment();
-        Log.e("frag", "frag" + f);
-        if (f != null) {
-            if (f instanceof MoreFragment) {
+        private void UserActivityData () {
 
-                if (f instanceof PunchInFragment) {
-                    Toast.makeText(mContext, "true", Toast.LENGTH_SHORT).show();
-                }
-                int handle = ((MoreFragment) f).handleBackPress(1);
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 1) {
-                    int handles = ((MoreFragment) f).handleBackPress(2);
-                    if (handles == 2) {
-                        hideHeaderDetail();
+            showLoadingProgress(this);
+            UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
+            compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
+                @Override
+                public void accept(UserActivityListEntity carts) throws Exception {
+                    // departmentListEntityList=carts;
+                    UserActivity userActivity = new UserActivity();
+
+                    for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
+                        userActivity.UserId = userActivityListEntity.UserId;
+
+                        userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
+                        //   String sDate1 = userActivityListEntity.WorkingDate;
+
+                        String input = userActivityListEntity.WorkingDate;
+                        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
+                        Date date = new Date(System.currentTimeMillis());
+                        final String currentDate=formatter.format(date);
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(date);
+                        c.add(Calendar.MONTH, -1);
+                        String lastDate=formatter.format(c.getTime());
+                        if (input.equals("--")){
+                            input=lastDate;
+                        }
+
+                        //input string
+                        String firstFourCharss = "";     //substring containing first 4 characters
+
+
+                        try {
+                            firstFourCharss = input.substring(4, 5);
+                            if (firstFourCharss.equals("-")) {
+
+                                String firstFourThree = input.substring(8, 10);
+
+                                String firstFourTwo_ = input.substring(4, 8);
+                                String firstFourOne = input.substring(0, 4);
+
+                                userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
+                                Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
+                                userActivity.Date = date1;
+                            } else {
+
+                                Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
+                                userActivity.Date = date1;
+                                userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+//                    if (firstFourCharss.equals("-")){
+//
+//                        String firstFourOne=input.substring(6,10);
+//
+//                        String firstFourTwo_=input.substring(2,6);
+//                        String firstFourThree=input.substring(0,2);
+//
+//                        userActivity.WorkingDate = firstFourOne+firstFourTwo_+firstFourThree;
+//                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourOne+firstFourTwo_+firstFourThree);
+//                        userActivity.Date = date1;
+//                    }
+//                    else
+//                    {
+//
+//                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
+//                        userActivity.Date = date1;
+//                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+//                    }
+
+
+                        String str = userActivityListEntity.PunchInTime;
+                        if (str == null || str.equals("")) {
+                            userActivity.PunchInTime = 0.0;
+                        } else {
+                            String firstFourChars = "";     //substring containing first 4 characters
+
+
+                            firstFourChars = str.substring(0, 5);
+
+                            int index = 2;
+                            char ch = '.';
+
+                            StringBuilder string = new StringBuilder(firstFourChars);
+                            string.setCharAt(index, ch);
+                            userActivity.PunchInTime = Double.parseDouble(string.toString());
+
+                        }
+
+                        // userActivity.PunchInTime= Double.parseDouble(str);
+                        userActivity.PunchOutLocation = userActivityListEntity.PunchOutLocation;
+                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                        userActivity.Duration = userActivityListEntity.Duration;
+                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                        Common.userActivityRepository.insertToUserActivity(userActivity);
+
+                    }
+                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")) {
+                        PunchFragment.show();
                     }
 
-                } else if (handle == 2) {
-                    hideHeaderDetail();
-                } else {
-                    // do not hide header
+                    dismissLoadingProgress();
+                    //   progressBar.setVisibility(View.GONE);
+                }
+            }));
+
+
+        }
+        private void DepartmentData () {
+
+            showLoadingProgress(MainActivity.this);
+
+            compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
+                @Override
+                public void accept(DepartmentListEntity carts) throws Exception {
+                    // departmentListEntityList=carts;
+                    Department department = new Department();
+
+                    for (DepartmentListEntity.Data departmentListEntity : carts.data) {
+                        department.Id = departmentListEntity.Id;
+                        department.DepartmentName = departmentListEntity.DepartmentName;
+                        department.UnitId = departmentListEntity.UnitId;
+                        Common.departmentRepository.insertToDepartment(department);
+                    }
+
+                    dismissLoadingProgress();
+                    //   progressBar.setVisibility(View.GONE);
+                }
+            }));
+
+
+        }
+        private void unitListData () {
+            showLoadingProgress(MainActivity.this);
+
+
+            compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
+                @Override
+                public void accept(UnitListEntity unitListEntities) throws Exception {
+                    Unit unit = new Unit();
+
+                    for (UnitListEntity.Data unitList : unitListEntities.data) {
+
+                        unit.Id = unitList.Id;
+                        unit.UnitName = unitList.UnitName;
+                        unit.ShortName = unitList.ShortName;
+                        Common.unitRepository.insertToUnit(unit);
+                    }
+
+                    dismissLoadingProgress();
+                    //   progressBar.setVisibility(View.GONE);
+
+//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
                 }
 
-            } else if (f instanceof LeaveFragment) {
-                int handle = ((LeaveFragment) f).handleBackPress();
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 2) {
-                    hideHeaderDetail();
-                } else {
-                    // do not hide header
+            }));
+        }
+        private void setUpData () {
+            showLoadingProgress(MainActivity.this);
+
+            compositeDisposable.add(mServiceXact.getSetUpData().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<SetUpDataEntity>() {
+                @Override
+                public void accept(SetUpDataEntity unitListEntities) throws Exception {
+                    SetUp setUp = new SetUp();
+
+                    setUp.EXPECTED_DURATION = unitListEntities.data.EXPECTED_DURATION;
+                    setUp.OFFICE_IN_TIME = unitListEntities.data.OFFICE_IN_TIME;
+                    setUp.OFFICE_OUT_TIME = unitListEntities.data.OFFICE_OUT_TIME;
+                    setUp.GRACE_TIME = unitListEntities.data.GRACE_TIME;
+                    setUp.HALFDAY_DURATION = unitListEntities.data.HALFDAY_DURATION;
+                    setUp.ENTITLED_LEAVE_CASUAL = unitListEntities.data.ENTITLED_LEAVE_CASUAL;
+                    setUp.ENTITLED_LEAVE_SICK = unitListEntities.data.ENTITLED_LEAVE_SICK;
+                    setUp.ENTITLED_LEAVE_TOTAL = unitListEntities.data.ENTITLED_LEAVE_TOTAL;
+
+                    dismissLoadingProgress();
+                    //   progressBar.setVisibility(View.GONE);
+
+//                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
+//                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
                 }
-            } else if (f instanceof LeaveApplicationFragment) {
-                int handle = ((LeaveApplicationFragment) f).handleBackPress();
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 2) {
-                    hideHeaderDetailForApplication();
-                } else {
-                    // do not hide header
+
+            }));
+        }
+        private void initDB () {
+            Common.mainDatabase = MainDatabase.getInstance(this);
+            Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
+            Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
+            Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
+            Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
+            Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
+            Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
+        }
+
+
+        private void load () {
+            showLoadingProgress(this);
+            compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
+                @Override
+                public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
+                    LeaveSummary leaveSummary = new LeaveSummary();
+                    EntityLeave entityLeave = new EntityLeave();
+                    RemainingLeave remainingLeave = new RemainingLeave();
+                    for (LeaveSummaryEntity leaveSummaryEntity : carts) {
+                        leaveSummary.FullName = leaveSummaryEntity.FullName;
+                        leaveSummary.UserIcon = leaveSummaryEntity.UserIcon;
+                        leaveSummary.UserId = leaveSummaryEntity.UserId;
+                        entityLeave.Casual = leaveSummaryEntity.entityLeaves.Casual;
+                        entityLeave.Halfday = leaveSummaryEntity.entityLeaves.Halfday;
+                        entityLeave.Sick = leaveSummaryEntity.entityLeaves.Sick;
+                        entityLeave.UnPaid = leaveSummaryEntity.entityLeaves.UnPaid;
+                        remainingLeave.Casual = leaveSummaryEntity.remainingLeaves.Casual;
+                        remainingLeave.Sick = leaveSummaryEntity.remainingLeaves.Sick;
+
+                        Common.leaveSummaryRepository.insertToLeaveSummary(leaveSummary);
+                        Common.entityLeaveRepository.insertToEntityLeave(entityLeave);
+                        Common.remainingLeaveRepository.insertToRemainingLeave(remainingLeave);
+                    }
+//                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
+//
+//                rcl_leave_summary_list.setAdapter(mAdapters);
+                    dismissLoadingProgress();
                 }
+            }, new Consumer<Throwable>() {
+                @Override
+                public void accept(Throwable throwable) throws Exception {
+                    dismissLoadingProgress();
+                }
+            }));
+
+
+        }
+
+        private void onBackForPunch () {
+            Fragment f = getVisibleFragment();
+            Log.e("frag", "frag" + f);
+            if (f != null) {
+                if (f instanceof MoreFragment) {
+                    int handle = ((MoreFragment) f).handleBackPress(2);
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetail();
+                    } else {
+                        // do not hide header
+                    }
+                }
+
             }
-            // else if ()
-            if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
-                PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
-                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                transaction.remove(f1);
-                transaction.commit();
-                getSupportFragmentManager().popBackStack();
+        }
 
-                hideHeaderDetail();
-                // return 2;
+        private void onBack () {
+            Fragment f = getVisibleFragment();
+            Log.e("frag", "frag" + f);
+            if (f != null) {
+                if (f instanceof MoreFragment) {
 
-            } else if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
-                AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
-                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                transaction.remove(f1);
-                transaction.commit();
-                getSupportFragmentManager().popBackStack();
+                    if (f instanceof PunchInFragment) {
+                        Toast.makeText(mContext, "true", Toast.LENGTH_SHORT).show();
+                    }
+                    int handle = ((MoreFragment) f).handleBackPress(1);
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 1) {
+                        int handles = ((MoreFragment) f).handleBackPress(2);
+                        if (handles == 2) {
+                            hideHeaderDetail();
+                        }
 
-                hideHeaderDetail();
-                // return 2;
+                    } else if (handle == 2) {
+                        hideHeaderDetail();
+                    } else {
+                        // do not hide header
+                    }
 
-            }
+                } else if (f instanceof LeaveFragment) {
+                    int handle = ((LeaveFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetail();
+                    } else {
+                        // do not hide header
+                    }
+                } else if (f instanceof LeaveApplicationFragment) {
+                    int handle = ((LeaveApplicationFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForApplication();
+                    } else {
+                        // do not hide header
+                    }
+                }
+                // else if ()
+                if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                    PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
+                            .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                    transaction.remove(f1);
+                    transaction.commit();
+                    getSupportFragmentManager().popBackStack();
+
+                    hideHeaderDetail();
+                    // return 2;
+
+                } else if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
+                    AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
+                            .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                    transaction.remove(f1);
+                    transaction.commit();
+                    getSupportFragmentManager().popBackStack();
+
+                    hideHeaderDetail();
+                    // return 2;
+
+                }
 //
 //                int handle = ((SetUpFragment) f).handleBackPress();
 //                if (handle == 0) {
@@ -1000,418 +1224,424 @@ public class MainActivity extends AppCompatActivity {
 //                }
 
 
-        } else {
-            finish();
-        }
-    }
-
-    public void hideHeaderDetail() {
-        rlt_header.setVisibility(View.VISIBLE);
-        title.setVisibility(View.VISIBLE);
-        //card_view.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-        rlt_header_details.setVisibility(View.GONE);
-
-
-    }
-
-    public void hideHeaderDetailForApplication() {
-        rlt_header.setVisibility(View.GONE);
-        title.setVisibility(View.GONE);
-        //card_view.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.VISIBLE);
-        rlt_header_details.setVisibility(View.VISIBLE);
-        btn_header_application_create.setVisibility(View.VISIBLE);
-        details_title.setText("Leave Summary");
-
-    }
-
-    public void hideHeaderDetailForLeave(String name) {
-        if (name.equals("Approval")) {
-            rlt_header.setVisibility(View.GONE);
-            title.setVisibility(View.GONE);
-            //card_view.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.VISIBLE);
-            rlt_header_details.setVisibility(View.VISIBLE);
-            details_title.setText("Leave Summary");
-            btn_header_application_create.setVisibility(View.VISIBLE);
-        } else if (name.equals("Application")) {
-            rlt_header.setVisibility(View.GONE);
-            title.setVisibility(View.GONE);
-            //card_view.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.VISIBLE);
-            rlt_header_details.setVisibility(View.VISIBLE);
-            details_title.setText("Leave Application");
-            btn_header_application_create.setVisibility(View.GONE);
-        }
-
-
-    }
-
-    public Fragment getVisibleFragment() {
-        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        Collections.reverse(fragments);
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment != null && fragment.isVisible())
-                    return fragment;
+            } else {
+                finish();
             }
         }
-        return null;
-    }
 
-    private void setUnselectAllmenu() {
-        tv_home_menu.setSelected(false);
-        tv_setup_menu.setSelected(false);
-        tv_user_activity_menu.setSelected(false);
-        tv_more_menu.setSelected(false);
-        tv_user_setup_menus.setSelected(false);
-
-
-        btn_footer_home.setSelected(false);
-        btn_footer_setUp.setSelected(false);
-        btn_footer_user_activity.setSelected(false);
-        btn_footer_more.setSelected(false);
-        btn_footer_setup_user.setSelected(false);
-
-    }
-
-    public void setUpFooter(int type) {
-        setUnselectAllmenu();
-        switch (type) {
-            case 0:
-                tv_home_menu.setSelected(true);
-                btn_footer_home.setSelected(true);
-                break;
-            case 1:
-                tv_setup_menu.setSelected(true);
-                btn_footer_setUp.setSelected(true);
-                break;
-            case 2:
-                tv_user_activity_menu.setSelected(true);
-                btn_footer_user_activity.setSelected(true);
-                break;
-            case 3:
-                tv_more_menu.setSelected(true);
-                btn_footer_more.setSelected(true);
-                break;
-            case 4:
-                tv_user_setup_menus.setSelected(true);
-                btn_footer_setup_user.setSelected(true);
-                break;
-
-        }
-
-    }
-
-    //    }
-    public void btn_home_clicked(View view) {
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = true;
-        setUpFooter(HOME_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_HOME, null);
-        // checkToGetTicket(false);
-        title.setText("Home");
-        rlt_header_details.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-
-        btn_header_application.setVisibility(View.GONE);
-        btn_header_application_create.setVisibility(View.GONE);
-        rlt_header.setVisibility(View.VISIBLE);
-        title.setVisibility(View.VISIBLE);
-        btn_header_sync.setVisibility(View.VISIBLE);
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            btn_header_sync.setVisibility(View.VISIBLE);
-        } else {
-            btn_header_sync.setVisibility(View.GONE);
-
-
-        }
-
-
-    }
-
-    public void btn_setup_user_clicked(View view) {
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = true;
-        setUpFooter(SET_UP_USER_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
-        // checkToGetTicket(false);
-
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            title.setText("Punch");
-            btn_header_sync.setVisibility(View.GONE);
-        } else {
-            Constant.SYNC="Status";
-            title.setText("Status");
-            btn_header_sync.setVisibility(View.VISIBLE);
-        }
-
-        rlt_header_details.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-        btn_header_application.setVisibility(View.GONE);
-        rlt_header.setVisibility(View.VISIBLE);
-        title.setVisibility(View.VISIBLE);
-        btn_header_application_create.setVisibility(View.GONE);
-    }
-
-    public void btn_setup_clicked(View view) {
-        // Toast.makeText(mContext, "Not implement Yet", Toast.LENGTH_SHORT).show();
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = false;
-        setUpFooter(SET_UP_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_SET_UP, null);
-        // checkToGetTicket(false);
-        title.setText("Leave");
-        rlt_header_details.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-        rlt_header.setVisibility(View.VISIBLE);
-        title.setVisibility(View.VISIBLE);
-        btn_header_application.setVisibility(View.VISIBLE);
-        btn_header_sync.setVisibility(View.GONE);
-
-    }
-
-    public void btn_user_clicked(View view) {
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = false;
-        setUpFooter(USER_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
-        // checkToGetTicket(false);
-        title.setText("User Activity");
-        rlt_header.setVisibility(View.VISIBLE);
-        title.setVisibility(View.VISIBLE);
-        btn_header_application_create.setVisibility(View.GONE);
-        btn_header_application.setVisibility(View.GONE);
-        rlt_header_details.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-        btn_header_sync.setVisibility(View.VISIBLE);
-        Constant.SYNC="UserActivitY";
-    }
-
-    public void btn_more_clicked(View view) {
-
-        Log.e(TAG, "Home Button Clicked");
-        Utils.is_home = false;
-        setUpFooter(MORE_BTN);
-        //show the initial home page
-        afterClickTabItem(Constant.FRAG_MORE, null);
-        // checkToGetTicket(false);
-
-        btn_header_application.setVisibility(View.GONE);
-        btn_header_application_create.setVisibility(View.GONE);
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            title.setText("Status");
-            tv_more_menu.setText("Status");
-            Constant.SYNC="Status";
-            btn_footer_more.setImageResource(R.drawable.img_footer_setup_selector);
-            btn_header_sync.setVisibility(View.VISIBLE);
-        } else {
-            title.setText("MORE");
-            tv_more_menu.setText("MORE");
-            btn_header_sync.setVisibility(View.GONE);
-            btn_footer_more.setImageResource(R.drawable.img_footer_more_selector);
-        }
-        rlt_header_details.setVisibility(View.GONE);
-        view_header_details.setVisibility(View.GONE);
-
-    }
-
-    public void onLeaveApplication() {
-
-        Fragment f = getVisibleFragment();
-        Log.e("frag", "frag" + f);
-        if (f != null) {
-            if (f instanceof LeaveFragment) {
-
-                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")) {
-                    // newFrag = new SetUpFragment();
-
-                    int handle = ((LeaveFragment) f).leaveApproval();
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetailForLeave("Application");
-                    } else {
-                        // do not hide header
-                    }
-                } else {
-
-                    int handle = ((LeaveFragment) f).leaveApplication();
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetailForLeave("Application");
-                    } else {
-                        // do not hide header
-                    }
-                }
-
-
-            }
-
-        } else {
-            // finish();
-        }
-    }
-
-    public void onLeaveApplicationCreate() {
-
-        Fragment f = getVisibleFragment();
-        Log.e("frag", "frag" + f);
-        if (f != null) {
-            if (f instanceof LeaveApplicationApprovalFragment) {
-                int handle = ((LeaveApplicationApprovalFragment) f).leaveApplication();
-                if (handle == 0) {
-                    finish();
-                } else if (handle == 2) {
-                    hideHeaderDetailForLeave("Approval");
-                } else {
-                    // do not hide header
-                }
-
-
-            }
-
-        } else {
-            // finish();
-        }
-    }
-
-    public void hideHeaderDetails() {
-        rlt_header.setVisibility(View.GONE);
-        btn_header_application.setVisibility(View.GONE);
-        //title.setVisibility(View.GONE);
-
-        rlt_header_details.setVisibility(View.VISIBLE);
-        view_header_details.setVisibility(View.VISIBLE);
-        //rlt_header_moments.setVisibility(View.GONE);
-
-    }
-
-    public void afterClickTabItem(int fragId, Object obj) {
-        addFragment(fragId, false);
-    }
-
-    public void addFragment(int fragId, boolean isHasAnimation) {
-        // init fragment manager
-        mFragManager = getSupportFragmentManager();
-        // create transaction
-        fragTransaction = mFragManager.beginTransaction();
-
-        // init argument
-
-
-        //check if there is any backstack if yes then remove it
-        int count = mFragManager.getBackStackEntryCount();
-        if (count != 0) {
-            //this will clear the back stack and displays no animation on the screen
-            mFragManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-
-
-        // check current fragment is wanted fragment
-        if (mCurrentFrag != null && mCurrentFrag.getTag() != null && mCurrentFrag.getTag().equals(String.valueOf(fragId))) {
-            return;
-        }
-
-        Fragment newFrag = null;
-        // identify which fragment will be called
-        switch (fragId) {
-            case Constant.FRAG_HOME:
-                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                    newFrag = new DashboardFragment();
-                } else {
-                    Constant.SYNC="UserActivitY";
-                    newFrag = new PunchFragment();
-
-                }
-                break;
-            case Constant.FRAG_SET_UP:
-                newFrag = new LeaveApplicationApprovalFragment();
-
-                //   newFrag = new AlertFragment();
-                //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
-                //  setUnreadMessage();
-                break;
-            case Constant.FRAG_USER_ACTIVTY:
-                newFrag = new SetUpFragment();
-                // newFrag = new ChatCategoryFragment();
-                //setUpHeader(Constant.FRAG_CHAT);
-
-                break;
-            case Constant.FRAG_MORE:
-                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                    newFrag = new HomeFragment();
-                } else {
-
-                    newFrag = new MoreFragment();
-
-                }
-
-                // newFrag = new ChatCategoryFragment();
-                //setUpHeader(Constant.FRAG_CHAT);
-
-                break;
-            case Constant.FRAG_SET_UP_USER:
-                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                    newFrag = new PunchFragment();
-                } else {
-
-                    newFrag = new HomeFragment();
-
-                }
-
-                // newFrag = new ChatCategoryFragment();
-                //setUpHeader(Constant.FRAG_CHAT);
-
-                break;
-
-            default:
-                break;
-        }
-
-
-        // param 1: container id, param 2: new fragment, param 3: fragment id
-        fragTransaction.replace(R.id.main_container, newFrag, String.valueOf(fragId));
-        // prevent showed when user press back fabReview
-        fragTransaction.addToBackStack(String.valueOf(fragId));
-        fragTransaction.commit();
-
-    }
-
-    public void showHeaderDetail(String titles) {
-
-        if (titles.equals("no")) {
+        public void hideHeaderDetail () {
             rlt_header.setVisibility(View.VISIBLE);
-            // / rlt_header_details.setVisibility(View.VISIBLE);
-            //view_header_details.setVisibility(View.VISIBLE);
-
             title.setVisibility(View.VISIBLE);
-        } else if (titles.equals("test")) {
+            //card_view.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            rlt_header_details.setVisibility(View.GONE);
+
+
+        }
+
+        public void hideHeaderDetailForApplication () {
             rlt_header.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+            //card_view.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.VISIBLE);
+            rlt_header_details.setVisibility(View.VISIBLE);
+            btn_header_application_create.setVisibility(View.VISIBLE);
+            details_title.setText("Leave Summary");
+
+        }
+
+        public void hideHeaderDetailForLeave (String name){
+            if (name.equals("Approval")) {
+                rlt_header.setVisibility(View.GONE);
+                title.setVisibility(View.GONE);
+                //card_view.setVisibility(View.GONE);
+                view_header_details.setVisibility(View.VISIBLE);
+                rlt_header_details.setVisibility(View.VISIBLE);
+                details_title.setText("Leave Summary");
+                btn_header_application_create.setVisibility(View.VISIBLE);
+            } else if (name.equals("Application")) {
+                rlt_header.setVisibility(View.GONE);
+                title.setVisibility(View.GONE);
+                //card_view.setVisibility(View.GONE);
+                view_header_details.setVisibility(View.VISIBLE);
+                rlt_header_details.setVisibility(View.VISIBLE);
+                details_title.setText("Leave Application");
+                btn_header_application_create.setVisibility(View.GONE);
+            }
+
+
+        }
+
+        public Fragment getVisibleFragment () {
+            FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+            List<Fragment> fragments = fragmentManager.getFragments();
+            Collections.reverse(fragments);
+            if (fragments != null) {
+                for (Fragment fragment : fragments) {
+                    if (fragment != null && fragment.isVisible())
+                        return fragment;
+                }
+            }
+            return null;
+        }
+
+        private void setUnselectAllmenu () {
+            tv_home_menu.setSelected(false);
+            tv_setup_menu.setSelected(false);
+            tv_user_activity_menu.setSelected(false);
+            tv_more_menu.setSelected(false);
+            tv_user_setup_menus.setSelected(false);
+
+
+            btn_footer_home.setSelected(false);
+            btn_footer_setUp.setSelected(false);
+            btn_footer_user_activity.setSelected(false);
+            btn_footer_more.setSelected(false);
+            btn_footer_setup_user.setSelected(false);
+
+        }
+
+        public void setUpFooter ( int type){
+            setUnselectAllmenu();
+            switch (type) {
+                case 0:
+                    tv_home_menu.setSelected(true);
+                    btn_footer_home.setSelected(true);
+                    break;
+                case 1:
+                    tv_setup_menu.setSelected(true);
+                    btn_footer_setUp.setSelected(true);
+                    break;
+                case 2:
+                    tv_user_activity_menu.setSelected(true);
+                    btn_footer_user_activity.setSelected(true);
+                    break;
+                case 3:
+                    tv_more_menu.setSelected(true);
+                    btn_footer_more.setSelected(true);
+                    break;
+                case 4:
+                    tv_user_setup_menus.setSelected(true);
+                    btn_footer_setup_user.setSelected(true);
+                    break;
+
+            }
+
+        }
+
+        //    }
+        public void btn_home_clicked (View view){
+            Log.e(TAG, "Home Button Clicked");
+            Utils.is_home = true;
+            setUpFooter(HOME_BTN);
+            //show the initial home page
+            afterClickTabItem(Constant.FRAG_HOME, null);
+            // checkToGetTicket(false);
+            title.setText("Home");
             rlt_header_details.setVisibility(View.GONE);
             view_header_details.setVisibility(View.GONE);
-            btn_header_application_create.setVisibility(View.VISIBLE);
-            title.setVisibility(View.GONE);
-        } else if (titles.equals("rrr")) {
-            rlt_header.setVisibility(View.GONE);
-            rlt_header_details.setVisibility(View.VISIBLE);
-            view_header_details.setVisibility(View.VISIBLE);
+
+            btn_header_application.setVisibility(View.GONE);
             btn_header_application_create.setVisibility(View.GONE);
-            title.setVisibility(View.GONE);
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+            btn_header_sync.setVisibility(View.VISIBLE);
+            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                btn_header_sync.setVisibility(View.VISIBLE);
+            } else {
+                btn_header_sync.setVisibility(View.GONE);
+
+
+            }
+
+
         }
 
+        public void btn_setup_user_clicked (View view){
+            Log.e(TAG, "Home Button Clicked");
+            Utils.is_home = true;
+            setUpFooter(SET_UP_USER_BTN);
+            //show the initial home page
+            afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+            // checkToGetTicket(false);
+
+            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                title.setText("Punch");
+                btn_header_sync.setVisibility(View.GONE);
+            } else {
+                Constant.SYNC = "Status";
+                title.setText("Status");
+                btn_header_sync.setVisibility(View.VISIBLE);
+            }
+
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            btn_header_application.setVisibility(View.GONE);
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+            btn_header_application_create.setVisibility(View.GONE);
+        }
+
+        public void btn_setup_clicked (View view){
+            // Toast.makeText(mContext, "Not implement Yet", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Home Button Clicked");
+            Utils.is_home = false;
+            setUpFooter(SET_UP_BTN);
+            //show the initial home page
+            afterClickTabItem(Constant.FRAG_SET_UP, null);
+            // checkToGetTicket(false);
+            title.setText("Leave");
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+            btn_header_application.setVisibility(View.VISIBLE);
+            btn_header_sync.setVisibility(View.GONE);
+
+        }
+
+        public void btn_user_clicked (View view){
+            Log.e(TAG, "Home Button Clicked");
+            Utils.is_home = false;
+            setUpFooter(USER_BTN);
+            //show the initial home page
+            afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
+            // checkToGetTicket(false);
+            title.setText("User Activity");
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+            btn_header_application_create.setVisibility(View.GONE);
+            btn_header_application.setVisibility(View.GONE);
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            btn_header_sync.setVisibility(View.VISIBLE);
+            Constant.SYNC = "UserActivitY";
+        }
+
+        public void btn_more_clicked (View view){
+
+            Log.e(TAG, "Home Button Clicked");
+            Utils.is_home = false;
+            setUpFooter(MORE_BTN);
+            //show the initial home page
+            afterClickTabItem(Constant.FRAG_MORE, null);
+            // checkToGetTicket(false);
+
+            btn_header_application.setVisibility(View.GONE);
+            btn_header_application_create.setVisibility(View.GONE);
+            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                title.setText("Status");
+                tv_more_menu.setText("Status");
+                Constant.SYNC = "Status";
+                btn_footer_more.setImageResource(R.drawable.img_footer_setup_selector);
+                btn_header_sync.setVisibility(View.VISIBLE);
+                rlt_header_details.setVisibility(View.GONE);
+                view_header_details.setVisibility(View.GONE);
+                rlt_header.setVisibility(View.VISIBLE);
+                title.setVisibility(View.VISIBLE);
+            } else {
+                title.setText("MORE");
+                tv_more_menu.setText("MORE");
+                btn_header_sync.setVisibility(View.GONE);
+                btn_footer_more.setImageResource(R.drawable.img_footer_more_selector);
+                rlt_header_details.setVisibility(View.GONE);
+                view_header_details.setVisibility(View.GONE);
+                rlt_header.setVisibility(View.VISIBLE);
+                title.setVisibility(View.VISIBLE);
+
+
+            }
+        }
+        public void onLeaveApplication () {
+
+            Fragment f = getVisibleFragment();
+            Log.e("frag", "frag" + f);
+            if (f != null) {
+                if (f instanceof LeaveFragment) {
+
+                    if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")) {
+                        // newFrag = new SetUpFragment();
+
+                        int handle = ((LeaveFragment) f).leaveApproval();
+                        if (handle == 0) {
+                            finish();
+                        } else if (handle == 2) {
+                            hideHeaderDetailForLeave("Application");
+                        } else {
+                            // do not hide header
+                        }
+                    } else {
+
+                        int handle = ((LeaveFragment) f).leaveApplication();
+                        if (handle == 0) {
+                            finish();
+                        } else if (handle == 2) {
+                            hideHeaderDetailForLeave("Application");
+                        } else {
+                            // do not hide header
+                        }
+                    }
+
+
+                }
+
+            } else {
+                // finish();
+            }
+        }
+
+        public void onLeaveApplicationCreate () {
+
+            Fragment f = getVisibleFragment();
+            Log.e("frag", "frag" + f);
+            if (f != null) {
+                if (f instanceof LeaveApplicationApprovalFragment) {
+                    int handle = ((LeaveApplicationApprovalFragment) f).leaveApplication();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForLeave("Approval");
+                    } else {
+                        // do not hide header
+                    }
+
+
+                }
+
+            } else {
+                // finish();
+            }
+        }
+
+        public void hideHeaderDetails () {
+            rlt_header.setVisibility(View.GONE);
+            btn_header_application.setVisibility(View.GONE);
+            //title.setVisibility(View.GONE);
+
+            rlt_header_details.setVisibility(View.VISIBLE);
+            view_header_details.setVisibility(View.VISIBLE);
+            //rlt_header_moments.setVisibility(View.GONE);
+
+        }
+
+        public void afterClickTabItem ( int fragId, Object obj){
+            addFragment(fragId, false);
+        }
+
+        public void addFragment ( int fragId, boolean isHasAnimation){
+            // init fragment manager
+            mFragManager = getSupportFragmentManager();
+            // create transaction
+            fragTransaction = mFragManager.beginTransaction();
+
+            // init argument
+
+
+            //check if there is any backstack if yes then remove it
+            int count = mFragManager.getBackStackEntryCount();
+            if (count != 0) {
+                //this will clear the back stack and displays no animation on the screen
+                mFragManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+
+
+            // check current fragment is wanted fragment
+            if (mCurrentFrag != null && mCurrentFrag.getTag() != null && mCurrentFrag.getTag().equals(String.valueOf(fragId))) {
+                return;
+            }
+
+            Fragment newFrag = null;
+            // identify which fragment will be called
+            switch (fragId) {
+                case Constant.FRAG_HOME:
+                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                        newFrag = new DashboardFragment();
+                    } else {
+                        Constant.SYNC = "UserActivitY";
+                        newFrag = new PunchFragment();
+
+                    }
+                    break;
+                case Constant.FRAG_SET_UP:
+                    newFrag = new LeaveApplicationApprovalFragment();
+
+                    //   newFrag = new AlertFragment();
+                    //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
+                    //  setUnreadMessage();
+                    break;
+                case Constant.FRAG_USER_ACTIVTY:
+                    newFrag = new SetUpFragment();
+                    // newFrag = new ChatCategoryFragment();
+                    //setUpHeader(Constant.FRAG_CHAT);
+
+                    break;
+                case Constant.FRAG_MORE:
+                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                        newFrag = new HomeFragment();
+                    } else {
+
+                        newFrag = new MoreFragment();
+
+                    }
+
+                    // newFrag = new ChatCategoryFragment();
+                    //setUpHeader(Constant.FRAG_CHAT);
+
+                    break;
+                case Constant.FRAG_SET_UP_USER:
+                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                        newFrag = new PunchFragment();
+                    } else {
+
+                        newFrag = new HomeFragment();
+
+                    }
+
+                    // newFrag = new ChatCategoryFragment();
+                    //setUpHeader(Constant.FRAG_CHAT);
+
+                    break;
+
+                default:
+                    break;
+            }
+
+
+            // param 1: container id, param 2: new fragment, param 3: fragment id
+            fragTransaction.replace(R.id.main_container, newFrag, String.valueOf(fragId));
+            // prevent showed when user press back fabReview
+            fragTransaction.addToBackStack(String.valueOf(fragId));
+            fragTransaction.commit();
+
+        }
+
+        public void showHeaderDetail (String titles){
+
+            if (titles.equals("no")) {
+                rlt_header.setVisibility(View.VISIBLE);
+                // / rlt_header_details.setVisibility(View.VISIBLE);
+                //view_header_details.setVisibility(View.VISIBLE);
+
+                title.setVisibility(View.VISIBLE);
+            } else if (titles.equals("test")) {
+                rlt_header.setVisibility(View.GONE);
+                rlt_header_details.setVisibility(View.GONE);
+                view_header_details.setVisibility(View.GONE);
+                btn_header_application_create.setVisibility(View.VISIBLE);
+                title.setVisibility(View.GONE);
+            } else if (titles.equals("rrr")) {
+                rlt_header.setVisibility(View.GONE);
+                rlt_header_details.setVisibility(View.VISIBLE);
+                view_header_details.setVisibility(View.VISIBLE);
+                btn_header_application_create.setVisibility(View.GONE);
+                title.setVisibility(View.GONE);
+            }
+
+
+        }
+
+        public void ShowText (String name){
+            details_title.setText(name);
+        }
 
     }
-
-    public void ShowText(String name) {
-        details_title.setText(name);
-    }
-
-}

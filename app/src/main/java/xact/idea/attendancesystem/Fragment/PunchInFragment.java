@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -55,8 +56,8 @@ public class PunchInFragment extends Fragment {
     PunchInAdapterForAdmin mAdapters;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
-    EditText edit_start_date;
-    EditText edit_end_date;
+    static  EditText edit_start_date;
+   static EditText edit_end_date;
     Button btn_yes;
     String UserId;
     String FullName;
@@ -149,6 +150,7 @@ public class PunchInFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 DialogFragment dFragment = new DatePickerFromFragment();
+
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
@@ -172,12 +174,18 @@ public class PunchInFragment extends Fragment {
         text_office_text.setText(OfficeExt);
 
     }
-
+    static Calendar now = Calendar.getInstance();
     public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            try {
+                calendar.setTime(sdf.parse(edit_start_date.getText().toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -192,10 +200,11 @@ public class PunchInFragment extends Fragment {
             cal.setTimeInMillis(0);
             cal.set(year, month, day, 0, 0, 0);
             Date chosenDate = cal.getTime();
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String formattedDate = formatter.format(chosenDate);
             EditText startTime2 = (EditText) getActivity().findViewById(R.id.edit_start_date);
             startTime2.setText(formattedDate);
+
 
         }
 
@@ -205,6 +214,12 @@ public class PunchInFragment extends Fragment {
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                try {
+                    calendar.setTime(sdf.parse(edit_end_date.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -218,7 +233,7 @@ public class PunchInFragment extends Fragment {
                 cal.setTimeInMillis(0);
                 cal.set(year, month, day, 0, 0, 0);
                 Date chosenDate = cal.getTime();
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = formatter.format(chosenDate);
                 EditText endTime2 = (EditText) getActivity().findViewById(R.id.edit_end_date);
                 endTime2.setText(formattedDate);
@@ -229,8 +244,29 @@ public class PunchInFragment extends Fragment {
     }
 
     private void  Load(){
+        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+
+        String currentDate=formatter.format(date);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, -1);
+        String lastDate=formatter.format(c.getTime());
+        Log.e("sdfsdf","sdfds"+lastDate);
+        edit_start_date.setText(lastDate);
+        edit_end_date.setText(currentDate);
+        String startDate=edit_start_date.getText().toString();
+        String endDate=edit_end_date.getText().toString();
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1=new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+            date2=new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         progress_bar.setVisibility(View.VISIBLE);
-        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(UserId)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,UserId).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                displayUnitItems(userActivities);
@@ -245,8 +281,8 @@ public class PunchInFragment extends Fragment {
         Date date1 = null;
         Date date2 = null;
         try {
-             date1=new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-             date2=new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+             date1=new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+             date2=new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

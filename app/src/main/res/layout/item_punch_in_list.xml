@@ -38,6 +38,7 @@
                     android:tag="30"
                     android:textSize="30px"
                     android:layout_width="0dp"
+
                     android:layout_height="match_parent"
                     android:text="2019-10-11"
                     android:gravity="center|center_vertical"

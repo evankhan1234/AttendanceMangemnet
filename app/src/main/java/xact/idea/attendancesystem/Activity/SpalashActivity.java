@@ -87,6 +87,7 @@ public class SpalashActivity extends AppCompatActivity {
                     if (Utils.broadcastIntent(SpalashActivity.this, rlt_root)){
                         //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
                         getUserData();
+                        AllData();
                         DepartmentData();
                         unitListData();
                         setUpData();
@@ -211,6 +212,19 @@ public class SpalashActivity extends AppCompatActivity {
         }));
 
     }
+    private void AllData(){
+        Department department = new Department();
+        department.Id=-1;
+        department.DepartmentName="ALL";
+        department.UnitId=1;
+        Common.departmentRepository.insertToDepartment(department);
+
+        Unit unit = new Unit();
+        unit.Id=-1;
+        unit.UnitName="ALL";
+        unit.ShortName="A";
+        Common.unitRepository.insertToUnit(unit);
+    }
     private void DepartmentData(){
 
         showLoadingProgress(this);
@@ -219,7 +233,9 @@ public class SpalashActivity extends AppCompatActivity {
             public void accept(DepartmentListEntity carts) throws Exception {
                 // departmentListEntityList=carts;
                 Department department = new Department();
-
+//                department.Id=-1;
+//                department.DepartmentName="ALL";
+//                department.UnitId=1;
                 for (DepartmentListEntity.Data departmentListEntity: carts.data){
                     department.Id=departmentListEntity.Id;
                     department.DepartmentName=departmentListEntity.DepartmentName;

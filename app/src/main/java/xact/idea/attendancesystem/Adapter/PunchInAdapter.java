@@ -31,12 +31,14 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
     private Activity mActivity = null;
     public List<AttendanceEntity> messageEntities;
     private String names;
+    private String dates;
 
-    public PunchInAdapter(Activity activity, List<AttendanceEntity> messageEntitie,String name) {
+    public PunchInAdapter(Activity activity, List<AttendanceEntity> messageEntitie,String name,String currentDate) {
         mActivity = activity;
         messageEntities = messageEntitie;
         //mClick = mClicks;
         names=name;
+        dates=currentDate;
     }
 
 
@@ -53,7 +55,7 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
     public void onBindViewHolder(PunchInAdapter.PlaceTagListiewHolder holder, final int position) {
 
         Log.e("SDFsf","SDfs"+messageEntities.get(position));
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(System.currentTimeMillis());
         String currentDate=formatter.format(date);
         if (names.equals("absent")||names.equals("leave")) {
@@ -63,6 +65,73 @@ public class PunchInAdapter extends RecyclerView.Adapter<PunchInAdapter.PlaceTag
             holder.text_punchOut_location.setText("N/A");
             holder.text_punchOut_time.setText("N/A");
             holder.text_duration.setText("N/A");
+
+
+
+        }
+        else if (names.equals("all")) {
+//            holder.text_date.setText(messageEntities.get(position).FullName);
+//            holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
+//            holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
+//            holder.text_punchOut_location.setText(messageEntities.get(position).PunchInLocation);
+//            holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
+//            holder.text_duration.setText(messageEntities.get(position).Duration);
+            if (messageEntities.get(position).WorkingDate!=null){
+                if (messageEntities.get(position).WorkingDate.equals(dates)){
+                    holder.text_date.setText(messageEntities.get(position).FullName);
+                    holder.text_punchIn_location.setText(messageEntities.get(position).PunchInLocation);
+                    holder.text_date.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchIn_location.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchOut_time.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchOut_location.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchIn_location.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchIn_time.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_duration.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
+                    holder.text_punchOut_location.setText(messageEntities.get(position).PunchInLocation);
+                    holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
+                    holder.text_duration.setText(messageEntities.get(position).Duration);
+                }
+                else {
+                    holder.text_date.setText(messageEntities.get(position).FullName);
+                    holder.text_punchIn_location.setText("N/A");
+                    holder.text_punchIn_time.setText("N/A");
+                    holder.text_punchOut_location.setText("N/A");
+                    holder.text_punchOut_time.setText("N/A");
+                    holder.text_duration.setText("N/A");
+                }
+            }
+
+//            if (messageEntities.get(position).PunchInLocation!=null){
+//
+//            }
+//            else {
+//                holder.text_punchIn_location.setText("N/A");
+//            }
+//            if (messageEntities.get(position).PunchInTimeLate!=null){
+//                holder.text_punchIn_time.setText(messageEntities.get(position).PunchInTimeLate);
+//            }
+//            else {
+//                holder.text_punchIn_time.setText("N/A");
+//            }
+//
+//            if (messageEntities.get(position).PunchOutTime!=null){
+//                holder.text_punchOut_time.setText(messageEntities.get(position).PunchOutTime);
+//            }
+//            else {
+//                holder.text_punchOut_time.setText("N/A");
+//            }
+//            if (messageEntities.get(position).Duration!=null){
+//                holder.text_duration.setText(messageEntities.get(position).Duration);
+//            }
+//            else {
+//                holder.text_duration.setText("N/A");
+//            }
+
+
+
+
+
 
 
 

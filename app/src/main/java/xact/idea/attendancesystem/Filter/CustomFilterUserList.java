@@ -11,7 +11,7 @@ import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
 
 public class CustomFilterUserList extends Filter {
-    private List<UserList> data = null;
+    private List<UserList> data ;
     private UnitDepartmentAdapter adapter;
 
     public CustomFilterUserList(List<UserList> filterList, UnitDepartmentAdapter adapter) {

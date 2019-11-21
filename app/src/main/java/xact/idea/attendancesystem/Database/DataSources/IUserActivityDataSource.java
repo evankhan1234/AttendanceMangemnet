@@ -20,7 +20,7 @@ public interface IUserActivityDataSource {
     Flowable<List<AttendanceEntity>> getPresentList(String date);
     Flowable<List<AttendanceEntity>> getAbsentList(String date);
     Flowable<List<AttendanceEntity>> getLateList(String date,double value);
-    Flowable<List<AttendanceEntity>> getList();
+    Flowable<List<AttendanceEntity>> getList(String date);
     Flowable<List<AttendanceEntity>> getOnTimeList(String date,double value);
     Flowable<List<UserActivity>> getUserActivityItemByDate(Date from, Date to,String UserId);
     Flowable<List<AttendanceEntity>> getListUnitId(int unitId);

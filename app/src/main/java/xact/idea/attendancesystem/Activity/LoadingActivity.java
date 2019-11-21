@@ -50,7 +50,7 @@ public class LoadingActivity extends AppCompatActivity {
                             goToMainPage();
 
             }
-        }, 3000);
+        }, 1000);
 
     }
 
