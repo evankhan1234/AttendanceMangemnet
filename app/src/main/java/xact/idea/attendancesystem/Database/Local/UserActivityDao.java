@@ -59,8 +59,10 @@ public interface UserActivityDao {
     Flowable<List<AttendanceEntity>> getListDepartmentId(int departmentId);
     @Query("SELECT  c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId  where f.DepartmentId=:departmentId  AND f.UnitId=:unitId Group by f.FullName ")
     Flowable<List<AttendanceEntity>> getListUnitIdDepartmentId(int unitId,int departmentId);
-    @Query("SELECT  c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId Group by f.FullName ")
-    Flowable<List<AttendanceEntity>> getList();
+    @Query("SELECT c.[WorkingDate],c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date\n" +
+            "UNION\n" +
+            "SELECT c.WorkingDate, c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) Group by f.FullName  ORDER BY c.WorkingDate")
+    Flowable<List<AttendanceEntity>> getList(String date);
     @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner  JOIN UserList as f ON c.UserId = f.UserId where WorkingDate=:date Group by f.FullName")
     Flowable<List<AttendanceEntity>> getPresentList(String date);
     @Query("SELECT c.PunchInTime,c.PunchOutTime,c.PunchInTimeLate,c.Duration,c.PunchInLocation,f.FullName from UserActivity as c Inner JOIN UserList as f ON c.UserId = f.UserId where c.UserId not in (SELECT a.UserId from UserActivity as a Inner JOIN UserList as f ON a.UserId = f.UserId  where WorkingDate=:date) Group by f.FullName")

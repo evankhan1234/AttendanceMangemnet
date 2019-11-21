@@ -44,6 +44,7 @@ import xact.idea.attendancesystem.Adapter.UnitAdapter;
 import xact.idea.attendancesystem.Adapter.UnitDepartmentAdapter;
 import xact.idea.attendancesystem.Database.Model.Department;
 import xact.idea.attendancesystem.Database.Model.Unit;
+import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.AttendanceEntity;
 import xact.idea.attendancesystem.Entity.DepartmentListEntity;
@@ -52,6 +53,7 @@ import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.Interface.DepartmentClickInterface;
 import xact.idea.attendancesystem.Interface.UnitClickInterface;
+import xact.idea.attendancesystem.Interface.UserListClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
@@ -246,19 +248,19 @@ public class SetUpFragment extends Fragment {
 
         }
     };
-        private ClickInterface mClick = new ClickInterface() {
+        private UserListClickInterface mClick = new UserListClickInterface() {
         @Override
-        public void onItemClick(int position) {
+        public void onItemClick(UserList position) {
 
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             Bundle bundle = new Bundle();
-             bundle.putString("UserId",userListEntities.get(position).UserId);
-             bundle.putString("FullName",userListEntities.get(position).FullName);
-             bundle.putString("OfficeExt",userListEntities.get(position).OfficeExt);
-             bundle.putString("UnitName",userListEntities.get(position).UnitName);
-             bundle.putString("DepartmentName",userListEntities.get(position).DepartmentName);
-             bundle.putString("Designation",userListEntities.get(position).Designation);
+             bundle.putString("UserId",position.UserId);
+             bundle.putString("FullName",position.FullName);
+             bundle.putString("OfficeExt",position.OfficeExt);
+             bundle.putString("UnitName",position.UnitName);
+             bundle.putString("DepartmentName",position.DepartmentName);
+             bundle.putString("Designation",position.Designation);
             Fragment f = new PunchInFragment();
             f.setArguments(bundle);
             transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
@@ -358,6 +360,10 @@ public class SetUpFragment extends Fragment {
                     progress_bar.setVisibility( View.GONE);
                 }
             }));
+        }
+        else {
+            loadData();
+            progress_bar.setVisibility( View.GONE);
         }
     }
 

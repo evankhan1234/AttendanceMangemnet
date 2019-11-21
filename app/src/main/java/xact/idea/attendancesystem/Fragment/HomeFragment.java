@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -76,8 +77,8 @@ public class HomeFragment extends Fragment {
     PunchInAdapterForAdmin mAdapters;
     IRetrofitApi mService;
     ImageView img_next;
-    EditText  edit_start_date;
-    EditText  edit_end_date;
+    static EditText  edit_start_date;
+    static EditText  edit_end_date;
     Button btn_yes;
     TextView text_name;
     TextView text_office_text;
@@ -266,15 +267,36 @@ public class HomeFragment extends Fragment {
 
 
     private void  Load(){
+        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+
+        String currentDate=formatter.format(date);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, -1);
+        String lastDate=formatter.format(c.getTime());
+        Log.e("sdfsdf","sdfds"+lastDate);
+        edit_start_date.setText(lastDate);
+        edit_end_date.setText(currentDate);
+        String startDate=edit_start_date.getText().toString();
+        String endDate=edit_end_date.getText().toString();
+        Date date1 = null;
+        Date date2 = null;
+        try {
+            date1=new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+            date2=new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         progress_bar.setVisibility(View.VISIBLE);
-        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemById(Integer.parseInt(SharedPreferenceUtil.getUser(mActivity))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
-                Log.e("sss","sss"+new Gson().toJson(userActivities));
                 progress_bar.setVisibility(View.GONE);
             }
         }));
+
     }
     private void loadDataByDate() {
 
@@ -349,6 +371,12 @@ public class HomeFragment extends Fragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            try {
+                calendar.setTime(sdf.parse(edit_start_date.getText().toString()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -376,6 +404,12 @@ public class HomeFragment extends Fragment {
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 final Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                try {
+                    calendar.setTime(sdf.parse(edit_end_date.getText().toString()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);

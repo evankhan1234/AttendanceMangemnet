@@ -57,8 +57,8 @@ public class UserActivityDataSource implements IUserActivityDataSource {
     }
 
     @Override
-    public Flowable<List<AttendanceEntity>> getList() {
-        return userActivityDao.getList();
+    public Flowable<List<AttendanceEntity>> getList(String date) {
+        return userActivityDao.getList(date);
     }
 
     @Override

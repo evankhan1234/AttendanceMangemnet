@@ -105,12 +105,7 @@ public class PunchFragment extends Fragment {
         edit_comments=mRootView.findViewById(R.id.edit_comments);
         spinnerUnit=mRootView.findViewById(R.id.spinner_unit);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-            }
-        },4000);
 
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -185,7 +180,7 @@ public class PunchFragment extends Fragment {
     }
 
     public static void show(){
-        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(System.currentTimeMillis());
         final String currentDate=formatter.format(date);
         UserActivity userActivitys=Common.userActivityRepository.getUserActivity(SharedPreferenceUtil.getUser(mActivity),currentDate);
@@ -239,10 +234,10 @@ public class PunchFragment extends Fragment {
                     // departmentListEntityList=carts;if
                     if (carts.exe_status){
                         Toast.makeText(mActivity, "Successfully Punch In", Toast.LENGTH_SHORT).show();
-                        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
                         Date date = new Date(System.currentTimeMillis());
                         String currentDate=formatter.format(date);
-                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm a");
+                        SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
                         Date dates = new Date(System.currentTimeMillis());
                         String currentTime=formatters.format(dates);
                         btn_punch_out.setFocusable(true);
@@ -313,15 +308,20 @@ public class PunchFragment extends Fragment {
                         Toast.makeText(mActivity, "Successfully Punch Out", Toast.LENGTH_SHORT).show();
 
 
-                        SimpleDateFormat formatters= new SimpleDateFormat("HH:mm a");
+                        SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
                         Date dates = new Date(System.currentTimeMillis());
                         String currentTime=formatters.format(dates);
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+                        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
                         Date date = new Date(System.currentTimeMillis());
                         String currentDate=formatter.format(date);
                         UserActivity userActivitys=Common.userActivityRepository.getUserActivity(SharedPreferenceUtil.getUser(mActivity),currentDate);
-                        String text_time = "<font color=#B3202020>You've entered at: </font> <font color=#4983D4>"+userActivitys.PunchInTimeLate+"</font><font color=#B3202020> And left at: </font> <font color=#4983D4>"+currentTime+"</font>";
+                        String text_time = null;
+                        try {
+                            text_time = "<font color=#B3202020>You've entered at: </font> <font color=#4983D4>"+userActivitys.PunchInTimeLate+"</font><font color=#B3202020> And left at: </font> <font color=#4983D4>"+currentTime+"</font>";
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         String text_units = "<font color=#B3202020>You're working at: </font> <font color=#4983D4>"+mUnitName+"</font>";
 
                         text_enter_time.setText(Html.fromHtml(text_time));
@@ -373,6 +373,11 @@ public class PunchFragment extends Fragment {
       compositeDisposable.add(Common.unitRepository.getUnitItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {
             @Override
             public void accept(List<Unit> units) throws Exception {
+                try {
+                    units.remove(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 displayUnitItems(units);
                 dismissLoadingProgress();
             }
@@ -382,7 +387,7 @@ public class PunchFragment extends Fragment {
 
     private void displayUnitItems(List<Unit> units) {
         unitArrayList=units;
-        unitListEntityArrayAdapter = new ArrayAdapter<Unit>(mActivity, android.R.layout.simple_spinner_item, unitArrayList);
+        unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitArrayList);
         unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUnit.setAdapter(unitListEntityArrayAdapter);
     }
