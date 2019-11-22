@@ -147,7 +147,7 @@
                 android:paddingLeft="0px"
                 android:paddingBottom="3px"
                 android:tag="29"
-                android:text="Activity"
+                android:text="Users"
                 android:textColor="@color/color_menu_selector"
                 android:textSize="29px" />
 

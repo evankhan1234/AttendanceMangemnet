@@ -28,6 +28,7 @@ import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.Constant;
+import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
@@ -57,10 +58,16 @@ public class LoadingActivity extends AppCompatActivity {
 
 
     private void goToMainPage() {
+        if (SharedPreferenceUtil.getAdmin(LoadingActivity.this).equals("1")) {
+            Intent i = new Intent(LoadingActivity.this, DashboardActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            Intent i = new Intent(LoadingActivity.this, DashboardActivityUsers.class);
+            startActivity(i);
+            finish();
+        }
 
-        Intent i = new Intent(LoadingActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
 
     }
 

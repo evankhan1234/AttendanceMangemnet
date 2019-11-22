@@ -153,10 +153,16 @@ public class SpalashActivity extends AppCompatActivity {
         finish();
     }
     private void goToMainPage() {
+        if (SharedPreferenceUtil.getAdmin(SpalashActivity.this).equals("1")) {
+            Intent i = new Intent(SpalashActivity.this, DashboardActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            Intent i = new Intent(SpalashActivity.this, DashboardActivityUsers.class);
+            startActivity(i);
+            finish();
+        }
 
-        Intent i = new Intent(SpalashActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
     }
     private void initDB() {
         Common.mainDatabase = MainDatabase.getInstance(this);
