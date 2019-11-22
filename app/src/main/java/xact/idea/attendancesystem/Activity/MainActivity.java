@@ -191,9 +191,11 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
         CorrectSizeUtil.getInstance(this).correctSize();
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
-        afterClickTabItem(Constant.FRAG_HOME, null);
-        btn_footer_home.setSelected(true);
-        tv_home_menu.setSelected(true);
+
+        String sessionId = getIntent().getStringExtra("EXTRA_SESSION");
+
+
+        setFooter(sessionId);
         Constant.SYNC = "Admin";
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
             btn_header_sync.setVisibility(View.VISIBLE);
@@ -206,11 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 onBack();
             }
         });
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            tv_user_setup_menus.setText("Punch");
-        } else {
-            tv_user_setup_menus.setText("Status");
-        }
+
         btn_header_sync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -617,6 +615,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setFooter(String value){
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            tv_user_setup_menus.setText("Punch");
+        } else {
+            tv_user_setup_menus.setText("Status");
+        }
+        switch (value){
+            case "home":
+                btn_footer_home.setSelected(true);
+                tv_home_menu.setSelected(true);
+                afterClickTabItem(Constant.FRAG_HOME, null);
+                break;
+            case "punch":
+
+                tv_user_setup_menus.setSelected(true);
+                btn_footer_setup_user.setSelected(true);
+                afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+                break;
+            case "users":
+
+                tv_user_activity_menu.setSelected(true);
+                btn_footer_user_activity.setSelected(true);
+                afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
+                break;
+            case "leave":
+
+                tv_setup_menu.setSelected(true);
+                btn_footer_setUp.setSelected(true);
+                afterClickTabItem(Constant.FRAG_SET_UP, null);
+                break;
+            case "myself":
+                tv_more_menu.setSelected(true);
+                btn_footer_more.setSelected(true);
+                afterClickTabItem(Constant.FRAG_MORE, null);
+                break;
+            default:
+                btn_footer_home.setSelected(true);
+                tv_home_menu.setSelected(true);
+                afterClickTabItem(Constant.FRAG_HOME, null);
+        }
+    }
+
     public void showInfoDialog() {
 
         final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
@@ -683,9 +723,158 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        }
+        else {
+            //super.onBackPressed();
+            Fragment f = getVisibleFragment();
+            Log.e("frag", "frag" + f);
+            if (f != null) {
+                if (f instanceof PunchFragment) {
+
+                    if (getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()) != null) {
+                        PunchFragment f1 = (PunchFragment) getSupportFragmentManager()
+                                .findFragmentByTag(PunchFragment.class.getSimpleName());
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                        transaction.remove(f1);
+                        transaction.commit();
+                        getSupportFragmentManager().popBackStack();
+
+                        hideHeaderDetail();
+                        // return 2;
+
+                    }
+                }
+                else if (f instanceof PunchInFragment) {
+
+                    if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                        PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
+                                .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                        transaction.remove(f1);
+                        transaction.commit();
+                        getSupportFragmentManager().popBackStack();
+
+                        hideHeaderDetail();
+                        // return 2;
+
+                    }
+                }
+                else if (f instanceof LeaveFragment) {
+                    int handle = ((LeaveFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetail();
+                    } else {
+                        // do not hide header
+                    }
+                } else if (f instanceof LeaveApplicationFragment) {
+                    int handle = ((LeaveApplicationFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForApplication();
+                    } else {
+                        // do not hide header
+                    }
+                }
+                else {
+                    finish();
+                }
+            }
             //finish();
+//            if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+//                PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            } else if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
+//                AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
+//            else if (getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()) != null) {
+//                PunchFragment f1 = (PunchFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(PunchFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
+//            else if (getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
+//                HomeFragment f1 = (HomeFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(HomeFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
+//            else if (getSupportFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName()) != null) {
+//                ProfileDetailsFragment f1 = (ProfileDetailsFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
+//            else if (getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+//                SetUpFragment f1 = (SetUpFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(SetUpFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
+//            else if (getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName()) != null) {
+//                DashboardFragment f1 = (DashboardFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(DashboardFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            }
         }
 
 
@@ -1148,7 +1337,8 @@ public class MainActivity extends AppCompatActivity {
             Fragment f = getVisibleFragment();
             Log.e("frag", "frag" + f);
             if (f != null) {
-                if (f instanceof MoreFragment) {
+                if (f instanceof MoreFragment)
+                {
 
                     if (f instanceof PunchInFragment) {
                         Toast.makeText(mContext, "true", Toast.LENGTH_SHORT).show();
