@@ -14,8 +14,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.util.Range;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +55,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import xact.idea.attendancesystem.Adapter.LeaveSummaryListAdapter;
 import xact.idea.attendancesystem.Database.DataSources.DepartmentRepository;
 import xact.idea.attendancesystem.Database.DataSources.EntityLeaveRepository;
@@ -83,6 +87,7 @@ import xact.idea.attendancesystem.Entity.SetUpDataEntity;
 import xact.idea.attendancesystem.Entity.UnitListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityListEntity;
 import xact.idea.attendancesystem.Entity.UserActivityPostEntity;
+import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Fragment.AboutUsFragment;
 import xact.idea.attendancesystem.Fragment.DashboardFragment;
 import xact.idea.attendancesystem.Fragment.HomeFragment;
@@ -149,13 +154,25 @@ public class MainActivity extends AppCompatActivity {
     CircleImageView imageView;
     TextView text_username;
     TextView text_email;
+    TextView text_phone_number;
+    TextView text_designation;
+    TextView text_department;
+    TextView text_unit;
+    TextView text;
     RelativeLayout relativelayoutPunch;
     RelativeLayout relativelayout;
+    ProgressBar progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progress_bar = findViewById(R.id.progress_bar);
+        text_phone_number = findViewById(R.id.text_phone_number);
+        text = findViewById(R.id.text);
+        text_designation = findViewById(R.id.text_designation);
+        text_department =findViewById(R.id.text_department);
+        text_unit = findViewById(R.id.text_unit);
         linear = findViewById(R.id.linear);
         relativelayoutPunch = findViewById(R.id.relativelayoutPunch);
         relativelayout = findViewById(R.id.relativelayout);
@@ -196,10 +213,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         setFooter(sessionId);
-        Constant.SYNC = "Admin";
-        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            btn_header_sync.setVisibility(View.VISIBLE);
-        }
+
+
+
         btn_header_back_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,20 +271,18 @@ public class MainActivity extends AppCompatActivity {
                                         String b;
                                         int in = selectedmonth + 1;
                                         String length = Integer.toString(in);
-                                        int lengths=length.length();
+                                        int lengths = length.length();
                                         String lengthday = Integer.toString(selectedday);
-                                        int lengthsday=lengthday.length();
-                                        if (lengthsday<2){
-                                            a="0";
+                                        int lengthsday = lengthday.length();
+                                        if (lengthsday < 2) {
+                                            a = "0";
+                                        } else {
+                                            a = "";
                                         }
-                                        else {
-                                            a="";
-                                        }
-                                        if (lengths<2){
-                                            b="0";
-                                        }
-                                        else {
-                                            b="";
+                                        if (lengths < 2) {
+                                            b = "0";
+                                        } else {
+                                            b = "";
                                         }
 
 //                                        for (int i=0;i<=in;i++){
@@ -279,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //                                            b="0";
 //                                        }
-                                        edit_date_from.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
+                                        edit_date_from.setText(a + selectedday + "-" + b + in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -315,23 +329,21 @@ public class MainActivity extends AppCompatActivity {
                                         String b;
                                         int in = selectedmonth + 1;
                                         String length = Integer.toString(in);
-                                        int lengths=length.length();
+                                        int lengths = length.length();
                                         String lengthday = Integer.toString(selectedday);
-                                        int lengthsday=lengthday.length();
-                                        if (lengthsday<2){
-                                            a="0";
+                                        int lengthsday = lengthday.length();
+                                        if (lengthsday < 2) {
+                                            a = "0";
+                                        } else {
+                                            a = "";
                                         }
-                                        else {
-                                            a="";
-                                        }
-                                        if (lengths<2){
-                                            b="0";
-                                        }
-                                        else {
-                                            b="";
+                                        if (lengths < 2) {
+                                            b = "0";
+                                        } else {
+                                            b = "";
                                         }
 
-                                        edit_date_to.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
+                                        edit_date_to.setText(a + selectedday + "-" + b + in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -361,8 +373,8 @@ public class MainActivity extends AppCompatActivity {
                                     Common.userActivityRepository.emptyUserActivityDateWise(date1, date2);
 
 
-                                        syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
-                                        infoDialog.dismiss();
+                                    syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
+                                    infoDialog.dismiss();
 
                                     //Common.userActivityRepository.emptyCart();
 
@@ -413,22 +425,20 @@ public class MainActivity extends AppCompatActivity {
                                         String b;
                                         int in = selectedmonth + 1;
                                         String length = Integer.toString(in);
-                                        int lengths=length.length();
+                                        int lengths = length.length();
                                         String lengthday = Integer.toString(selectedday);
-                                        int lengthsday=lengthday.length();
-                                        if (lengthsday<2){
-                                            a="0";
+                                        int lengthsday = lengthday.length();
+                                        if (lengthsday < 2) {
+                                            a = "0";
+                                        } else {
+                                            a = "";
                                         }
-                                        else {
-                                            a="";
+                                        if (lengths < 2) {
+                                            b = "0";
+                                        } else {
+                                            b = "";
                                         }
-                                        if (lengths<2){
-                                            b="0";
-                                        }
-                                        else {
-                                            b="";
-                                        }
-                                        edit_date_from.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
+                                        edit_date_from.setText(a + selectedday + "-" + b + in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -465,22 +475,20 @@ public class MainActivity extends AppCompatActivity {
                                         String b;
                                         int in = selectedmonth + 1;
                                         String length = Integer.toString(in);
-                                        int lengths=length.length();
+                                        int lengths = length.length();
                                         String lengthday = Integer.toString(selectedday);
-                                        int lengthsday=lengthday.length();
-                                        if (lengthsday<2){
-                                            a="0";
+                                        int lengthsday = lengthday.length();
+                                        if (lengthsday < 2) {
+                                            a = "0";
+                                        } else {
+                                            a = "";
                                         }
-                                        else {
-                                            a="";
+                                        if (lengths < 2) {
+                                            b = "0";
+                                        } else {
+                                            b = "";
                                         }
-                                        if (lengths<2){
-                                            b="0";
-                                        }
-                                        else {
-                                            b="";
-                                        }
-                                        edit_date_to.setText(a+selectedday + "-" + b+ in + "-" + selectedyear);
+                                        edit_date_to.setText(a + selectedday + "-" + b + in + "-" + selectedyear);
                                     }
                                 }, mYear, mMonth, mDay);
                                 mDatePicker.setTitle("Select date");
@@ -510,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
                                     Common.userActivityRepository.emptyUserActivityDateWiseId(date1, date2, SharedPreferenceUtil.getUser(MainActivity.this));
 
 
-                                        syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
+                                    syncUserActivityData(edit_date_from.getText().toString(), edit_date_to.getText().toString(), "");
                                     infoDialog.dismiss();
 
                                 }
@@ -520,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
 
                         infoDialog.show();
                     } else if (Constant.SYNC.equals("UserActivitY")) {
-                        Common.userListRepository.emptyCart();
+                     //   Common.userListRepository.emptyCart();
                         getUserData();
                     }
                 } else {
@@ -589,8 +597,24 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
-        text_username.setText(SharedPreferenceUtil.getUserID(this));
-        text_email.setText(SharedPreferenceUtil.getEmail(this));
+        UserList userList = Common.userListRepository.getUserListById(Integer.parseInt(SharedPreferenceUtil.getUser(this)));
+        if (userList==null){
+
+        }
+        else {
+            try {
+
+                text_username.setText(userList.FullName);
+                text_email.setText(userList.Email);
+                text_phone_number.setText(userList.PersonalMobileNumber);
+                text_designation.setText(userList.Designation);
+                text_department.setText(userList.DepartmentName);
+                text_unit.setText(userList.UnitName);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+
         relativelayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -605,7 +629,7 @@ public class MainActivity extends AppCompatActivity {
         });
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 
-            tv_more_menu.setText("Status");
+            tv_more_menu.setText("Myself");
             btn_footer_more.setImageResource(R.drawable.img_footer_setup_selector);
 
         } else {
@@ -615,13 +639,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setFooter(String value){
+    private void setFooter(String value) {
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            tv_user_setup_menus.setText("Punch");
+            tv_user_setup_menus.setText("Attendance");
+            title.setText("Home");
+            tv_home_menu.setText("Home");
         } else {
-            tv_user_setup_menus.setText("Status");
+            tv_user_setup_menus.setText("Myself");
+            title.setText("Attendance");
+            tv_home_menu.setText("Attendance");
         }
-        switch (value){
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            btn_header_sync.setVisibility(View.VISIBLE);
+            Constant.SYNC = "Admin";
+        } else {
+            Constant.SYNC = "Status";
+        }
+        switch (value) {
             case "home":
                 btn_footer_home.setSelected(true);
                 tv_home_menu.setSelected(true);
@@ -640,7 +674,8 @@ public class MainActivity extends AppCompatActivity {
                 afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
                 break;
             case "leave":
-
+                btn_header_application.setVisibility(View.VISIBLE);
+                btn_header_sync.setVisibility(View.GONE);
                 tv_setup_menu.setSelected(true);
                 btn_footer_setUp.setSelected(true);
                 afterClickTabItem(Constant.FRAG_SET_UP, null);
@@ -677,17 +712,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (Utils.broadcastIntent(MainActivity.this, rlt_root)) {
                     //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
-                    Common.userActivityRepository.emptyCart();
-                    Common.departmentRepository.emptyCart();
-                    Common.unitRepository.emptyCart();
-                    Common.userListRepository.emptyCart();
-                    Common.userActivityRepository.emptyCart();
-                    AllData();
+                   // Common.userActivityRepository.emptyCart();
+                 //   Common.departmentRepository.emptyCart();
+                  //  Common.unitRepository.emptyCart();
+                  //  Common.userListRepository.emptyCart();
+
+
                     getUserData();
                     DepartmentData();
                     unitListData();
                     setUpData();
                     UserActivityData();
+                    AllData();
+                    DashboardFragment.shows();
                 } else {
                     Snackbar snackbar = Snackbar
                             .make(rlt_root, "No Internet", Snackbar.LENGTH_LONG);
@@ -705,80 +742,1264 @@ public class MainActivity extends AppCompatActivity {
         });
         infoDialog.show();
     }
-    private void AllData(){
-        Department department = new Department();
-        department.Id=-1;
-        department.DepartmentName="ALL";
-        department.UnitId=1;
-        Common.departmentRepository.insertToDepartment(department);
 
-        Unit unit = new Unit();
-        unit.Id=-1;
-        unit.UnitName="ALL";
-        unit.ShortName="A";
-        Common.unitRepository.insertToUnit(unit);
+    private void AllData() {
+
+
+
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else {
+        } else {
             //super.onBackPressed();
             Fragment f = getVisibleFragment();
             Log.e("frag", "frag" + f);
             if (f != null) {
-                if (f instanceof PunchFragment) {
-
-                    if (getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()) != null) {
-                        PunchFragment f1 = (PunchFragment) getSupportFragmentManager()
-                                .findFragmentByTag(PunchFragment.class.getSimpleName());
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                        transaction.remove(f1);
-                        transaction.commit();
-                        getSupportFragmentManager().popBackStack();
-
-                        hideHeaderDetail();
-                        // return 2;
-
-                    }
-                }
-                else if (f instanceof PunchInFragment) {
-
-                    if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
-                        PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
-                                .findFragmentByTag(PunchInFragment.class.getSimpleName());
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                        transaction.remove(f1);
-                        transaction.commit();
-                        getSupportFragmentManager().popBackStack();
-
-                        hideHeaderDetail();
-                        // return 2;
-
-                    }
-                }
-                else if (f instanceof LeaveFragment) {
-                    int handle = ((LeaveFragment) f).handleBackPress();
+                if (f instanceof PunchFragment)
+                {
+                    int handle = ((PunchFragment) f).handleBackPress();
                     if (handle == 0) {
                         finish();
-                    } else if (handle == 2) {
+                    }
+
+                    else if (handle == 2) {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            Log.e("DashboardFragment", "DashboardFragment" );
+                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                                tv_user_setup_menus.setText("Attendance");
+                                title.setText("Home");
+                                tv_home_menu.setText("Home");
+                            } else {
+                                tv_user_setup_menus.setText("Myself");
+                                title.setText("Attendance");
+                                tv_home_menu.setText("Attendance");
+                            }
+                            btn_footer_home.setSelected(true);
+                            tv_home_menu.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("UsersActivity");
+                            Log.e("sds", "s" );
+                            tv_user_activity_menu.setSelected(true);
+                            btn_footer_user_activity.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible()){
+                            DashboardFragment dashboardFragment = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                            SetUpFragment setUpFragment = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                            LeaveApplicationApprovalFragment leaveApplicationApprovalFragment = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                            HomeFragment homeFragment= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                            MoreFragment moreFragment= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+
+
+                            if (dashboardFragment!=null || setUpFragment!=null|| leaveApplicationApprovalFragment!=null || homeFragment!=null || moreFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+
+//                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1"))
+//                        {
+//                            tv_user_setup_menus.setText("Attendance");
+//                            title.setText("Home");
+//                            tv_home_menu.setText("Home");
+//                        } else {
+//                            tv_user_setup_menus.setText("Myself");
+//                            title.setText("Attendance");
+//                            tv_home_menu.setText("Attendance");
+//                        }
+//                            Log.e("sds", "s" );
+//                            tv_user_setup_menus.setSelected(true);
+//                            btn_footer_setup_user.setSelected(true);
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_activity_menu.setSelected(false);
+//                            btn_footer_user_activity.setSelected(false);
+//                            tv_setup_menu.setSelected(false);
+//                            btn_footer_setUp.setSelected(false);
+//                            tv_more_menu.setSelected(false);
+//                            btn_footer_more.setSelected(false);
+                      //   finish();
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Leave");
+                            Log.e("sds", "s" );
+                            tv_setup_menu.setSelected(true);
+                            btn_footer_setUp.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("More");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
                         hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
                     } else {
                         // do not hide header
                     }
-                } else if (f instanceof LeaveApplicationFragment) {
-                    int handle = ((LeaveApplicationFragment) f).handleBackPress();
+                }
+               else if (f instanceof HomeFragment)
+                {
+                    int handle = ((HomeFragment) f).handleBackPress();
                     if (handle == 0) {
                         finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetailForApplication();
+                    }
+
+                    else if (handle == 2) {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            Log.e("sds", "s" );
+                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                                tv_user_setup_menus.setText("Attendance");
+                                title.setText("Home");
+                                tv_home_menu.setText("Home");
+                            } else {
+                                tv_user_setup_menus.setText("Myself");
+                                title.setText("Attendance");
+                                tv_home_menu.setText("Attendance");
+                            }
+                            btn_footer_home.setSelected(true);
+                            tv_home_menu.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("UsersActivity");
+                            Log.e("sds", "s" );
+                            tv_user_activity_menu.setSelected(true);
+                            btn_footer_user_activity.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+                            title.setText("Home");
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+                            title.setText("Attendance");
+                            tv_home_menu.setText("Attendance");
+                        }
+                            Log.e("sds", "s" );
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Leave");
+                            Log.e("sds", "s" );
+                            tv_setup_menu.setSelected(true);
+                            btn_footer_setUp.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {
+                            DashboardFragment dashboardFragment = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                            SetUpFragment setUpFragment = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                            LeaveApplicationApprovalFragment leaveApplicationApprovalFragment = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                            PunchFragment punchFragment= (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                            MoreFragment moreFragment= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+
+
+                            if (dashboardFragment!=null || setUpFragment!=null|| leaveApplicationApprovalFragment!=null || punchFragment!=null || moreFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+//                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+//                            tv_user_setup_menus.setText("Attendance");
+//
+//                            tv_home_menu.setText("Home");
+//                        } else {
+//                            tv_user_setup_menus.setText("Myself");
+//
+//                            tv_home_menu.setText("Attendance");
+//                        }
+//                            title.setText("Myself");
+//                            Log.e("sds", "s" );
+//                            tv_more_menu.setSelected(true);
+//                            btn_footer_more.setSelected(true);
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_setup_menus.setSelected(false);
+//                            btn_footer_setup_user.setSelected(false);
+//                            tv_user_activity_menu.setSelected(false);
+//                            btn_footer_user_activity.setSelected(false);
+//                            tv_setup_menu.setSelected(false);
+//                            btn_footer_setUp.setSelected(false);
+                          //  finish();
+
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("More");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
                     } else {
                         // do not hide header
                     }
+                }
+                else if (f instanceof SetUpFragment) {
+                    int handle = ((SetUpFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    }
+
+                    else if (handle == 2) {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            Log.e("sds", "s" );
+                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                                tv_user_setup_menus.setText("Attendance");
+                                title.setText("Home");
+                                tv_home_menu.setText("Home");
+                            } else {
+                                tv_user_setup_menus.setText("Myself");
+                                title.setText("Attendance");
+                                tv_home_menu.setText("Attendance");
+                            }
+                            btn_footer_home.setSelected(true);
+                            tv_home_menu.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {
+                            DashboardFragment dashboardFragment = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                            PunchFragment punchFragment = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                            LeaveApplicationApprovalFragment leaveApplicationApprovalFragment = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                            HomeFragment homeFragment= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                            MoreFragment moreFragment= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+
+
+                            if (dashboardFragment!=null || punchFragment!=null|| leaveApplicationApprovalFragment!=null || homeFragment!=null || moreFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+//                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+//                            tv_user_setup_menus.setText("Attendance");
+//
+//                            tv_home_menu.setText("Home");
+//                        } else {
+//                            tv_user_setup_menus.setText("Myself");
+//
+//                            tv_home_menu.setText("Attendance");
+//                        }
+//                            title.setText("UsersActivity");
+//                            Log.e("sds", "s" );
+//                            tv_user_activity_menu.setSelected(true);
+//                            btn_footer_user_activity.setSelected(true);
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_setup_menus.setSelected(false);
+//                            btn_footer_setup_user.setSelected(false);
+//                            tv_setup_menu.setSelected(false);
+//                            btn_footer_setUp.setSelected(false);
+//                            tv_more_menu.setSelected(false);
+//                            btn_footer_more.setSelected(false);
+                            //finish();
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+                            title.setText("Home");
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+                            title.setText("Attendance");
+                            tv_home_menu.setText("Attendance");
+                        }
+                            Log.e("sds", "s" );
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Leave");
+                            Log.e("sds", "s" );
+                            tv_setup_menu.setSelected(true);
+                            btn_footer_setUp.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("More");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
+                    } else {
+                        // do not hide header
+                    }
+//                    if (getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+//                        Log.e("dfdg","fdsf");
+//                        SetUpFragment f1 = (SetUpFragment) getSupportFragmentManager()
+//                                .findFragmentByTag(SetUpFragment.class.getSimpleName());
+//                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                        transaction.remove(f1);
+//                        transaction.commit();
+//                        getSupportFragmentManager().popBackStack();
+//
+//                        hideHeaderDetail();
+//                        // return 2;
+//
+//                    }
+                }
+                else if (f instanceof LeaveApplicationApprovalFragment)
+                {
+                    int handle = ((LeaveApplicationApprovalFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    }
+
+                    else if (handle == 2) {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            Log.e("sds", "s" );
+                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                                tv_user_setup_menus.setText("Attendance");
+                                title.setText("Home");
+                                tv_home_menu.setText("Home");
+                            } else {
+                                tv_user_setup_menus.setText("Myself");
+                                title.setText("Attendance");
+                                tv_home_menu.setText("Attendance");
+                            }
+                            btn_footer_home.setSelected(true);
+                            tv_home_menu.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("UsersActivity");
+                            Log.e("sds", "s" );
+                            tv_user_activity_menu.setSelected(true);
+                            btn_footer_user_activity.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+                            title.setText("Home");
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+                            title.setText("Attendance");
+                            tv_home_menu.setText("Attendance");
+                        }
+                            Log.e("sds", "s" );
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {
+                            DashboardFragment dashboardFragment = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                            PunchFragment punchFragment = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                            SetUpFragment setUpFragment = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                            HomeFragment homeFragment= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                            MoreFragment moreFragment= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+
+
+                            if (dashboardFragment!=null || punchFragment!=null|| setUpFragment!=null || homeFragment!=null || moreFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+//                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+//                            tv_user_setup_menus.setText("Attendance");
+//
+//                            tv_home_menu.setText("Home");
+//                        } else {
+//                            tv_user_setup_menus.setText("Myself");
+//
+//                            tv_home_menu.setText("Attendance");
+//                        }
+//                            title.setText("Leave");
+//                            Log.e("sds", "s" );
+//                            tv_setup_menu.setSelected(true);
+//                            btn_footer_setUp.setSelected(true);
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_setup_menus.setSelected(false);
+//                            btn_footer_setup_user.setSelected(false);
+//                            tv_user_activity_menu.setSelected(false);
+//                            btn_footer_user_activity.setSelected(false);
+//                            tv_more_menu.setSelected(false);
+//                            btn_footer_more.setSelected(false);
+                       //     finish();
+
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("More");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
+                    } else {
+                        // do not hide header
+                    }
+//                    if (getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+//                        Log.e("dfdg","fdsf");
+//                        SetUpFragment f1 = (SetUpFragment) getSupportFragmentManager()
+//                                .findFragmentByTag(SetUpFragment.class.getSimpleName());
+//                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                        transaction.remove(f1);
+//                        transaction.commit();
+//                        getSupportFragmentManager().popBackStack();
+//
+//                        hideHeaderDetail();
+//                        // return 2;
+//
+//                    }
+                }
+                else if (f instanceof MoreFragment)
+                {
+                    int handle = ((MoreFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    }
+
+                    else if (handle == 2) {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            Log.e("sds", "s" );
+                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                                tv_user_setup_menus.setText("Attendance");
+                                title.setText("Home");
+                                tv_home_menu.setText("Home");
+                            } else {
+                                tv_user_setup_menus.setText("Myself");
+                                title.setText("Attendance");
+                                tv_home_menu.setText("Attendance");
+                            }
+                            btn_footer_home.setSelected(true);
+                            tv_home_menu.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("UsersActivity");
+                            Log.e("sds", "s" );
+                            tv_user_activity_menu.setSelected(true);
+                            btn_footer_user_activity.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+                            title.setText("Home");
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+                            title.setText("Attendance");
+                            tv_home_menu.setText("Attendance");
+                        }
+                            Log.e("sds", "s" );
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Leave");
+                            Log.e("sds", "s" );
+                            tv_setup_menu.setSelected(true);
+                            btn_footer_setUp.setSelected(true);
+
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {
+                            DashboardFragment dashboardFragment = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                            PunchFragment punchFragment = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                            LeaveApplicationApprovalFragment leaveApplicationApprovalFragment = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                            HomeFragment homeFragment= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                            SetUpFragment setUpFragment= (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+
+
+                            if (dashboardFragment!=null || punchFragment!=null|| leaveApplicationApprovalFragment!=null || homeFragment!=null || setUpFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+//                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+//                            tv_user_setup_menus.setText("Attendance");
+//
+//                            tv_home_menu.setText("Home");
+//                        } else {
+//                            tv_user_setup_menus.setText("Myself");
+//
+//                            tv_home_menu.setText("Attendance");
+//                        }
+//                            title.setText("More");
+//                            Log.e("sds", "s" );
+//                            tv_more_menu.setSelected(true);
+//                            btn_footer_more.setSelected(true);
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_setup_menus.setSelected(false);
+//                            btn_footer_setup_user.setSelected(false);
+//                            tv_user_activity_menu.setSelected(false);
+//                            btn_footer_user_activity.setSelected(false);
+//                            tv_setup_menu.setSelected(false);
+//                            btn_footer_setUp.setSelected(false);
+                          //  finish();
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
+                    } else {
+                        // do not hide header
+                    }
+//                    if (getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+//                        Log.e("dfdg","fdsf");
+//                        SetUpFragment f1 = (SetUpFragment) getSupportFragmentManager()
+//                                .findFragmentByTag(SetUpFragment.class.getSimpleName());
+//                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                        transaction.remove(f1);
+//                        transaction.commit();
+//                        getSupportFragmentManager().popBackStack();
+//
+//                        hideHeaderDetail();
+//                        // return 2;
+//
+//                    }
+                }
+                else if (f instanceof DashboardFragment)
+                {
+                    int handle = ((DashboardFragment) f).handleBackPress();
+                    if (handle == 0) {
+                        finish();
+                    }
+
+                    else if (handle == 2)
+                    {
+                        DashboardFragment test = (DashboardFragment) getSupportFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName());
+                        if (test != null && test.isVisible())
+                        {
+                            MoreFragment moreFragment = (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                            PunchFragment punchFragment = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                            LeaveApplicationApprovalFragment leaveApplicationApprovalFragment = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                            HomeFragment homeFragment= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                            SetUpFragment setUpFragment= (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+
+
+                            if (moreFragment!=null || punchFragment!=null|| leaveApplicationApprovalFragment!=null || homeFragment!=null || setUpFragment!=null){
+                                Log.e("false","false");
+                            }
+                            else {
+                                Log.e("true","true");
+                                finish();
+                            }
+//                            Log.e("sds", "s" );
+//                            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+//                                tv_user_setup_menus.setText("Attendance");
+//                                title.setText("Home");
+//                                tv_home_menu.setText("Home");
+//                            } else {
+//                                tv_user_setup_menus.setText("Myself");
+//                                title.setText("Attendance");
+//                                tv_home_menu.setText("Attendance");
+//                            }
+//                            btn_footer_home.setSelected(true);
+//                            tv_home_menu.setSelected(true);
+//                            tv_user_setup_menus.setSelected(false);
+//                            btn_footer_setup_user.setSelected(false);
+//                            tv_user_activity_menu.setSelected(false);
+//                            btn_footer_user_activity.setSelected(false);
+//                            tv_setup_menu.setSelected(false);
+//                            btn_footer_setUp.setSelected(false);
+//                            tv_more_menu.setSelected(false);
+//                            btn_footer_more.setSelected(false);
+                     finish();
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        SetUpFragment test1 = (SetUpFragment) getSupportFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName());
+                        if (test1 != null && test1.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("UsersActivity");
+                            Log.e("sds", "s" );
+                            tv_user_activity_menu.setSelected(true);
+                            btn_footer_user_activity.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+                        PunchFragment tets2 = (PunchFragment) getSupportFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName());
+                        if (tets2 != null && tets2.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+                            title.setText("Home");
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+                            title.setText("Attendance");
+                            tv_home_menu.setText("Attendance");
+                        }
+                            Log.e("sds", "s" );
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+                        LeaveApplicationApprovalFragment tets3 = (LeaveApplicationApprovalFragment) getSupportFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
+                        if (tets3 != null && tets3.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Leave");
+                            Log.e("sds", "s" );
+                            tv_setup_menu.setSelected(true);
+                            btn_footer_setUp.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+
+                        HomeFragment tets4= (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName());
+                        if (tets4 != null && tets4.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+
+                        }
+                        else {
+                            //Whatever
+                        }
+                        MoreFragment tets5= (MoreFragment) getSupportFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName());
+                        if (tets5 != null && tets5.isVisible())
+                        {if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                            tv_user_setup_menus.setText("Attendance");
+
+                            tv_home_menu.setText("Home");
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                        }
+                            title.setText("More");
+                            Log.e("sds", "s" );
+                            tv_more_menu.setSelected(true);
+                            btn_footer_more.setSelected(true);
+                            tv_user_setup_menus.setSelected(false);
+                            btn_footer_setup_user.setSelected(false);
+                            tv_user_activity_menu.setSelected(false);
+                            btn_footer_user_activity.setSelected(false);
+                            tv_setup_menu.setSelected(false);
+                            btn_footer_setUp.setSelected(false);
+                            btn_footer_home.setSelected(false);
+                            tv_home_menu.setSelected(false);
+                        }
+                        else {
+                            //Whatever
+                        }
+                        hideHeaderDetail();
+                        //hideHeaderDetailBack("UsersActivity");
+                    } else {
+                       finish();
+                    }
+//                    if (getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+//                        Log.e("dfdg","fdsf");
+//                        SetUpFragment f1 = (SetUpFragment) getSupportFragmentManager()
+//                                .findFragmentByTag(SetUpFragment.class.getSimpleName());
+//                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                        transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                        transaction.remove(f1);
+//                        transaction.commit();
+//                        getSupportFragmentManager().popBackStack();
+//
+//                        hideHeaderDetail();
+//                        // return 2;
+//
+//                    }
                 }
                 else {
                     finish();
@@ -879,6 +2100,22 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+        private class DownloadZipFileTask extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                return null;
+            }
+
+            @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+
+
+    }
 
     @Override
     protected void onResume() {
@@ -911,6 +2148,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void accept(AllUserListEntity carts) throws Exception {
                 // departmentListEntityList=carts;
+                Common.userListRepository.emptyCart();
                 UserList userList = new UserList();
 
                 for (AllUserListEntity.Data data : carts.data) {
@@ -949,14 +2187,14 @@ public class MainActivity extends AppCompatActivity {
         }));
 
     }
-
+    DownloadZipFileTask downloadZipFileTask;
     private void syncUserActivityData(String startDate, String endDate, String userID) {
         showLoadingProgress(this);
         String firstFourCharss = "";     //substring containing first 4 characters
         String firstFourChars2 = "";     //substring containing first 4 characters
 
 
-           String date1=null;
+        String date1 = null;
         String date2 = null;
         firstFourCharss = startDate.substring(2, 3);
         firstFourChars2 = endDate.substring(2, 3);
@@ -969,7 +2207,7 @@ public class MainActivity extends AppCompatActivity {
 
             date1 = firstFourOne + firstFourTwo_ + firstFourThree;
 
-                   }
+        }
         if (firstFourChars2.equals("-")) {
 
             String firstFourOne = endDate.substring(6, 10);
@@ -980,14 +2218,19 @@ public class MainActivity extends AppCompatActivity {
             date2 = firstFourOne + firstFourTwo_ + firstFourThree;
 
         }
-            UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
-            userActivityPostEntity.from_date = date1;
-            userActivityPostEntity.to_date = date2;
-            userActivityPostEntity.user_id = userID;
-        compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
+        UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
+        userActivityPostEntity.from_date = date1;
+        userActivityPostEntity.to_date = date2;
+        userActivityPostEntity.user_id = userID;
+        compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe
+                (
+                new Consumer<UserActivityListEntity>() {
             @Override
-            public void accept(UserActivityListEntity carts) throws Exception {
+            public void accept(UserActivityListEntity carts) throws Exception
+            {
                 // departmentListEntityList=carts;
+
+               // new DownloadZipFileTask().execute();
                 UserActivity userActivity = new UserActivity();
 
                 for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
@@ -997,27 +2240,41 @@ public class MainActivity extends AppCompatActivity {
                     //   String sDate1 = userActivityListEntity.WorkingDate;
 
                     String input = userActivityListEntity.WorkingDate;
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date(System.currentTimeMillis());
+                    final String currentDate = formatter.format(date);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(date);
+                    c.add(Calendar.MONTH, -1);
+                    String lastDate = formatter.format(c.getTime());
+                    if (input.equals("--")) {
+                        input = lastDate;
+                    }
 
                     //input string
                     String firstFourCharss = "";     //substring containing first 4 characters
 
 
-                    firstFourCharss = input.substring(4, 5);
-                    if (firstFourCharss.equals("-")) {
+                    try {
+                        firstFourCharss = input.substring(4, 5);
+                        if (firstFourCharss.equals("-")) {
 
-                        String firstFourThree = input.substring(8, 10);
+                            String firstFourThree = input.substring(8, 10);
 
-                        String firstFourTwo_ = input.substring(4, 8);
-                        String firstFourOne = input.substring(0, 4);
+                            String firstFourTwo_ = input.substring(4, 8);
+                            String firstFourOne = input.substring(0, 4);
 
-                        userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
-                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
-                        userActivity.Date = date1;
-                    } else {
+                            userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
+                            Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
+                            userActivity.Date = date1;
+                        } else {
 
-                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
-                        userActivity.Date = date1;
-                        userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+                            Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
+                            userActivity.Date = date1;
+                            userActivity.WorkingDate = userActivityListEntity.WorkingDate;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
 //                    if (firstFourCharss.equals("-")){
 //
@@ -1056,81 +2313,151 @@ public class MainActivity extends AppCompatActivity {
                         userActivity.PunchInTime = Double.parseDouble(string.toString());
 
                     }
+                    //  String value1;
+                    if (userActivityListEntity.PunchOutTime == null) {
+                        userActivityListEntity.PunchOutTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime == null) {
+                        userActivityListEntity.PunchInTime = "";
+                    }
+                    if (userActivityListEntity.PunchOutTime.equals("0")) {
+                        userActivityListEntity.PunchOutTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("0")) {
+                        userActivityListEntity.PunchInTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("") || userActivityListEntity.PunchOutTime.equals("")) {
+//                        String strTime = userActivityListEntity.PunchInTime;
+//                        String endTime = userActivityListEntity.PunchOutTime;
+//                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//                        try {
+//                            Date dates = dateFormat.parse(strTime);
+//                            Date enddates = dateFormat.parse(endTime);
+//                            SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
+//
+//                            String currentTime=formatters.format(dates);
+//                            String endTimes=formatters.format(enddates);
+//                            long difference = enddates.getTime() - dates.getTime();
+//                            int  days = (int) (difference / (1000*60*60*24));
+//                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+//                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+//                            Log.e("currentTime","currentTime"+currentTime);
+//                            Log.e("endTime","endTime"+endTimes);
+//                            Log.e("difference","difference"+days +":"+min);
 
-                    // userActivity.PunchInTime= Double.parseDouble(str);
+                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                        userActivity.Duration = userActivityListEntity.Duration;
+                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+
+
+                    } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
+                        String strTime = userActivityListEntity.PunchInTime;
+                        String endTime = userActivityListEntity.PunchOutTime;
+                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                        try {
+                            Date dates = dateFormat.parse(strTime);
+                            Date enddates = dateFormat.parse(endTime);
+                            SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
+
+                            String currentTime = formatters.format(dates);
+                            String endTimes = formatters.format(enddates);
+                            long difference = enddates.getTime() - dates.getTime();
+                            int days = (int) (difference / (1000 * 60 * 60 * 24));
+                            int hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
+                            int min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
+                            Log.e("currentTime", "currentTime" + currentTime);
+                            Log.e("endTime", "endTime" + endTimes);
+                            Log.e("difference", "difference" + days + ":" + min);
+
+                            userActivity.PunchOutTime = endTimes;
+                            userActivity.Duration = days + ":" + min;
+                            userActivity.PunchInTimeLate = currentTime;
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                        userActivity.Duration = userActivityListEntity.Duration;
+                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                    }
+
                     userActivity.PunchOutLocation = userActivityListEntity.PunchOutLocation;
-                    userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-                    userActivity.Duration = userActivityListEntity.Duration;
-                    userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                     Common.userActivityRepository.insertToUserActivity(userActivity);
+                    // userActivity.PunchInTime= Double.parseDouble(str);
+
 
                 }
-
+//                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")) {
+//                    PunchFragment.show();
+//                }
 
                 dismissLoadingProgress();
                 //   progressBar.setVisibility(View.GONE);
             }
-        }, new Consumer<Throwable>() {
+        }, new Consumer<Throwable>()
+                        {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 dismissLoadingProgress();
             }
         }));
-        }
+    }
 
-        private void UserActivityData () {
+    private void UserActivityData() {
 
-            showLoadingProgress(this);
-            UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
-            compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
-                @Override
-                public void accept(UserActivityListEntity carts) throws Exception {
-                    // departmentListEntityList=carts;
-                    UserActivity userActivity = new UserActivity();
+        showLoadingProgress(this);
+        UserActivityPostEntity userActivityPostEntity = new UserActivityPostEntity();
+        compositeDisposable.add(mServiceXact.getUserActivityList(userActivityPostEntity).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UserActivityListEntity>() {
+            @Override
+            public void accept(UserActivityListEntity carts) throws Exception {
+                // departmentListEntityList=carts;
+                Common.userActivityRepository.emptyCart();
+                UserActivity userActivity = new UserActivity();
 
-                    for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
-                        userActivity.UserId = userActivityListEntity.UserId;
+                for (UserActivityListEntity.Data userActivityListEntity : carts.data) {
+                    userActivity.UserId = userActivityListEntity.UserId;
 
-                        userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
-                        //   String sDate1 = userActivityListEntity.WorkingDate;
+                    userActivity.PunchInLocation = userActivityListEntity.PunchInLocation;
+                    //   String sDate1 = userActivityListEntity.WorkingDate;
 
-                        String input = userActivityListEntity.WorkingDate;
-                        SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
-                        Date date = new Date(System.currentTimeMillis());
-                        final String currentDate=formatter.format(date);
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(date);
-                        c.add(Calendar.MONTH, -1);
-                        String lastDate=formatter.format(c.getTime());
-                        if (input.equals("--")){
-                            input=lastDate;
+                    String input = userActivityListEntity.WorkingDate;
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = new Date(System.currentTimeMillis());
+                    final String currentDate = formatter.format(date);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(date);
+                    c.add(Calendar.MONTH, -1);
+                    String lastDate = formatter.format(c.getTime());
+                    if (input.equals("--")) {
+                        input = lastDate;
+                    }
+
+                    //input string
+                    String firstFourCharss = "";     //substring containing first 4 characters
+
+
+                    try {
+                        firstFourCharss = input.substring(4, 5);
+                        if (firstFourCharss.equals("-")) {
+
+                            String firstFourThree = input.substring(8, 10);
+
+                            String firstFourTwo_ = input.substring(4, 8);
+                            String firstFourOne = input.substring(0, 4);
+
+                            userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
+                            Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
+                            userActivity.Date = date1;
+                        } else {
+
+                            Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
+                            userActivity.Date = date1;
+                            userActivity.WorkingDate = userActivityListEntity.WorkingDate;
                         }
-
-                        //input string
-                        String firstFourCharss = "";     //substring containing first 4 characters
-
-
-                        try {
-                            firstFourCharss = input.substring(4, 5);
-                            if (firstFourCharss.equals("-")) {
-
-                                String firstFourThree = input.substring(8, 10);
-
-                                String firstFourTwo_ = input.substring(4, 8);
-                                String firstFourOne = input.substring(0, 4);
-
-                                userActivity.WorkingDate = firstFourThree + firstFourTwo_ + firstFourOne;
-                                Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(firstFourThree + firstFourTwo_ + firstFourOne);
-                                userActivity.Date = date1;
-                            } else {
-
-                                Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(input);
-                                userActivity.Date = date1;
-                                userActivity.WorkingDate = userActivityListEntity.WorkingDate;
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 //                    if (firstFourCharss.equals("-")){
 //
 //                        String firstFourOne=input.substring(6,10);
@@ -1151,258 +2478,374 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 
 
-                        String str = userActivityListEntity.PunchInTime;
-                        if (str == null || str.equals("")) {
-                            userActivity.PunchInTime = 0.0;
-                        } else {
-                            String firstFourChars = "";     //substring containing first 4 characters
+                    String str = userActivityListEntity.PunchInTime;
+                    if (str == null || str.equals("")) {
+                        userActivity.PunchInTime = 0.0;
+                    } else {
+                        String firstFourChars = "";     //substring containing first 4 characters
 
 
-                            firstFourChars = str.substring(0, 5);
+                        firstFourChars = str.substring(0, 5);
 
-                            int index = 2;
-                            char ch = '.';
+                        int index = 2;
+                        char ch = '.';
 
-                            StringBuilder string = new StringBuilder(firstFourChars);
-                            string.setCharAt(index, ch);
-                            userActivity.PunchInTime = Double.parseDouble(string.toString());
+                        StringBuilder string = new StringBuilder(firstFourChars);
+                        string.setCharAt(index, ch);
+                        userActivity.PunchInTime = Double.parseDouble(string.toString());
 
-                        }
+                    }
+                    //  String value1;
+                    if (userActivityListEntity.PunchOutTime == null) {
+                        userActivityListEntity.PunchOutTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime == null) {
+                        userActivityListEntity.PunchInTime = "";
+                    }
+                    if (userActivityListEntity.PunchOutTime.equals("0")) {
+                        userActivityListEntity.PunchOutTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("0")) {
+                        userActivityListEntity.PunchInTime = "";
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("") || userActivityListEntity.PunchOutTime.equals("")) {
+//                        String strTime = userActivityListEntity.PunchInTime;
+//                        String endTime = userActivityListEntity.PunchOutTime;
+//                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//                        try {
+//                            Date dates = dateFormat.parse(strTime);
+//                            Date enddates = dateFormat.parse(endTime);
+//                            SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
+//
+//                            String currentTime=formatters.format(dates);
+//                            String endTimes=formatters.format(enddates);
+//                            long difference = enddates.getTime() - dates.getTime();
+//                            int  days = (int) (difference / (1000*60*60*24));
+//                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+//                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+//                            Log.e("currentTime","currentTime"+currentTime);
+//                            Log.e("endTime","endTime"+endTimes);
+//                            Log.e("difference","difference"+days +":"+min);
 
-                        // userActivity.PunchInTime= Double.parseDouble(str);
-                        userActivity.PunchOutLocation = userActivityListEntity.PunchOutLocation;
                         userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
                         userActivity.Duration = userActivityListEntity.Duration;
                         userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
-                        Common.userActivityRepository.insertToUserActivity(userActivity);
 
-                    }
-                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")) {
-                        PunchFragment.show();
+
+                    } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
+                        String strTime = userActivityListEntity.PunchInTime;
+                        String endTime = userActivityListEntity.PunchOutTime;
+                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                        try {
+                            Date dates = dateFormat.parse(strTime);
+                            Date enddates = dateFormat.parse(endTime);
+                            SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
+                            SimpleDateFormat formatte= new SimpleDateFormat("hh:mm a");
+
+                            String currentTime = formatters.format(dates);
+                            String endTimes = formatters.format(enddates);
+//                            Date da1= formatte.parse(currentTime);
+//                            Date end= formatte.parse(endTimes);
+                            Date  da1e = formatte.parse(currentTime);
+                            Log.e("da1", "da1" + da1e.toString());
+                            Date end = formatte.parse(endTimes);
+                            long difference = end.getTime() - da1e.getTime();
+                            int  days = (int) (difference / (1000*60*60*24));
+                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+                            Log.e("currentTime", "currentTime" + currentTime);
+                            Log.e("endTime", "endTime" + endTimes);
+                            Log.e("difference", "difference" + days + ":" + min);
+
+                            userActivity.PunchOutTime = endTimes;
+                            userActivity.Duration = hours + ":" + min;
+                            userActivity.PunchInTimeLate = currentTime;
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                        userActivity.Duration = userActivityListEntity.Duration;
+                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                     }
 
-                    dismissLoadingProgress();
-                    //   progressBar.setVisibility(View.GONE);
+                    userActivity.PunchOutLocation = userActivityListEntity.PunchOutLocation;
+                    Common.userActivityRepository.insertToUserActivity(userActivity);
+                    // userActivity.PunchInTime= Double.parseDouble(str);
+
+
                 }
-            }));
-
-
-        }
-        private void DepartmentData () {
-
-            showLoadingProgress(MainActivity.this);
-
-            compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
-                @Override
-                public void accept(DepartmentListEntity carts) throws Exception {
-                    // departmentListEntityList=carts;
-                    Department department = new Department();
-
-                    for (DepartmentListEntity.Data departmentListEntity : carts.data) {
-                        department.Id = departmentListEntity.Id;
-                        department.DepartmentName = departmentListEntity.DepartmentName;
-                        department.UnitId = departmentListEntity.UnitId;
-                        Common.departmentRepository.insertToDepartment(department);
-                    }
-
-                    dismissLoadingProgress();
-                    //   progressBar.setVisibility(View.GONE);
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("0")) {
+                    PunchFragment.show();
                 }
-            }));
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+            }
+        }));
 
 
-        }
-        private void unitListData () {
-            showLoadingProgress(MainActivity.this);
+    }
+
+    private void DepartmentData() {
+
+        showLoadingProgress(MainActivity.this);
+
+        compositeDisposable.add(mServiceXact.getDepartmentList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<DepartmentListEntity>() {
+            @Override
+            public void accept(DepartmentListEntity carts) throws Exception {
+                // departmentListEntityList=carts;
+                Common.departmentRepository.emptyCart();
+                Department departments = new Department();
+                departments.Id = -1;
+                departments.DepartmentName = "ALL";
+                departments.UnitId = 1;
+                Common.departmentRepository.insertToDepartment(departments);
+                Department department = new Department();
+
+                for (DepartmentListEntity.Data departmentListEntity : carts.data) {
+                    department.Id = departmentListEntity.Id;
+                    department.DepartmentName = departmentListEntity.DepartmentName;
+                    department.UnitId = departmentListEntity.UnitId;
+                    Common.departmentRepository.insertToDepartment(department);
+                }
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
+            }
+        }));
 
 
-            compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
-                @Override
-                public void accept(UnitListEntity unitListEntities) throws Exception {
-                    Unit unit = new Unit();
+    }
 
-                    for (UnitListEntity.Data unitList : unitListEntities.data) {
+    private void unitListData() {
+        showLoadingProgress(MainActivity.this);
 
-                        unit.Id = unitList.Id;
-                        unit.UnitName = unitList.UnitName;
-                        unit.ShortName = unitList.ShortName;
-                        Common.unitRepository.insertToUnit(unit);
-                    }
 
-                    dismissLoadingProgress();
-                    //   progressBar.setVisibility(View.GONE);
+        compositeDisposable.add(mServiceXact.getUnitList().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<UnitListEntity>() {
+            @Override
+            public void accept(UnitListEntity unitListEntities) throws Exception {
+                Common.unitRepository.emptyCart();
+                Unit units = new Unit();
+                units.Id = -1;
+                units.UnitName = "ALL";
+                units.ShortName = "A";
+                Common.unitRepository.insertToUnit(units);
+                Unit unit = new Unit();
+
+                for (UnitListEntity.Data unitList : unitListEntities.data) {
+
+                    unit.Id = unitList.Id;
+                    unit.UnitName = unitList.UnitName;
+                    unit.ShortName = unitList.ShortName;
+                    Common.unitRepository.insertToUnit(unit);
+                }
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
 
 //                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
 //                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
-                }
+            }
 
-            }));
-        }
-        private void setUpData () {
-            showLoadingProgress(MainActivity.this);
+        }));
+    }
 
-            compositeDisposable.add(mServiceXact.getSetUpData().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<SetUpDataEntity>() {
-                @Override
-                public void accept(SetUpDataEntity unitListEntities) throws Exception {
-                    SetUp setUp = new SetUp();
+    private void setUpData() {
+        showLoadingProgress(MainActivity.this);
 
-                    setUp.EXPECTED_DURATION = unitListEntities.data.EXPECTED_DURATION;
-                    setUp.OFFICE_IN_TIME = unitListEntities.data.OFFICE_IN_TIME;
-                    setUp.OFFICE_OUT_TIME = unitListEntities.data.OFFICE_OUT_TIME;
-                    setUp.GRACE_TIME = unitListEntities.data.GRACE_TIME;
-                    setUp.HALFDAY_DURATION = unitListEntities.data.HALFDAY_DURATION;
-                    setUp.ENTITLED_LEAVE_CASUAL = unitListEntities.data.ENTITLED_LEAVE_CASUAL;
-                    setUp.ENTITLED_LEAVE_SICK = unitListEntities.data.ENTITLED_LEAVE_SICK;
-                    setUp.ENTITLED_LEAVE_TOTAL = unitListEntities.data.ENTITLED_LEAVE_TOTAL;
+        compositeDisposable.add(mServiceXact.getSetUpData().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<SetUpDataEntity>() {
+            @Override
+            public void accept(SetUpDataEntity unitListEntities) throws Exception {
+              //  Common.setUpDataRepository.emptyCart();
+                SetUp setUp = new SetUp();
 
-                    dismissLoadingProgress();
-                    //   progressBar.setVisibility(View.GONE);
+                setUp.EXPECTED_DURATION = unitListEntities.data.EXPECTED_DURATION;
+                setUp.OFFICE_IN_TIME = unitListEntities.data.OFFICE_IN_TIME;
+                setUp.OFFICE_OUT_TIME = unitListEntities.data.OFFICE_OUT_TIME;
+                setUp.GRACE_TIME = unitListEntities.data.GRACE_TIME;
+                setUp.HALFDAY_DURATION = unitListEntities.data.HALFDAY_DURATION;
+                setUp.ENTITLED_LEAVE_CASUAL = unitListEntities.data.ENTITLED_LEAVE_CASUAL;
+                setUp.ENTITLED_LEAVE_SICK = unitListEntities.data.ENTITLED_LEAVE_SICK;
+                setUp.ENTITLED_LEAVE_TOTAL = unitListEntities.data.ENTITLED_LEAVE_TOTAL;
+
+                dismissLoadingProgress();
+                //   progressBar.setVisibility(View.GONE);
 
 //                unitListEntityArrayAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, unitListEntityList);
 //                unitListEntityArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //                spinnerUnit.setAdapter(unitListEntityArrayAdapter);
+            }
+
+        }));
+    }
+
+    private void initDB() {
+        Common.mainDatabase = MainDatabase.getInstance(this);
+        Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
+        Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
+        Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
+        Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
+        Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
+        Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
+    }
+
+
+    private void load() {
+        showLoadingProgress(this);
+        compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
+            @Override
+            public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
+                LeaveSummary leaveSummary = new LeaveSummary();
+                EntityLeave entityLeave = new EntityLeave();
+                RemainingLeave remainingLeave = new RemainingLeave();
+                for (LeaveSummaryEntity leaveSummaryEntity : carts) {
+                    leaveSummary.FullName = leaveSummaryEntity.FullName;
+                    leaveSummary.UserIcon = leaveSummaryEntity.UserIcon;
+                    leaveSummary.UserId = leaveSummaryEntity.UserId;
+                    entityLeave.Casual = leaveSummaryEntity.entityLeaves.Casual;
+                    entityLeave.Halfday = leaveSummaryEntity.entityLeaves.Halfday;
+                    entityLeave.Sick = leaveSummaryEntity.entityLeaves.Sick;
+                    entityLeave.UnPaid = leaveSummaryEntity.entityLeaves.UnPaid;
+                    remainingLeave.Casual = leaveSummaryEntity.remainingLeaves.Casual;
+                    remainingLeave.Sick = leaveSummaryEntity.remainingLeaves.Sick;
+
+                    Common.leaveSummaryRepository.insertToLeaveSummary(leaveSummary);
+                    Common.entityLeaveRepository.insertToEntityLeave(entityLeave);
+                    Common.remainingLeaveRepository.insertToRemainingLeave(remainingLeave);
                 }
-
-            }));
-        }
-        private void initDB () {
-            Common.mainDatabase = MainDatabase.getInstance(this);
-            Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
-            Common.unitRepository = UnitRepository.getInstance(UnitDataSource.getInstance(Common.mainDatabase.unitDao()));
-            Common.leaveSummaryRepository = LeaveSummaryRepository.getInstance(LeaveSummaryDataSource.getInstance(Common.mainDatabase.leaveSummaryDao()));
-            Common.entityLeaveRepository = EntityLeaveRepository.getInstance(EntityLeaveDataSource.getInstance(Common.mainDatabase.entityLeaveDao()));
-            Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
-            Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
-        }
-
-
-        private void load () {
-            showLoadingProgress(this);
-            compositeDisposable.add(mService.getLeaveSummary().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<ArrayList<LeaveSummaryEntity>>() {
-                @Override
-                public void accept(ArrayList<LeaveSummaryEntity> carts) throws Exception {
-                    LeaveSummary leaveSummary = new LeaveSummary();
-                    EntityLeave entityLeave = new EntityLeave();
-                    RemainingLeave remainingLeave = new RemainingLeave();
-                    for (LeaveSummaryEntity leaveSummaryEntity : carts) {
-                        leaveSummary.FullName = leaveSummaryEntity.FullName;
-                        leaveSummary.UserIcon = leaveSummaryEntity.UserIcon;
-                        leaveSummary.UserId = leaveSummaryEntity.UserId;
-                        entityLeave.Casual = leaveSummaryEntity.entityLeaves.Casual;
-                        entityLeave.Halfday = leaveSummaryEntity.entityLeaves.Halfday;
-                        entityLeave.Sick = leaveSummaryEntity.entityLeaves.Sick;
-                        entityLeave.UnPaid = leaveSummaryEntity.entityLeaves.UnPaid;
-                        remainingLeave.Casual = leaveSummaryEntity.remainingLeaves.Casual;
-                        remainingLeave.Sick = leaveSummaryEntity.remainingLeaves.Sick;
-
-                        Common.leaveSummaryRepository.insertToLeaveSummary(leaveSummary);
-                        Common.entityLeaveRepository.insertToEntityLeave(entityLeave);
-                        Common.remainingLeaveRepository.insertToRemainingLeave(remainingLeave);
-                    }
 //                mAdapters = new LeaveSummaryListAdapter(mActivity, carts);
 //
 //                rcl_leave_summary_list.setAdapter(mAdapters);
-                    dismissLoadingProgress();
-                }
-            }, new Consumer<Throwable>() {
-                @Override
-                public void accept(Throwable throwable) throws Exception {
-                    dismissLoadingProgress();
-                }
-            }));
+                dismissLoadingProgress();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                dismissLoadingProgress();
+            }
+        }));
 
+
+    }
+
+    private void onBackForPunch() {
+        Fragment f = getVisibleFragment();
+        Log.e("frag", "frag" + f);
+        if (f != null) {
+            if (f instanceof MoreFragment) {
+                int handle = ((MoreFragment) f).handleBackPress(2);
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+            }
 
         }
+    }
 
-        private void onBackForPunch () {
-            Fragment f = getVisibleFragment();
-            Log.e("frag", "frag" + f);
-            if (f != null) {
-                if (f instanceof MoreFragment) {
-                    int handle = ((MoreFragment) f).handleBackPress(2);
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
+    private void onBack() {
+        Fragment f = getVisibleFragment();
+        Log.e("frag", "frag" + f);
+        if (f != null) {
+            if (f instanceof MoreFragment) {
+
+
+                int handle = ((MoreFragment) f).handleBackPress(1);
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 1) {
+                    int handles = ((MoreFragment) f).handleBackPress(2);
+                    if (handles == 2) {
                         hideHeaderDetail();
-                    } else {
-                        // do not hide header
                     }
+
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
                 }
 
             }
-        }
+            else   if (f instanceof SetUpFragment) {
 
-        private void onBack () {
-            Fragment f = getVisibleFragment();
-            Log.e("frag", "frag" + f);
-            if (f != null) {
-                if (f instanceof MoreFragment)
-                {
 
-                    if (f instanceof PunchInFragment) {
-                        Toast.makeText(mContext, "true", Toast.LENGTH_SHORT).show();
-                    }
-                    int handle = ((MoreFragment) f).handleBackPress(1);
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 1) {
-                        int handles = ((MoreFragment) f).handleBackPress(2);
-                        if (handles == 2) {
-                            hideHeaderDetail();
-                        }
 
-                    } else if (handle == 2) {
-                        hideHeaderDetail();
-                    } else {
-                        // do not hide header
-                    }
-
-                } else if (f instanceof LeaveFragment) {
-                    int handle = ((LeaveFragment) f).handleBackPress();
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetail();
-                    } else {
-                        // do not hide header
-                    }
-                } else if (f instanceof LeaveApplicationFragment) {
-                    int handle = ((LeaveApplicationFragment) f).handleBackPress();
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetailForApplication();
-                    } else {
-                        // do not hide header
-                    }
-                }
-                // else if ()
-                if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
-                    PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
-                            .findFragmentByTag(PunchInFragment.class.getSimpleName());
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                    transaction.remove(f1);
-                    transaction.commit();
-                    getSupportFragmentManager().popBackStack();
-
+                int handle = ((SetUpFragment) f).test();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                  //  afterClickTabItem(3,null);
                     hideHeaderDetail();
-                    // return 2;
-
-                } else if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
-                    AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
-                            .findFragmentByTag(PunchInFragment.class.getSimpleName());
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-                    transaction.remove(f1);
-                    transaction.commit();
-                    getSupportFragmentManager().popBackStack();
-
-                    hideHeaderDetail();
-                    // return 2;
-
+                } else {
+                    // do not hide header
                 }
+
+            }
+            else   if (f instanceof PunchInFragment) {
+
+
+                int handle = ((PunchInFragment) f).handleBackPress();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+
+            }
+            else if (f instanceof LeaveFragment) {
+                int handle = ((LeaveFragment) f).handleBackPress();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetail();
+                } else {
+                    // do not hide header
+                }
+            } else if (f instanceof LeaveApplicationFragment) {
+                int handle = ((LeaveApplicationFragment) f).handleBackPress();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetailForApplication();
+                } else {
+                    // do not hide header
+                }
+            }
+            // else if ()
+//            if (getSupportFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+//                PunchInFragment f1 = (PunchInFragment) getSupportFragmentManager()
+//                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+//                transaction.remove(f1);
+//                transaction.commit();
+//                getSupportFragmentManager().popBackStack();
+//
+//                hideHeaderDetail();
+//                // return 2;
+//
+//            } else
+           if (getSupportFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {
+                AboutUsFragment f1 = (AboutUsFragment) getSupportFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f1);
+                transaction.commit();
+                getSupportFragmentManager().popBackStack();
+
+                hideHeaderDetail();
+                // return 2;
+
+            }
 //
 //                int handle = ((SetUpFragment) f).handleBackPress();
 //                if (handle == 0) {
@@ -1414,424 +2857,450 @@ public class MainActivity extends AppCompatActivity {
 //                }
 
 
-            } else {
-                finish();
-            }
+        } else {
+            finish();
         }
+    }
 
-        public void hideHeaderDetail () {
-            rlt_header.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
-            //card_view.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.GONE);
-            rlt_header_details.setVisibility(View.GONE);
+    public void hideHeaderDetail() {
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        //card_view.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        rlt_header_details.setVisibility(View.GONE);
 
 
+    }
+    public void hideHeaderDetailBack(String value) {
+        switch (value){
+            case "UsersActivity":
+//                title.setText("UsersActivity");
+//                tv_user_activity_menu.setSelected(true);
+//                btn_footer_user_activity.setSelected(true);
         }
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        //card_view.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        rlt_header_details.setVisibility(View.GONE);
 
-        public void hideHeaderDetailForApplication () {
+
+    }
+
+    public void hideHeaderDetailForApplication() {
+        rlt_header.setVisibility(View.GONE);
+        title.setVisibility(View.GONE);
+        //card_view.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.VISIBLE);
+        rlt_header_details.setVisibility(View.VISIBLE);
+        btn_header_application_create.setVisibility(View.VISIBLE);
+        details_title.setText("Leave Summary");
+
+    }
+
+    public void hideHeaderDetailForLeave(String name) {
+        if (name.equals("Approval")) {
             rlt_header.setVisibility(View.GONE);
             title.setVisibility(View.GONE);
             //card_view.setVisibility(View.GONE);
             view_header_details.setVisibility(View.VISIBLE);
             rlt_header_details.setVisibility(View.VISIBLE);
-            btn_header_application_create.setVisibility(View.VISIBLE);
             details_title.setText("Leave Summary");
-
-        }
-
-        public void hideHeaderDetailForLeave (String name){
-            if (name.equals("Approval")) {
-                rlt_header.setVisibility(View.GONE);
-                title.setVisibility(View.GONE);
-                //card_view.setVisibility(View.GONE);
-                view_header_details.setVisibility(View.VISIBLE);
-                rlt_header_details.setVisibility(View.VISIBLE);
-                details_title.setText("Leave Summary");
-                btn_header_application_create.setVisibility(View.VISIBLE);
-            } else if (name.equals("Application")) {
-                rlt_header.setVisibility(View.GONE);
-                title.setVisibility(View.GONE);
-                //card_view.setVisibility(View.GONE);
-                view_header_details.setVisibility(View.VISIBLE);
-                rlt_header_details.setVisibility(View.VISIBLE);
-                details_title.setText("Leave Application");
-                btn_header_application_create.setVisibility(View.GONE);
-            }
-
-
-        }
-
-        public Fragment getVisibleFragment () {
-            FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-            List<Fragment> fragments = fragmentManager.getFragments();
-            Collections.reverse(fragments);
-            if (fragments != null) {
-                for (Fragment fragment : fragments) {
-                    if (fragment != null && fragment.isVisible())
-                        return fragment;
-                }
-            }
-            return null;
-        }
-
-        private void setUnselectAllmenu () {
-            tv_home_menu.setSelected(false);
-            tv_setup_menu.setSelected(false);
-            tv_user_activity_menu.setSelected(false);
-            tv_more_menu.setSelected(false);
-            tv_user_setup_menus.setSelected(false);
-
-
-            btn_footer_home.setSelected(false);
-            btn_footer_setUp.setSelected(false);
-            btn_footer_user_activity.setSelected(false);
-            btn_footer_more.setSelected(false);
-            btn_footer_setup_user.setSelected(false);
-
-        }
-
-        public void setUpFooter ( int type){
-            setUnselectAllmenu();
-            switch (type) {
-                case 0:
-                    tv_home_menu.setSelected(true);
-                    btn_footer_home.setSelected(true);
-                    break;
-                case 1:
-                    tv_setup_menu.setSelected(true);
-                    btn_footer_setUp.setSelected(true);
-                    break;
-                case 2:
-                    tv_user_activity_menu.setSelected(true);
-                    btn_footer_user_activity.setSelected(true);
-                    break;
-                case 3:
-                    tv_more_menu.setSelected(true);
-                    btn_footer_more.setSelected(true);
-                    break;
-                case 4:
-                    tv_user_setup_menus.setSelected(true);
-                    btn_footer_setup_user.setSelected(true);
-                    break;
-
-            }
-
-        }
-
-        //    }
-        public void btn_home_clicked (View view){
-            Log.e(TAG, "Home Button Clicked");
-            Utils.is_home = true;
-            setUpFooter(HOME_BTN);
-            //show the initial home page
-            afterClickTabItem(Constant.FRAG_HOME, null);
-            // checkToGetTicket(false);
-            title.setText("Home");
-            rlt_header_details.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.GONE);
-
-            btn_header_application.setVisibility(View.GONE);
-            btn_header_application_create.setVisibility(View.GONE);
-            rlt_header.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
-            btn_header_sync.setVisibility(View.VISIBLE);
-            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                btn_header_sync.setVisibility(View.VISIBLE);
-            } else {
-                btn_header_sync.setVisibility(View.GONE);
-
-
-            }
-
-
-        }
-
-        public void btn_setup_user_clicked (View view){
-            Log.e(TAG, "Home Button Clicked");
-            Utils.is_home = true;
-            setUpFooter(SET_UP_USER_BTN);
-            //show the initial home page
-            afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
-            // checkToGetTicket(false);
-
-            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                title.setText("Punch");
-                btn_header_sync.setVisibility(View.GONE);
-            } else {
-                Constant.SYNC = "Status";
-                title.setText("Status");
-                btn_header_sync.setVisibility(View.VISIBLE);
-            }
-
-            rlt_header_details.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.GONE);
-            btn_header_application.setVisibility(View.GONE);
-            rlt_header.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
-            btn_header_application_create.setVisibility(View.GONE);
-        }
-
-        public void btn_setup_clicked (View view){
-            // Toast.makeText(mContext, "Not implement Yet", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Home Button Clicked");
-            Utils.is_home = false;
-            setUpFooter(SET_UP_BTN);
-            //show the initial home page
-            afterClickTabItem(Constant.FRAG_SET_UP, null);
-            // checkToGetTicket(false);
-            title.setText("Leave");
-            rlt_header_details.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.GONE);
-            rlt_header.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
-            btn_header_application.setVisibility(View.VISIBLE);
-            btn_header_sync.setVisibility(View.GONE);
-
-        }
-
-        public void btn_user_clicked (View view){
-            Log.e(TAG, "Home Button Clicked");
-            Utils.is_home = false;
-            setUpFooter(USER_BTN);
-            //show the initial home page
-            afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
-            // checkToGetTicket(false);
-            title.setText("User Activity");
-            rlt_header.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
-            btn_header_application_create.setVisibility(View.GONE);
-            btn_header_application.setVisibility(View.GONE);
-            rlt_header_details.setVisibility(View.GONE);
-            view_header_details.setVisibility(View.GONE);
-            btn_header_sync.setVisibility(View.VISIBLE);
-            Constant.SYNC = "UserActivitY";
-        }
-
-        public void btn_more_clicked (View view){
-
-            Log.e(TAG, "Home Button Clicked");
-            Utils.is_home = false;
-            setUpFooter(MORE_BTN);
-            //show the initial home page
-            afterClickTabItem(Constant.FRAG_MORE, null);
-            // checkToGetTicket(false);
-
-            btn_header_application.setVisibility(View.GONE);
-            btn_header_application_create.setVisibility(View.GONE);
-            if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                title.setText("Status");
-                tv_more_menu.setText("Status");
-                Constant.SYNC = "Status";
-                btn_footer_more.setImageResource(R.drawable.img_footer_setup_selector);
-                btn_header_sync.setVisibility(View.VISIBLE);
-                rlt_header_details.setVisibility(View.GONE);
-                view_header_details.setVisibility(View.GONE);
-                rlt_header.setVisibility(View.VISIBLE);
-                title.setVisibility(View.VISIBLE);
-            } else {
-                title.setText("MORE");
-                tv_more_menu.setText("MORE");
-                btn_header_sync.setVisibility(View.GONE);
-                btn_footer_more.setImageResource(R.drawable.img_footer_more_selector);
-                rlt_header_details.setVisibility(View.GONE);
-                view_header_details.setVisibility(View.GONE);
-                rlt_header.setVisibility(View.VISIBLE);
-                title.setVisibility(View.VISIBLE);
-
-
-            }
-        }
-        public void onLeaveApplication () {
-
-            Fragment f = getVisibleFragment();
-            Log.e("frag", "frag" + f);
-            if (f != null) {
-                if (f instanceof LeaveFragment) {
-
-                    if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")) {
-                        // newFrag = new SetUpFragment();
-
-                        int handle = ((LeaveFragment) f).leaveApproval();
-                        if (handle == 0) {
-                            finish();
-                        } else if (handle == 2) {
-                            hideHeaderDetailForLeave("Application");
-                        } else {
-                            // do not hide header
-                        }
-                    } else {
-
-                        int handle = ((LeaveFragment) f).leaveApplication();
-                        if (handle == 0) {
-                            finish();
-                        } else if (handle == 2) {
-                            hideHeaderDetailForLeave("Application");
-                        } else {
-                            // do not hide header
-                        }
-                    }
-
-
-                }
-
-            } else {
-                // finish();
-            }
-        }
-
-        public void onLeaveApplicationCreate () {
-
-            Fragment f = getVisibleFragment();
-            Log.e("frag", "frag" + f);
-            if (f != null) {
-                if (f instanceof LeaveApplicationApprovalFragment) {
-                    int handle = ((LeaveApplicationApprovalFragment) f).leaveApplication();
-                    if (handle == 0) {
-                        finish();
-                    } else if (handle == 2) {
-                        hideHeaderDetailForLeave("Approval");
-                    } else {
-                        // do not hide header
-                    }
-
-
-                }
-
-            } else {
-                // finish();
-            }
-        }
-
-        public void hideHeaderDetails () {
+            btn_header_application_create.setVisibility(View.VISIBLE);
+        } else if (name.equals("Application")) {
             rlt_header.setVisibility(View.GONE);
-            btn_header_application.setVisibility(View.GONE);
-            //title.setVisibility(View.GONE);
-
-            rlt_header_details.setVisibility(View.VISIBLE);
+            title.setVisibility(View.GONE);
+            //card_view.setVisibility(View.GONE);
             view_header_details.setVisibility(View.VISIBLE);
-            //rlt_header_moments.setVisibility(View.GONE);
-
+            rlt_header_details.setVisibility(View.VISIBLE);
+            details_title.setText("Leave Application");
+            btn_header_application_create.setVisibility(View.GONE);
         }
 
-        public void afterClickTabItem ( int fragId, Object obj){
-            addFragment(fragId, false);
+
+    }
+
+    public Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        Collections.reverse(fragments);
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isVisible())
+                    return fragment;
+            }
         }
+        return null;
+    }
 
-        public void addFragment ( int fragId, boolean isHasAnimation){
-            // init fragment manager
-            mFragManager = getSupportFragmentManager();
-            // create transaction
-            fragTransaction = mFragManager.beginTransaction();
-
-            // init argument
-
-
-            //check if there is any backstack if yes then remove it
-            int count = mFragManager.getBackStackEntryCount();
-            if (count != 0) {
-                //this will clear the back stack and displays no animation on the screen
-                mFragManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
+    private void setUnselectAllmenu() {
+        tv_home_menu.setSelected(false);
+        tv_setup_menu.setSelected(false);
+        tv_user_activity_menu.setSelected(false);
+        tv_more_menu.setSelected(false);
+        tv_user_setup_menus.setSelected(false);
 
 
-            // check current fragment is wanted fragment
-            if (mCurrentFrag != null && mCurrentFrag.getTag() != null && mCurrentFrag.getTag().equals(String.valueOf(fragId))) {
-                return;
-            }
+        btn_footer_home.setSelected(false);
+        btn_footer_setUp.setSelected(false);
+        btn_footer_user_activity.setSelected(false);
+        btn_footer_more.setSelected(false);
+        btn_footer_setup_user.setSelected(false);
 
-            Fragment newFrag = null;
-            // identify which fragment will be called
-            switch (fragId) {
-                case Constant.FRAG_HOME:
-                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                        newFrag = new DashboardFragment();
-                    } else {
-                        Constant.SYNC = "UserActivitY";
-                        newFrag = new PunchFragment();
+    }
 
-                    }
-                    break;
-                case Constant.FRAG_SET_UP:
-                    newFrag = new LeaveApplicationApprovalFragment();
+    public void setUpFooter(int type) {
+        setUnselectAllmenu();
+        switch (type) {
+            case 0:
+                tv_home_menu.setSelected(true);
+                btn_footer_home.setSelected(true);
+                break;
+            case 1:
+                tv_setup_menu.setSelected(true);
+                btn_footer_setUp.setSelected(true);
+                break;
+            case 2:
+                tv_user_activity_menu.setSelected(true);
+                btn_footer_user_activity.setSelected(true);
+                break;
+            case 3:
+                tv_more_menu.setSelected(true);
+                btn_footer_more.setSelected(true);
+                break;
+            case 4:
+                tv_user_setup_menus.setSelected(true);
+                btn_footer_setup_user.setSelected(true);
+                break;
 
-                    //   newFrag = new AlertFragment();
-                    //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
-                    //  setUnreadMessage();
-                    break;
-                case Constant.FRAG_USER_ACTIVTY:
-                    newFrag = new SetUpFragment();
-                    // newFrag = new ChatCategoryFragment();
-                    //setUpHeader(Constant.FRAG_CHAT);
-
-                    break;
-                case Constant.FRAG_MORE:
-                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                        newFrag = new HomeFragment();
-                    } else {
-
-                        newFrag = new MoreFragment();
-
-                    }
-
-                    // newFrag = new ChatCategoryFragment();
-                    //setUpHeader(Constant.FRAG_CHAT);
-
-                    break;
-                case Constant.FRAG_SET_UP_USER:
-                    if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                        newFrag = new PunchFragment();
-                    } else {
-
-                        newFrag = new HomeFragment();
-
-                    }
-
-                    // newFrag = new ChatCategoryFragment();
-                    //setUpHeader(Constant.FRAG_CHAT);
-
-                    break;
-
-                default:
-                    break;
-            }
-
-
-            // param 1: container id, param 2: new fragment, param 3: fragment id
-            fragTransaction.replace(R.id.main_container, newFrag, String.valueOf(fragId));
-            // prevent showed when user press back fabReview
-            fragTransaction.addToBackStack(String.valueOf(fragId));
-            fragTransaction.commit();
-
-        }
-
-        public void showHeaderDetail (String titles){
-
-            if (titles.equals("no")) {
-                rlt_header.setVisibility(View.VISIBLE);
-                // / rlt_header_details.setVisibility(View.VISIBLE);
-                //view_header_details.setVisibility(View.VISIBLE);
-
-                title.setVisibility(View.VISIBLE);
-            } else if (titles.equals("test")) {
-                rlt_header.setVisibility(View.GONE);
-                rlt_header_details.setVisibility(View.GONE);
-                view_header_details.setVisibility(View.GONE);
-                btn_header_application_create.setVisibility(View.VISIBLE);
-                title.setVisibility(View.GONE);
-            } else if (titles.equals("rrr")) {
-                rlt_header.setVisibility(View.GONE);
-                rlt_header_details.setVisibility(View.VISIBLE);
-                view_header_details.setVisibility(View.VISIBLE);
-                btn_header_application_create.setVisibility(View.GONE);
-                title.setVisibility(View.GONE);
-            }
-
-
-        }
-
-        public void ShowText (String name){
-            details_title.setText(name);
         }
 
     }
+
+    //    }
+    public void btn_home_clicked(View view) {
+        Constant.VALUE="users";
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = true;
+        setUpFooter(HOME_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_HOME, null);
+        // checkToGetTicket(false);
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+
+            title.setText("Home");
+        } else {
+            tv_user_setup_menus.setText("Myself");
+
+        }
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+
+        btn_header_application.setVisibility(View.GONE);
+        btn_header_application_create.setVisibility(View.GONE);
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        btn_header_sync.setVisibility(View.VISIBLE);
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            btn_header_sync.setVisibility(View.VISIBLE);
+        } else {
+            btn_header_sync.setVisibility(View.GONE);
+
+
+        }
+
+
+    }
+
+    public void btn_setup_user_clicked(View view) {
+        Constant.VALUE="users";
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = true;
+        setUpFooter(SET_UP_USER_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+        // checkToGetTicket(false);
+
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            title.setText("Punch");
+            btn_header_sync.setVisibility(View.GONE);
+        } else {
+            Constant.SYNC = "Status";
+            title.setText("Myself");
+            btn_header_sync.setVisibility(View.VISIBLE);
+        }
+
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        btn_header_application.setVisibility(View.GONE);
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        btn_header_application_create.setVisibility(View.GONE);
+    }
+
+    public void btn_setup_clicked(View view) {
+        Constant.VALUE="users";
+        // Toast.makeText(mContext, "Not implement Yet", Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = false;
+        setUpFooter(SET_UP_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_SET_UP, null);
+        // checkToGetTicket(false);
+        title.setText("Leave");
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        btn_header_application.setVisibility(View.VISIBLE);
+        btn_header_sync.setVisibility(View.GONE);
+
+    }
+
+    public void btn_user_clicked(View view) {
+        Constant.VALUE="users";
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = false;
+        setUpFooter(USER_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
+        // checkToGetTicket(false);
+        title.setText("Users Activity");
+        rlt_header.setVisibility(View.VISIBLE);
+        title.setVisibility(View.VISIBLE);
+        btn_header_application_create.setVisibility(View.GONE);
+        btn_header_application.setVisibility(View.GONE);
+        rlt_header_details.setVisibility(View.GONE);
+        view_header_details.setVisibility(View.GONE);
+        btn_header_sync.setVisibility(View.VISIBLE);
+        Constant.SYNC = "UserActivitY";
+    }
+
+    public void btn_more_clicked(View view) {
+        Constant.VALUE="users";
+        Log.e(TAG, "Home Button Clicked");
+        Utils.is_home = false;
+        setUpFooter(MORE_BTN);
+        //show the initial home page
+        afterClickTabItem(Constant.FRAG_MORE, null);
+        // checkToGetTicket(false);
+
+        btn_header_application.setVisibility(View.GONE);
+        btn_header_application_create.setVisibility(View.GONE);
+        if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+            title.setText("Myself");
+            tv_more_menu.setText("Myself");
+            Constant.SYNC = "Status";
+            btn_footer_more.setImageResource(R.drawable.img_footer_setup_selector);
+            btn_header_sync.setVisibility(View.VISIBLE);
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+        } else {
+            title.setText("MORE");
+            tv_more_menu.setText("MORE");
+            btn_header_sync.setVisibility(View.GONE);
+            btn_footer_more.setImageResource(R.drawable.img_footer_more_selector);
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            rlt_header.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
+
+
+        }
+    }
+
+    public void onLeaveApplication() {
+
+        Fragment f = getVisibleFragment();
+        Log.e("frag", "frag" + f);
+        if (f != null) {
+            if (f instanceof LeaveFragment) {
+
+                if (SharedPreferenceUtil.getUserID(MainActivity.this).equals("evankhan1234@gmail.com")) {
+                    // newFrag = new SetUpFragment();
+
+                    int handle = ((LeaveFragment) f).leaveApproval();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForLeave("Application");
+                    } else {
+                        // do not hide header
+                    }
+                } else {
+
+                    int handle = ((LeaveFragment) f).leaveApplication();
+                    if (handle == 0) {
+                        finish();
+                    } else if (handle == 2) {
+                        hideHeaderDetailForLeave("Application");
+                    } else {
+                        // do not hide header
+                    }
+                }
+
+
+            }
+
+        } else {
+            // finish();
+        }
+    }
+
+    public void onLeaveApplicationCreate() {
+
+        Fragment f = getVisibleFragment();
+        Log.e("frag", "frag" + f);
+        if (f != null) {
+            if (f instanceof LeaveApplicationApprovalFragment) {
+                int handle = ((LeaveApplicationApprovalFragment) f).leaveApplication();
+                if (handle == 0) {
+                    finish();
+                } else if (handle == 2) {
+                    hideHeaderDetailForLeave("Approval");
+                } else {
+                    // do not hide header
+                }
+
+
+            }
+
+        } else {
+            // finish();
+        }
+    }
+
+    public void hideHeaderDetails() {
+        rlt_header.setVisibility(View.GONE);
+        btn_header_application.setVisibility(View.GONE);
+        //title.setVisibility(View.GONE);
+
+        rlt_header_details.setVisibility(View.VISIBLE);
+        view_header_details.setVisibility(View.VISIBLE);
+        //rlt_header_moments.setVisibility(View.GONE);
+
+    }
+
+    public void afterClickTabItem(int fragId, Object obj) {
+        addFragment(fragId, false);
+    }
+
+    public void addFragment(int fragId, boolean isHasAnimation) {
+        // init fragment manager
+        mFragManager = getSupportFragmentManager();
+        // create transaction
+        fragTransaction = mFragManager.beginTransaction();
+
+        // init argument
+
+
+        //check if there is any backstack if yes then remove it
+//        int count = mFragManager.getBackStackEntryCount();
+//        if (count != 0) {
+//            //this will clear the back stack and displays no animation on the screen
+//            mFragManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//        }
+
+
+        // check current fragment is wanted fragment
+//        if (mCurrentFrag != null && mCurrentFrag.getTag() != null && mCurrentFrag.getTag().equals(String.valueOf(fragId))) {
+//            return;
+//        }
+
+        Fragment newFrag = null;
+        // identify which fragment will be called
+        switch (fragId) {
+            case Constant.FRAG_HOME:
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                    newFrag = new DashboardFragment();
+                } else {
+                    Constant.SYNC = "UserActivitY";
+                    newFrag = new PunchFragment();
+
+                }
+                break;
+            case Constant.FRAG_SET_UP:
+                newFrag = new LeaveApplicationApprovalFragment();
+
+                //   newFrag = new AlertFragment();
+                //  SharedPreferenceUtil.saveShared(getApplicationContext(), Constant.UNREAD_NOTICE, "0");
+                //  setUnreadMessage();
+                break;
+            case Constant.FRAG_USER_ACTIVTY:
+                newFrag = new SetUpFragment();
+                // newFrag = new ChatCategoryFragment();
+                //setUpHeader(Constant.FRAG_CHAT);
+
+                break;
+            case Constant.FRAG_MORE:
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                    newFrag = new HomeFragment();
+                } else {
+
+                    newFrag = new MoreFragment();
+
+                }
+
+                // newFrag = new ChatCategoryFragment();
+                //setUpHeader(Constant.FRAG_CHAT);
+
+                break;
+            case Constant.FRAG_SET_UP_USER:
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                    newFrag = new PunchFragment();
+                } else {
+
+                    newFrag = new HomeFragment();
+
+                }
+
+                // newFrag = new ChatCategoryFragment();
+                //setUpHeader(Constant.FRAG_CHAT);
+
+                break;
+
+            default:
+                break;
+        }
+
+
+        // param 1: container id, param 2: new fragment, param 3: fragment id
+        fragTransaction.add(R.id.main_container, newFrag,  newFrag.getClass().getSimpleName());
+        // prevent showed when user press back fabReview
+        fragTransaction.addToBackStack(newFrag.getClass().getSimpleName());
+        fragTransaction.commit();
+
+    }
+
+    public void showHeaderDetail(String titles) {
+
+        if (titles.equals("no")) {
+            rlt_header.setVisibility(View.VISIBLE);
+            // / rlt_header_details.setVisibility(View.VISIBLE);
+            //view_header_details.setVisibility(View.VISIBLE);
+
+            title.setVisibility(View.VISIBLE);
+        } else if (titles.equals("test")) {
+            rlt_header.setVisibility(View.GONE);
+            rlt_header_details.setVisibility(View.GONE);
+            view_header_details.setVisibility(View.GONE);
+            btn_header_application_create.setVisibility(View.VISIBLE);
+            title.setVisibility(View.GONE);
+        } else if (titles.equals("rrr")) {
+            rlt_header.setVisibility(View.GONE);
+            rlt_header_details.setVisibility(View.VISIBLE);
+            view_header_details.setVisibility(View.VISIBLE);
+            btn_header_application_create.setVisibility(View.GONE);
+            title.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    public void ShowText(String name) {
+        details_title.setText(name);
+    }
+
+}

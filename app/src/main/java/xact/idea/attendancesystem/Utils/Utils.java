@@ -161,17 +161,22 @@ public class Utils {
         if (CustomProgressDialog.sPdCount <= 0) {
             CustomProgressDialog.sPdCount = 0;
             sPdLoading = null;
-            sPdLoading = new CustomProgressDialog(context, R.style.CustomDialogTheme);
-            if (!sPdLoading.isShowing())
-                sPdLoading.show();
-            if (Build.VERSION.SDK_INT > 10) {
-                LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View loadingV = inflator.inflate(R.layout.layout_dialog_spinner, null);
-                CorrectSizeUtil.getInstance((Activity) context).correctSize(loadingV);
-                sPdLoading.setContentView(loadingV);
-            } else {
-                String message = "Loading...";
+            try {
+                sPdLoading = new CustomProgressDialog(context, R.style.CustomDialogTheme);
+                if (!sPdLoading.isShowing())
+                    sPdLoading.show();
+                if (Build.VERSION.SDK_INT > 10) {
+                    LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    View loadingV = inflator.inflate(R.layout.layout_dialog_spinner, null);
+                    CorrectSizeUtil.getInstance((Activity) context).correctSize(loadingV);
+                    sPdLoading.setContentView(loadingV);
+                } else {
+                    String message = "Loading...";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             CustomProgressDialog.sPdCount++;
         } else {
             CustomProgressDialog.sPdCount++;

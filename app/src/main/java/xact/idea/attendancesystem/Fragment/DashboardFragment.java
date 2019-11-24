@@ -18,11 +18,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +49,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import xact.idea.attendancesystem.Activity.MainActivity;
 import xact.idea.attendancesystem.Adapter.DepartmentAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapter;
 import xact.idea.attendancesystem.Adapter.PunchInAdapterForAdmin;
@@ -76,7 +79,7 @@ import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 public class DashboardFragment extends Fragment {
     static Activity mActivity;
     CorrectSizeUtil correctSizeUtil;
-    View view;
+   static View view;
     long presentEmp, absentEmp, leaveEmp;
     static List<Integer> ydata = new ArrayList<>();
     static List<Integer> ydataAttendance = new ArrayList<>();
@@ -85,13 +88,13 @@ public class DashboardFragment extends Fragment {
     static EditText edit_content;
     static PieChart pieChart;
     static PieChart pieAttendanceStatus;
-    RadioButton radioPresent;
-    RadioButton radioAbsent;
-    RadioButton radioPresentLate;
-    RadioButton radioleave;
-    RadioButton radioPresentOnTime;
-    RadioButton radioAll;
-    HorizontalScrollView scr_category_present;
+    static RadioButton radioPresent;
+    static  RadioButton radioAbsent;
+    static  RadioButton radioPresentLate;
+    static  RadioButton radioleave;
+    static  RadioButton radioPresentOnTime;
+    static RadioButton radioAll;
+    static HorizontalScrollView scr_category_present;
     IRetrofitApi mService;
     static CompositeDisposable compositeDisposable = new CompositeDisposable();
     static private RecyclerView rcl_this_unit_list;
@@ -102,7 +105,8 @@ public class DashboardFragment extends Fragment {
     static  private UnitAdapter mUnitAdapter = null;
     static private DepartmentAdapter mDepartmentAdapter = null;
     static  List<DepartmentListEntity> departmentListEntityList = new ArrayList<>();
-
+    static RadioGroup rg;
+    static RadioGroup radioPresents;
     static  List<UnitListEntity> unitListEntityList = new ArrayList<>();
     static List<AttendanceEntity> userActivities = new ArrayList<>();
     static  int unitValue;
@@ -126,6 +130,7 @@ public class DashboardFragment extends Fragment {
         Date date = new Date(System.currentTimeMillis());
         currentDate = formatter.format(date);
         initView();
+        check();
 //        UserActivity userActivity = new UserActivity();
 //
 //
@@ -201,9 +206,29 @@ public class DashboardFragment extends Fragment {
         Log.e("total", "total" + total);
         return view;
     }
+    public int handleBackPress() {
 
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName()));
+        if (getFragmentManager().findFragmentByTag(DashboardFragment.class.getSimpleName()) != null) {
+            DashboardFragment f = (DashboardFragment) getFragmentManager()
+                    .findFragmentByTag(DashboardFragment.class.getSimpleName());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+            transaction.remove(f);
+            transaction.commit();
+            getFragmentManager().popBackStack();
+
+
+            return 2;
+
+        }
+
+        return 2;
+
+    }
     private void initView() {
-
+         rg =view. findViewById(R.id.radioSex);
+        radioPresents =view. findViewById(R.id.radioPresents);
         radioPresentOnTime = view.findViewById(R.id.radioPresentOnTime);
         text_date_current = view.findViewById(R.id.text_date_current);
         radioPresentLate = view.findViewById(R.id.radioPresentLate);
@@ -408,6 +433,8 @@ public class DashboardFragment extends Fragment {
             TextView endTime2 = (TextView) getActivity().findViewById(R.id.text_date_current);
             endTime2.setText(formattedDate);
             currentDate=formattedDate;
+            radioAll.setChecked(true);
+            scr_category_present.setVisibility(View.GONE);
             loadUnitItems();
             //DepartmentListData();
             loadDataActivity("all");
@@ -422,10 +449,82 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onItemClick(int position) {
             departmentValue=position;
-            loadUnitDepartmentWise();
-            EmployeeStausUnitDepartmentWise();
+            int selectedRadioButtonID = rg.getCheckedRadioButtonId();
+            RadioButton selectedRadioButton = view. findViewById(selectedRadioButtonID);
+            String selectedRadioButtonText = selectedRadioButton.getText().toString();
+         //   Toast.makeText(mActivity, selectedRadioButtonText, Toast.LENGTH_SHORT).show();
+            int selectedRadioButtonIDPresent = radioPresents.getCheckedRadioButtonId();
+            RadioButton selectedRadioPresentsButton = view. findViewById(selectedRadioButtonIDPresent);
+            String selectedRadioPresentButtonText = selectedRadioPresentsButton.getText().toString();
 
-          //  Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
+            switch(selectedRadioButtonText){
+                case "All":
+
+                    loadUnitDepartmentWise();
+                    EmployeeStausUnitDepartmentWise();
+                    // do operations specific to this selection
+                    break;
+                case "Present":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+                    } else {
+                        loadDataActivity("present");
+                    }
+                    break;
+                case "Absent":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else {
+                        loadDataActivity("absent");
+                    }
+                    break;
+                case "Leave":
+                    // do operations specific to this selection
+                    break;
+            }
+
+
+            switch(selectedRadioPresentButtonText){
+
+                case "On-Time":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else {
+                        loadDataActivity("ontime");
+                    }
+                    break;
+                case "Late":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else {
+                        loadDataActivity("late");
+                    }
+                    break;
+
+            }
+
+            //  Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
 //           Common.departmentRepository.emptyCart();
 //            DepartmentListData();
            // loadLeaveTotal();
@@ -436,8 +535,80 @@ public class DashboardFragment extends Fragment {
         @Override
         public void onItemClick(int position) {
             unitValue=position;
-            loadUnitDepartmentWise();
-            EmployeeStausUnitDepartmentWise();
+
+            int selectedRadioButtonID = rg.getCheckedRadioButtonId();
+            RadioButton selectedRadioButton = view. findViewById(selectedRadioButtonID);
+            String selectedRadioButtonText = selectedRadioButton.getText().toString();
+          //  Toast.makeText(mActivity, selectedRadioButtonText, Toast.LENGTH_SHORT).show();
+            int selectedRadioButtonIDPresent = radioPresents.getCheckedRadioButtonId();
+            RadioButton selectedRadioPresentsButton = view. findViewById(selectedRadioButtonIDPresent);
+            String selectedRadioPresentButtonText = selectedRadioPresentsButton.getText().toString();
+            switch(selectedRadioButtonText){
+                case "All":
+
+                    loadUnitDepartmentWise();
+                    EmployeeStausUnitDepartmentWise();
+                    // do operations specific to this selection
+                    break;
+                case "Present":
+
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("present");
+                    } else {
+                        loadDataActivity("present");
+                    }
+                    break;
+                case "Absent":
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("absent");
+                    } else {
+                        loadDataActivity("absent");
+                    }
+                    break;
+                case "Leave":
+                    // do operations specific to this selection
+                    break;
+            }
+            switch(selectedRadioPresentButtonText){
+
+                case "On-Time":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("ontime");
+                    } else {
+                        loadDataActivity("ontime");
+                    }
+                    break;
+                case "Late":
+                    EmployeeStausUnitDepartmentWise();
+                    if (unitValue > 0 && departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else if (unitValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else if (departmentValue > 0) {
+                        loadDataActivityUnitDepartmentWise("late");
+                    } else {
+                        loadDataActivity("late");
+                    }
+                    break;
+
+            }
+
+
+
            // Toast.makeText(mActivity, "Department "+departmentValue+"Unit"+unitValue, Toast.LENGTH_SHORT).show();
          //   loadLeaveTotal();
 
@@ -694,7 +865,7 @@ public class DashboardFragment extends Fragment {
 
 
     }
-    private void loadDataActivityUnitDepartmentWise(String value) {
+    private static void loadDataActivityUnitDepartmentWise(String value) {
 
 
         if (value.equals("present")){
@@ -828,7 +999,7 @@ public class DashboardFragment extends Fragment {
                 compositeDisposable.add(Common.userActivityRepository.getAbsentUnitDepartmentList(currentDate,departmentValue,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                        display(userActivities,"");
+                        display(userActivities,"absent");
                         dismissLoadingProgress();
                     }
                 }));
@@ -836,7 +1007,7 @@ public class DashboardFragment extends Fragment {
                 compositeDisposable.add(Common.userActivityRepository.getAbsentUnitList(currentDate,unitValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                        display(userActivities,"");
+                        display(userActivities,"absent");
                         dismissLoadingProgress();
                     }
                 }));
@@ -845,7 +1016,7 @@ public class DashboardFragment extends Fragment {
                 compositeDisposable.add(Common.userActivityRepository.getAbsentDepartmentList(currentDate,departmentValue).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                     @Override
                     public void accept(List<AttendanceEntity> userActivities) throws Exception {
-                        display(userActivities,"");
+                        display(userActivities,"absent");
                         dismissLoadingProgress();
                     }
                 }));
@@ -854,6 +1025,28 @@ public class DashboardFragment extends Fragment {
 
 
 
+    }
+    private void check(){
+//        String strTime = "19:48";
+//        String endTime = "19:54";
+//        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//        try {
+//            Date dates = dateFormat.parse(strTime);
+//            Date enddates = dateFormat.parse(endTime);
+//            SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
+//
+//            String currentTime=formatters.format(dates);
+//            String endTimes=formatters.format(enddates);
+//            long difference = enddates.getTime() - dates.getTime();
+//            int  days = (int) (difference / (1000*60*60*24));
+//            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+//            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+//            Log.e("currentTime","currentTime"+currentTime);
+//            Log.e("endTime","endTime"+endTimes);
+//            Log.e("difference","difference"+days +":"+min);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
     }
     List<AttendanceEntity> users= new ArrayList<>();
     private static void loadDataActivity(String value) {
@@ -884,6 +1077,7 @@ public class DashboardFragment extends Fragment {
             compositeDisposable.add(Common.userActivityRepository.getList(currentDate).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<AttendanceEntity>>() {
                 @Override
                 public void accept(List<AttendanceEntity> userActivities) throws Exception {
+
                     display(userActivities,"all");
                     dismissLoadingProgress();
                 }
@@ -982,8 +1176,12 @@ public class DashboardFragment extends Fragment {
                 ydata.add(Integer.valueOf(0));
                 ydataAttendance.add(Integer.valueOf(ontimeWise));
                 ydataAttendance.add(Integer.valueOf(lateWise));
-                addDataSet();
-                addDataSetAttendance();
+                try {
+                    addDataSet();
+                    addDataSetAttendance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, 3000);
 
@@ -994,7 +1192,11 @@ public class DashboardFragment extends Fragment {
         userActivities.clear();
         userActivities=userActivitie;
         mAdapters = new PunchInAdapter(mActivity, userActivities,name,currentDate);
-        rcl_approval_in_list.setAdapter(mAdapters);
+        try {
+            rcl_approval_in_list.setAdapter(mAdapters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //EmployeeStaus();
 
     }
@@ -1032,7 +1234,11 @@ public class DashboardFragment extends Fragment {
         showLoadingProgress(mActivity);
         mUnitAdapter = new UnitAdapter(mActivity, units,mClickUnit);
 
-        rcl_this_unit_list.setAdapter(mUnitAdapter);
+        try {
+            rcl_this_unit_list.setAdapter(mUnitAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dismissLoadingProgress();
 
     }
@@ -1052,7 +1258,11 @@ public class DashboardFragment extends Fragment {
         showLoadingProgress(mActivity);
         mDepartmentAdapter = new DepartmentAdapter(mActivity, departments,mClickDepartment);
 
-        rcl_this_department_list.setAdapter(mDepartmentAdapter);
+        try {
+            rcl_this_department_list.setAdapter(mDepartmentAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dismissLoadingProgress();
     }
     private static void addDataSetAttendance() {
@@ -1109,7 +1319,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadLeaveTotal();
+       // loadLeaveTotal();
        loadUnitItems();
         //DepartmentListData();
         loadDataActivity("all");
@@ -1117,6 +1327,13 @@ public class DashboardFragment extends Fragment {
         EmployeeStaus();
     }
 
+    public static  void shows(){
+        loadUnitItems();
+        //DepartmentListData();
+        loadDataActivity("all");
+        loadDepartmentItems();
+        EmployeeStaus();
+    }
     private void loadLeaveTotal() {
         showLoadingProgress(mActivity);
         compositeDisposable.add(mService.getTotalLeave().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(

@@ -45,7 +45,27 @@
             android:layout_height="5px"
             android:background="@drawable/gradient_color_bottom" />
     </RelativeLayout>
+    <TextView
+        android:visibility="gone"
+        android:text="dff"
+        android:tag="45"
+        android:textColor="@color/reject"
+        android:textSize="55px"
+        android:layout_centerInParent="true"
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ProgressBar
+        android:layout_below="@+id/text"
+        android:layout_marginTop="20px"
+        android:visibility="gone"
 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progress_bar"
+        android:background="@android:color/transparent" />
 </RelativeLayout>
     <include layout="@layout/nav_drawer_layout" />
+
 </androidx.drawerlayout.widget.DrawerLayout>

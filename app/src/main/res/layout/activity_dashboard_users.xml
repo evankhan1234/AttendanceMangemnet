@@ -121,7 +121,7 @@
                                 android:layout_marginTop="28px"
                                 android:gravity="center_horizontal"
                                 android:tag="52"
-                                android:text="Punch"
+                                android:text="Attendance"
                                 android:textColor="@color/gray_black"
                                 android:textSize="52px" />
 

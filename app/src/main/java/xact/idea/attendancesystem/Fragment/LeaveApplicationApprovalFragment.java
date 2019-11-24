@@ -192,6 +192,8 @@ public class LeaveApplicationApprovalFragment extends Fragment {
         compositeDisposable.clear();
     }
     public int handleBackPress() {
+
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName()));
         if (getFragmentManager().findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName()) != null) {
             LeaveApplicationApprovalFragment f = (LeaveApplicationApprovalFragment) getFragmentManager()
                     .findFragmentByTag(LeaveApplicationApprovalFragment.class.getSimpleName());
@@ -205,7 +207,9 @@ public class LeaveApplicationApprovalFragment extends Fragment {
             return 2;
 
         }
+
         return 2;
+
     }
     public int  leaveApplication(){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
