@@ -87,6 +87,7 @@ public class HomeFragment extends Fragment {
     TextView text_department;
     TextView text_backup_name;
     TextView text_phone_number;
+    TextView text_email;
    // RecyclerView recycler_cart;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     ProgressBar progress_bar;
@@ -108,6 +109,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
         initView();
         Load();
+       // BottomSheetFragment bottomSheetFragment = new BottomSheetFragment.newInstance();
     }
 
     private void loadData() {
@@ -129,14 +131,16 @@ public class HomeFragment extends Fragment {
 //        }));
     }
     public int handleBackPress() {
-        if (getChildFragmentManager().findFragmentByTag(ProfileDetailsFragment.class.getSimpleName()) != null) {
-            ProfileDetailsFragment f = (ProfileDetailsFragment) getChildFragmentManager()
-                    .findFragmentByTag(ProfileDetailsFragment.class.getSimpleName());
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName()));
+        if (getFragmentManager().findFragmentByTag(HomeFragment.class.getSimpleName()) != null) {
+            HomeFragment f = (HomeFragment) getFragmentManager()
+                    .findFragmentByTag(HomeFragment.class.getSimpleName());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
             transaction.remove(f);
             transaction.commit();
-            getChildFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
 
 
             return 2;
@@ -144,6 +148,7 @@ public class HomeFragment extends Fragment {
         }
 
         return 2;
+
     }
     public void momentDetailsFragmnett() {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -160,6 +165,7 @@ public class HomeFragment extends Fragment {
     }
         private void initView() {
         mService = Common.getApiXact();
+            text_email =  mRoot.findViewById(R.id.text_email);
             progress_bar =  mRoot.findViewById(R.id.progress_bar);
         img_next =  mRoot.findViewById(R.id.img_next);
         text_name =  mRoot.findViewById(R.id.text_name);
@@ -233,6 +239,7 @@ public class HomeFragment extends Fragment {
             text_phone_number.setText(userList.PersonalMobileNumber);
             text_unit.setText(userList.UnitName);
             text_designation.setText(userList.DepartmentName);
+            text_email.setText(userList.Email);
             if (userList.OfficeExt!=null){
                 text_office_text.setText(userList.OfficeExt);
             }
@@ -299,33 +306,54 @@ public class HomeFragment extends Fragment {
 
     }
     private void loadDataByDate() {
-
+        progress_bar.setVisibility(View.VISIBLE);
         String startDate=edit_start_date.getText().toString();
         String endDate=edit_end_date.getText().toString();
         Date date1 = null;
         Date date2 = null;
         try {
-            date1=new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
-            date2=new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+            date1=new SimpleDateFormat("dd-MM-yyyy").parse(startDate);
+            date2=new SimpleDateFormat("dd-MM-yyyy").parse(endDate);
+            Log.e("date1","sss"+date1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-//        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
-//            @Override
-//            public void accept(List<UserActivity> userActivities) throws Exception {
-//                //    Log.e("sss","sss"+new Gson().toJson(userActivities));
-//            }
-//        }));
-        progress_bar.setVisibility(View.VISIBLE);
+
         compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
             @Override
             public void accept(List<UserActivity> userActivities) throws Exception {
                 displayUnitItems(userActivities);
+                Log.e("fdfd","sss"+new Gson().toJson(userActivities));
                 progress_bar.setVisibility(View.GONE);
-                Log.e("sss","sss"+new Gson().toJson(userActivities));
 
             }
         }));
+//        String startDate=edit_start_date.getText().toString();
+//        String endDate=edit_end_date.getText().toString();
+//        Date date1 = null;
+//        Date date2 = null;
+//        try {
+//            date1=new SimpleDateFormat("yyyy-MM-dd").parse(startDate);
+//            date2=new SimpleDateFormat("yyyy-MM-dd").parse(endDate);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+////        compositeDisposable.add(Common.userActivityRepository.getUserActivityItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+////            @Override
+////            public void accept(List<UserActivity> userActivities) throws Exception {
+////                //     Log.e("sss","sss"+new Gson().toJson(userActivities));
+////            }
+////        }));
+//        progress_bar.setVisibility(View.VISIBLE);
+//        compositeDisposable.add(Common.userActivityRepository.getUserActivityItemByDate(date1,date2,SharedPreferenceUtil.getUser(mActivity)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserActivity>>() {
+//            @Override
+//            public void accept(List<UserActivity> userActivities) throws Exception {
+//                displayUnitItems(userActivities);
+//                progress_bar.setVisibility(View.GONE);
+//                Log.e("sss","sss"+new Gson().toJson(userActivities));
+//
+//            }
+//        }));
 
     }
 
@@ -391,7 +419,7 @@ public class HomeFragment extends Fragment {
             cal.setTimeInMillis(0);
             cal.set(year, month, day, 0, 0, 0);
             Date chosenDate = cal.getTime();
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String formattedDate = formatter.format(chosenDate);
             EditText startTime2 = (EditText) getActivity().findViewById(R.id.edit_start_date);
             startTime2.setText(formattedDate);
@@ -423,7 +451,7 @@ public class HomeFragment extends Fragment {
                 cal.setTimeInMillis(0);
                 cal.set(year, month, day, 0, 0, 0);
                 Date chosenDate = cal.getTime();
-                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = formatter.format(chosenDate);
                 EditText endTime2 = (EditText) getActivity().findViewById(R.id.edit_end_date);
                 endTime2.setText(formattedDate);

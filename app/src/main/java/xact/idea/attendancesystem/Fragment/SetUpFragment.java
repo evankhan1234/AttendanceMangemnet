@@ -57,6 +57,7 @@ import xact.idea.attendancesystem.Interface.UserListClickInterface;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
+import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.DLog;
 import xact.idea.attendancesystem.Utils.Utils;
@@ -251,9 +252,23 @@ public class SetUpFragment extends Fragment {
         private UserListClickInterface mClick = new UserListClickInterface() {
         @Override
         public void onItemClick(UserList position) {
+            FragmentTransaction  transaction;
+            if (Constant.VALUE.equals("users")) {
+                transaction = getChildFragmentManager().beginTransaction();
+                Log.e("tree","Fd");
+
+            }
+            else  if (Constant.VALUE.equals("value")) {
+
+                transaction = getFragmentManager().beginTransaction();
+            }
+            else {
+                transaction = getFragmentManager().beginTransaction();
+            }
 
 
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+
             Bundle bundle = new Bundle();
              bundle.putString("UserId",position.UserId);
              bundle.putString("FullName",position.FullName);
@@ -261,6 +276,9 @@ public class SetUpFragment extends Fragment {
              bundle.putString("UnitName",position.UnitName);
              bundle.putString("DepartmentName",position.DepartmentName);
              bundle.putString("Designation",position.Designation);
+             bundle.putString("Picture",position.ProfilePhoto);
+             bundle.putString("Email",position.Email);
+             bundle.putString("Number",position.PersonalMobileNumber);
             Fragment f = new PunchInFragment();
             f.setArguments(bundle);
             transaction.setCustomAnimations(R.anim.right_to_left, R.anim.stand_by, R.anim.stand_by, R.anim.left_to_right);
@@ -274,6 +292,43 @@ public class SetUpFragment extends Fragment {
         }
     };
 
+    public int handleBackPress() {
+
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()));
+            if (getFragmentManager().findFragmentByTag(SetUpFragment.class.getSimpleName()) != null) {
+                SetUpFragment f = (SetUpFragment) getFragmentManager()
+                        .findFragmentByTag(SetUpFragment.class.getSimpleName());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f);
+                transaction.commit();
+                getFragmentManager().popBackStack();
+
+
+               return 2;
+
+            }
+
+        return 2;
+
+    }
+    public int test(){
+        Log.e("evan","evan"+getChildFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()));
+       if (getChildFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+           PunchInFragment f = (PunchInFragment) getChildFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f);
+                transaction.commit();
+           getChildFragmentManager().popBackStack();
+
+
+               return 2;
+
+            }
+        return 2;
+    }
     private void loadUnitItems() {
         progress_bar.setVisibility( View.VISIBLE);
         compositeDisposable.add(Common.unitRepository.getUnitItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<Unit>>() {
@@ -319,14 +374,19 @@ public class SetUpFragment extends Fragment {
 
         progress_bar.setVisibility( View.VISIBLE);
 
-        compositeDisposable.add(Common.userListRepository.getUserListItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
-            @Override
-            public void accept(List<UserList> userLists) throws Exception {
-                userListEntities=userLists;
-                displayUserList(userLists);
-                progress_bar.setVisibility( View.GONE);
-            }
-        }));
+        try {
+            compositeDisposable.add(Common.userListRepository.getUserListItems().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Consumer<List<UserList>>() {
+                @Override
+                public void accept(List<UserList> userLists) throws Exception {
+                    userListEntities=userLists;
+                    displayUserList(userLists);
+                    progress_bar.setVisibility( View.GONE);
+                }
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+            progress_bar.setVisibility( View.GONE);
+        }
 
     }
 

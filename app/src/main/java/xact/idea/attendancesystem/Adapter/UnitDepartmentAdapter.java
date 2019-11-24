@@ -1,10 +1,22 @@
 package xact.idea.attendancesystem.Adapter;
 
 import android.Manifest;
+import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+
+import android.content.ClipData;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,10 +29,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +43,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.siyamed.shapeimageview.CircularImageView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +55,7 @@ import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.Entity.UserListEntity;
 import xact.idea.attendancesystem.Filter.CustomFilterPunchAdmin;
 import xact.idea.attendancesystem.Filter.CustomFilterUserList;
+import xact.idea.attendancesystem.Fragment.BottomSheetFragment;
 import xact.idea.attendancesystem.Interface.ClickInterface;
 import xact.idea.attendancesystem.Interface.UserListClickInterface;
 import xact.idea.attendancesystem.R;
@@ -46,19 +63,21 @@ import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
 public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAdapter.PlaceTagListiewHolder> implements Filterable {
 
-
+    private BottomSheetDialog mBottomSheetDialog;
+    private BottomSheetBehavior mDialogBehavior;
+    private BottomSheetBehavior mBehavior;
     CustomFilterUserList filter;
     private Activity mActivity = null;
     public List<UserList> messageEntities;
     public List<UserList> messageEntitiesFilter;
     UserListClickInterface clickInterface;
 
-    public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, UserListClickInterface  clickInterfaces) {
+    public UnitDepartmentAdapter(Activity activity, List<UserList> messageEntitie, UserListClickInterface clickInterfaces) {
         mActivity = activity;
         this.messageEntities = messageEntitie;
         this.messageEntitiesFilter = messageEntitie;
         //mClick = mClicks;
-        clickInterface=clickInterfaces;
+        clickInterface = clickInterfaces;
     }
 
 
@@ -73,10 +92,10 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
     @Override
     public void onBindViewHolder(final UnitDepartmentAdapter.PlaceTagListiewHolder holder, final int position) {
-       // UserList messageEntitie= messageEntities.get(position);
+        // UserList messageEntitie= messageEntities.get(position);
         Log.e("messageEntities", "SDfs" + messageEntities.get(position).UserId);
 
-        if (messageEntities.get(position).ProfilePhoto!=null){
+        if (messageEntities.get(position).ProfilePhoto != null) {
             Glide.with(mActivity).load(messageEntities.get(position).ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -84,7 +103,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
                             holder.user_icon.setImageDrawable(resource);
                         }
                     });
-        }else {
+        } else {
             Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -96,43 +115,62 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
         holder.text_name.setText(messageEntities.get(position).FullName);
         holder.text_email.setText(messageEntities.get(position).Email);
-        if (messageEntities.get(position).OfficeExt!=null){
-            holder.text_office_text.setText("("+messageEntities.get(position).OfficeExt+")");
-        }
-        else {
+        if (messageEntities.get(position).OfficeExt != null) {
+            String offtext = messageEntities.get(position).OfficeExt.replaceAll("\\n","");
+            holder.text_office_text.setText("(" + offtext + ")");
+        } else {
 
         }
 
         holder.text_phone_number.setText(messageEntities.get(position).PersonalMobileNumber);
 
-        if (messageEntities.get(position).Designation!=null){
+        if (messageEntities.get(position).Designation != null) {
             holder.text_department.setText(messageEntities.get(position).Designation);
-        }
-        else {
+        } else {
             holder.text_department.setText("N/A");
         }
 
-        if (messageEntities.get(position).UnitName!=null){
+        if (messageEntities.get(position).UnitName != null) {
             holder.text_unit.setText(messageEntities.get(position).UnitName);
-        }
-        else {
+        } else {
             holder.text_unit.setText("N/A");
         }
 
-        if (messageEntities.get(position).DepartmentName!=null){
+        if (messageEntities.get(position).DepartmentName != null) {
             holder.text_department.setText(messageEntities.get(position).DepartmentName);
-        }
-        else {
+        } else {
             holder.text_department.setText("N/A");
         }
-
-
 
 
         holder.img_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendEmail();
+            }
+        });
+        holder.img_add_contact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.WRITE_CONTACTS}, 1565);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_INSERT);
+                    intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
+                    ArrayList<ContentValues> data = new ArrayList<>();
+
+                    ContentValues row = new ContentValues();
+                    row.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                    row.put(ContactsContract.CommonDataKinds.Phone.NUMBER, messageEntities.get(position).PersonalMobileNumber);
+                    row.put(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+                    data.add(row);
+
+
+                    intent.putExtra(ContactsContract.Intents.Insert.NAME, messageEntities.get(position).FullName);
+                    intent.putParcelableArrayListExtra(ContactsContract.Intents.Insert.DATA, data);
+                    mActivity.startActivity(intent);
+                }
+
             }
         });
         holder.img_sms.setOnClickListener(new View.OnClickListener() {
@@ -145,11 +183,27 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:"+messageEntities.get(position).PersonalMobileNumber));
-                mActivity. startActivity(intent);
+                intent.setData(Uri.parse("tel:" + messageEntities.get(position).PersonalMobileNumber));
+                if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                } else {
+                    mActivity.startActivity(intent);
+                }
+
+
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager manager = ((AppCompatActivity) mActivity).getSupportFragmentManager();
+                BottomSheetFragment.newInstance(mActivity, messageEntities.get(position)).show(manager, "dialog");
+
+
+                //Toast.makeText(mActivity, messageEntities.get(position).FullName, Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.img_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clickInterface.onItemClick(messageEntities.get(position));
@@ -164,6 +218,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         Log.e("evan", "sd" + messageEntities.size());
         return messageEntities.size();
     }
+
     @Override
     public Filter getFilter() {
         if (filter == null) {
@@ -184,10 +239,14 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         private ImageView img_phone;
         private ImageView img_sms;
         private ImageView img_email;
+        private ImageView img_next;
+        private ImageView img_add_contact;
 
 
         public PlaceTagListiewHolder(View itemView) {
             super(itemView);
+            img_add_contact = itemView.findViewById(R.id.img_add_contact);
+            img_next = itemView.findViewById(R.id.img_next);
             user_icon = itemView.findViewById(R.id.user_icon);
             text_name = itemView.findViewById(R.id.text_name);
             text_office_text = itemView.findViewById(R.id.text_office_text);
@@ -219,7 +278,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
 
         try {
             mActivity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-            mActivity.finish();
+
             //   Log.i("Finished sending email...", "");
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(mActivity, "There is no email client installed.", Toast.LENGTH_SHORT).show();
@@ -227,7 +286,13 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
     }
 
     public void sendSMS(String number) {
-          // The number on which you want to send SMS
-        mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+        // The number on which you want to send SMS
+        if (ContextCompat.checkSelfPermission(mActivity, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.SEND_SMS}, 123);
+        } else {
+            mActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
+        }
     }
+
+
 }

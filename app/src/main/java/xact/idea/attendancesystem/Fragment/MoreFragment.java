@@ -241,6 +241,26 @@ public class MoreFragment extends Fragment {
         ((MainActivity) getActivity()).showHeaderDetail("rrr");
         // disableNestedScroll();
     }
+    public int handleBackPress() {
+
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName()));
+        if (getFragmentManager().findFragmentByTag(MoreFragment.class.getSimpleName()) != null) {
+            MoreFragment f = (MoreFragment) getFragmentManager()
+                    .findFragmentByTag(MoreFragment.class.getSimpleName());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+            transaction.remove(f);
+            transaction.commit();
+            getFragmentManager().popBackStack();
+
+
+            return 2;
+
+        }
+
+        return 2;
+
+    }
     public int handleBackPress(int value) {
         if (value==1){
             if (getChildFragmentManager().findFragmentByTag(AboutUsFragment.class.getSimpleName()) != null) {

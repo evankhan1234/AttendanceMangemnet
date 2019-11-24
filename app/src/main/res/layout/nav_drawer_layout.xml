@@ -60,7 +60,80 @@
                 android:tag="43"
                 android:id="@+id/text_email"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:id="@+id/text_phone_number"
+                android:layout_width="wrap_content"
 
+                android:layout_height="wrap_content"
+
+
+                android:textSize="43px"
+                android:layout_marginTop="10px"
+                android:layout_marginLeft="30px"
+                android:tag="43"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:layout_marginTop="0px"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_designation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:tag="35"
+                    android:text=""
+                    android:textSize="35px" />
+
+                <ImageView
+                    android:id="@+id/indicator_01"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="15px"
+
+                    android:background="@drawable/indicator_unselected" />
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_department"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20px"
+
+                    android:tag="35"
+                    android:text=""
+                    android:textSize="35px" />
+
+                <ImageView
+                    android:id="@+id/indicator_0s1"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginLeft="20px"
+                    android:layout_marginTop="15px"
+
+
+                    android:background="@drawable/indicator_unselected" />
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20px"
+                    android:tag="35"
+                    android:text=""
+                    android:textSize="35px" />
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50px"/>

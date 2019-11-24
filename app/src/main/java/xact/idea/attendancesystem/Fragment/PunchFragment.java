@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.text.Html;
@@ -178,7 +179,26 @@ public class PunchFragment extends Fragment {
             }
         });
     }
+    public int handleBackPress() {
 
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()));
+        if (getFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()) != null) {
+            PunchFragment f = (PunchFragment) getFragmentManager()
+                    .findFragmentByTag(PunchFragment.class.getSimpleName());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+            transaction.remove(f);
+            transaction.commit();
+            getFragmentManager().popBackStack();
+
+
+            return 2;
+
+        }
+
+        return 2;
+
+    }
     public static void show(){
         SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(System.currentTimeMillis());
@@ -257,8 +277,8 @@ public class PunchFragment extends Fragment {
                         userActivity.InComment = edit_comments.getText().toString();
                         userActivity.UnitName = mUnitName;
                         userActivity.WorkingDate = currentDate;
-                        userActivity.PunchInLocation = "Mobile";
-                        Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(currentDate);
+                        userActivity.PunchInLocation = mUnitName;
+                        Date date1 = new SimpleDateFormat("dd-MM-yyyy").parse(currentDate);
                         userActivity.Date = date1;
                         Log.e("dates", "date" + date1);
 
@@ -281,7 +301,7 @@ public class PunchFragment extends Fragment {
                         }
 
                         // userActivity.PunchInTime= Double.parseDouble(str);
-                        userActivity.PunchOutLocation = "Mobile";
+                        userActivity.PunchOutLocation = mUnitName;
                         userActivity.PunchOutTime = "";
                         userActivity.Duration = "";
                         userActivity.PunchInTimeLate = currentTime;
@@ -311,7 +331,7 @@ public class PunchFragment extends Fragment {
                         SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
                         Date dates = new Date(System.currentTimeMillis());
                         String currentTime=formatters.format(dates);
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
                         SimpleDateFormat formatter= new SimpleDateFormat("dd-MM-yyyy");
                         Date date = new Date(System.currentTimeMillis());
                         String currentDate=formatter.format(date);
@@ -329,6 +349,7 @@ public class PunchFragment extends Fragment {
 
                         try {
                             Date  date1 = simpleDateFormat.parse(userActivitys.PunchInTimeLate);
+                            Log.e("da1", "da1" + date1.toString());
                             Date date2 = simpleDateFormat.parse(currentTime);
                             long difference = date2.getTime() - date1.getTime();
                             int  days = (int) (difference / (1000*60*60*24));
