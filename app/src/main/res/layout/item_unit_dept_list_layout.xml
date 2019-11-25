@@ -265,11 +265,12 @@
                         />
 
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginLeft="30px"
-                    android:background="@drawable/white_circle_drawable"
                     android:layout_width="120px"
-                    android:layout_height="120px">
+                    android:layout_height="120px"
+                    android:layout_marginLeft="30px"
+                    android:background="@drawable/white_circle_drawable">
 
                     <ImageView
 
@@ -279,7 +280,7 @@
                         android:layout_height="70px"
                         android:layout_gravity="center"
                         android:layout_marginLeft="20px"
-                        android:src="@drawable/add_user"
+                        android:src="@drawable/user_add_s"
 
 
                         />

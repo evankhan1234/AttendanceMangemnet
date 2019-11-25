@@ -432,6 +432,7 @@ public class DashboardFragment extends Fragment {
             String formattedDate = formatter.format(chosenDate);
             TextView endTime2 = (TextView) getActivity().findViewById(R.id.text_date_current);
             endTime2.setText(formattedDate);
+            text_date_current.setText(formattedDate);
             currentDate=formattedDate;
             radioAll.setChecked(true);
             scr_category_present.setVisibility(View.GONE);
