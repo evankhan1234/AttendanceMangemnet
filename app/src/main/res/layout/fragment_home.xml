@@ -106,6 +106,17 @@
                                         android:text="+8801677182084"
                                         android:textColor="#6A6B6B"
                                         android:textSize="40px" />
+                                    <TextView
+                                        android:id="@+id/text_email"
+                                        android:layout_width="wrap_content"
+
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="40px"
+
+                                        android:tag="40"
+                                        android:text="+8801677182084"
+                                        android:textColor="#6A6B6B"
+                                        android:textSize="40px" />
 
 
                                 </LinearLayout>

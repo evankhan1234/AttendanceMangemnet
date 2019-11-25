@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import xact.idea.attendancesystem.R;
+import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
 public class DashboardActivityUsers extends AppCompatActivity {
@@ -47,6 +48,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
         linear_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivityUsers.this, MainActivity.class);
                 intent.putExtra("EXTRA_SESSION", "myself");
                 startActivity(intent);
@@ -56,6 +58,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
         linear_punch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivityUsers.this, MainActivity.class);
                 intent.putExtra("EXTRA_SESSION", "home");
                 startActivity(intent);
@@ -64,6 +67,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
         linear_users.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Constant.VALUE="value";
                 Intent intent = new Intent(DashboardActivityUsers.this, MainActivity.class);
                 intent.putExtra("EXTRA_SESSION", "users");
                 startActivity(intent);
@@ -72,6 +76,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
         linear_leave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivityUsers.this, MainActivity.class);
                 intent.putExtra("EXTRA_SESSION", "leave");
                 startActivity(intent);
@@ -80,6 +85,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
         linear_myself.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivityUsers.this, MainActivity.class);
                 intent.putExtra("EXTRA_SESSION", "punch");
                 startActivity(intent);

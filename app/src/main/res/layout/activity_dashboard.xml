@@ -39,7 +39,7 @@
                 android:paddingLeft="1px"
                 android:paddingTop="1px"
                 android:tag="58"
-                android:text="Welcome To the Dashboard "
+                android:text="Welcome To the Real Time Based ERP Solutions"
                 android:textColor="@color/reject"
                 android:textSize="58px" />
             <RelativeLayout
@@ -156,7 +156,7 @@
                                 android:layout_marginTop="28px"
                                 android:gravity="center_horizontal"
                                 android:tag="52"
-                                android:text="Punch"
+                                android:text="Attendance"
                                 android:textColor="@color/gray_black"
                                 android:textSize="52px" />
 

@@ -17,9 +17,15 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 
 import java.text.DateFormat;
@@ -31,6 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -41,6 +48,7 @@ import xact.idea.attendancesystem.Database.Model.UserList;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
+import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
@@ -64,14 +72,21 @@ public class PunchInFragment extends Fragment {
     String UnitName;
     String OfficeExt;
     String DepartmentName;
+    String Picture;
     String Designation;
+    String Number;
+    String Email;
 
+    TextView text_email;
+    TextView text_phone_number;
     TextView text_name;
+    TextView text_backup_name;
     TextView text_unit;
     TextView text_department;
     TextView text_designation;
     TextView text_office_text;
     ProgressBar progress_bar;
+    CircleImageView img_avatar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,7 +113,62 @@ public class PunchInFragment extends Fragment {
         rcl_punch_in_list.setAdapter(mAdapters);
         return mRoot;
     }
+    public int handleBackPress() {
+        Log.e("dfd","fdf"+Constant.VALUE);
+        if (Constant.VALUE.equals("users")) {
+            Log.e("tag","tag"+getFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()));
+            if (getFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                PunchInFragment f = (PunchInFragment) getChildFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f);
+                transaction.commit();
+                getChildFragmentManager().popBackStack();
 
+
+
+
+            }
+
+        }
+        else  if (Constant.VALUE.equals("value")) {
+
+            if (getFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                PunchInFragment f = (PunchInFragment) getFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f);
+                transaction.commit();
+                getFragmentManager().popBackStack();
+
+
+
+
+            }
+        }
+        else {
+            if (getFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()) != null) {
+                PunchInFragment f = (PunchInFragment) getFragmentManager()
+                        .findFragmentByTag(PunchInFragment.class.getSimpleName());
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
+                transaction.remove(f);
+                transaction.commit();
+                getFragmentManager().popBackStack();
+
+
+
+
+            }
+        }
+        Log.e("evan","evan"+getFragmentManager().findFragmentByTag(PunchInFragment.class.getSimpleName()));
+
+
+        return 2;
+
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -116,10 +186,17 @@ public class PunchInFragment extends Fragment {
             OfficeExt = bundle.getString("OfficeExt", null);
             DepartmentName = bundle.getString("DepartmentName", null);
             Designation = bundle.getString("Designation", null);
+            Picture = bundle.getString("Picture", null);
+            Email = bundle.getString("Email", null);
+            Number = bundle.getString("Number", null);
             Log.e("FullName", "FullName" + FullName);
             Log.e("UserId", "UserId" + UserId);
         }
+        text_email = mRoot.findViewById(R.id.text_email);
+        text_phone_number = mRoot.findViewById(R.id.text_phone_number);
+        text_backup_name = mRoot.findViewById(R.id.text_backup_name);
         text_name = mRoot.findViewById(R.id.text_name);
+        img_avatar = mRoot.findViewById(R.id.img_avatar);
         progress_bar = mRoot.findViewById(R.id.progress_bar);
         text_unit = mRoot.findViewById(R.id.text_unit);
         text_department = mRoot.findViewById(R.id.text_department);
@@ -161,17 +238,38 @@ public class PunchInFragment extends Fragment {
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
+        text_email.setText(Email);
+        text_phone_number.setText(Number);
         text_name.setText(FullName);
+        text_backup_name.setText(FullName);
         UnitName = UnitName != null ? UnitName : "N/A";
         DepartmentName = DepartmentName != null ? DepartmentName : "N/A";
         Designation = Designation != null ? Designation : "N/A";
         OfficeExt = OfficeExt != null ? OfficeExt : "N/A";
-
+        if (Picture!=null){
+            Glide.with(mActivity).load(Picture).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            img_avatar.setImageDrawable(resource);
+                        }
+                    });
+        }
+        else {
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            img_avatar.setImageDrawable(resource);
+                        }
+                    });
+        }
 
         text_unit.setText(UnitName);
         text_department.setText(DepartmentName);
         text_designation.setText(Designation);
-        text_office_text.setText(OfficeExt);
+        String offtext = OfficeExt.replaceAll("\\n","");
+        text_office_text.setText(offtext);
 
     }
     static Calendar now = Calendar.getInstance();
