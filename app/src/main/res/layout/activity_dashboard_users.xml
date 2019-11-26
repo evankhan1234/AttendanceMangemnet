@@ -88,7 +88,7 @@
                     android:layout_marginBottom="96px"
                     android:alpha="1.5"
                     android:orientation="vertical"
-                    android:weightSum="3">
+                    android:weightSum="4">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -240,6 +240,95 @@
 
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_marginTop="21px"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:id="@+id/linear_logout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="1px"
+                            android:layout_marginRight="7px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical"
+
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="1px"
+                                android:layout_marginTop="80px"
+                                android:src="@drawable/logouts" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Logout"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linear_sync"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="1px"
+                                android:layout_marginTop="80px"
+                                android:src="@drawable/sync" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Sync"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4px"
+                                android:layout_marginTop="11px"
+                                android:gravity="center_horizontal"
+                                android:letterSpacing="0.02"
+                                android:tag="34"
+                                android:text="news"
+                                android:layout_marginBottom="94px"
+                                android:textColor="#80202020"
+                                android:textSize="34px" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0px"
@@ -328,7 +417,6 @@
 
 
                     </LinearLayout>
-
                 </LinearLayout>
 
             </RelativeLayout>

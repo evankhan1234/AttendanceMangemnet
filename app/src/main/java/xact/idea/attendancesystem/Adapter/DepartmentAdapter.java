@@ -48,6 +48,10 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
 
         Log.e("Evan", "SDfs" + messageEntities.get(position));
         holder.btn_department.setHint(messageEntities.get(position).DepartmentName);
+
+
+
+
         holder.btn_department.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,6 +59,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
                 notifyDataSetChanged();
                 clickInterface.onItemClick( messageEntities.get(position).Id);
                 //holder.btn_department.setPadding(20,0,20,0);
+
             }
         });
         if (row_index == position) {

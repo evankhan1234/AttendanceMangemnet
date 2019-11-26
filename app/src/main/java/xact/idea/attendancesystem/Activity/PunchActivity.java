@@ -1,25 +1,25 @@
-package xact.idea.attendancesystem.Fragment;
+package xact.idea.attendancesystem.Activity;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -37,6 +37,7 @@ import xact.idea.attendancesystem.Database.Model.Unit;
 import xact.idea.attendancesystem.Database.Model.UserActivity;
 import xact.idea.attendancesystem.Entity.PunchInOutPostEntity;
 import xact.idea.attendancesystem.Entity.PunchInOutResponseEntity;
+import xact.idea.attendancesystem.Fragment.PunchFragment;
 import xact.idea.attendancesystem.R;
 import xact.idea.attendancesystem.Retrofit.IRetrofitApi;
 import xact.idea.attendancesystem.Utils.Common;
@@ -47,8 +48,7 @@ import xact.idea.attendancesystem.Utils.Utils;
 import static xact.idea.attendancesystem.Utils.Utils.dismissLoadingProgress;
 import static xact.idea.attendancesystem.Utils.Utils.showLoadingProgress;
 
-
-public class PunchFragment extends Fragment {
+public class PunchActivity extends AppCompatActivity {
     static Activity mActivity;
     CorrectSizeUtil correctSizeUtil;
     View mRootView;
@@ -68,35 +68,41 @@ public class PunchFragment extends Fragment {
     int mUnitId;
     String mUnitStation;
     String mUnitName;
-    LinearLayout rlt_root;
 
+    ImageButton btn_header_back_;
+    LinearLayout rlt_root;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        mRootView = inflater.inflate(R.layout.fragment_punch, container, false);
-        mActivity = getActivity();
-        correctSizeUtil = correctSizeUtil.getInstance(getActivity());
-        correctSizeUtil.setWidthOriginal(1080);
-        correctSizeUtil.correctSize(mRootView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_punch);
+        mActivity=this;
+
+        CorrectSizeUtil.getInstance(this).correctSize();
+        CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
         mService = Common.getApiXact();
         initView();
-        return mRootView;
     }
-
     private void initView() {
-        text_out_comment = mRootView.findViewById(R.id.text_out_comment);
-        text_in_comment = mRootView.findViewById(R.id.text_in_comment);
-        rlt_root = mRootView.findViewById(R.id.rlt_root);
-        text_duration = mRootView.findViewById(R.id.text_duration);
-        text_unit = mRootView.findViewById(R.id.text_unit);
-        text_enter_time = mRootView.findViewById(R.id.text_enter_time);
-        btn_punch_in = mRootView.findViewById(R.id.btn_punch_in);
-        btn_punch_out = mRootView.findViewById(R.id.btn_punch_out);
-        edit_comments = mRootView.findViewById(R.id.edit_comments);
-        spinnerUnit = mRootView.findViewById(R.id.spinner_unit);
+        rlt_root = findViewById(R.id.rlt_root);
+        text_out_comment = findViewById(R.id.text_out_comment);
+        btn_header_back_ = findViewById(R.id.btn_header_back_);
+        text_in_comment = findViewById(R.id.text_in_comment);
 
+        text_duration = findViewById(R.id.text_duration);
+        text_unit = findViewById(R.id.text_unit);
+        text_enter_time = findViewById(R.id.text_enter_time);
+        btn_punch_in = findViewById(R.id.btn_punch_in);
+        btn_punch_out = findViewById(R.id.btn_punch_out);
+        edit_comments = findViewById(R.id.edit_comments);
+        spinnerUnit = findViewById(R.id.spinner_unit);
 
+        btn_header_back_.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PunchActivity.this,DashboardActivity.class));
+                finish();
+            }
+        });
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -166,26 +172,7 @@ public class PunchFragment extends Fragment {
         });
     }
 
-    public int handleBackPress() {
 
-        Log.e("evan", "evan" + getFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()));
-        if (getFragmentManager().findFragmentByTag(PunchFragment.class.getSimpleName()) != null) {
-            PunchFragment f = (PunchFragment) getFragmentManager()
-                    .findFragmentByTag(PunchFragment.class.getSimpleName());
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(R.anim.left_to_right, R.anim.left_to_right);
-            transaction.remove(f);
-            transaction.commit();
-            getFragmentManager().popBackStack();
-
-
-            return 2;
-
-        }
-
-        return 2;
-
-    }
 
     public static void show() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -403,6 +390,12 @@ public class PunchFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
     @Override
