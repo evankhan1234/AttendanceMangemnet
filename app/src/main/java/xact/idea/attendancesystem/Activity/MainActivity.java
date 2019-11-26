@@ -641,9 +641,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFooter(String value) {
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            tv_user_setup_menus.setText("Attendance");
-            title.setText("Home");
-            tv_home_menu.setText("Home");
+//            tv_user_setup_menus.setText("Attendance");
+//            title.setText("Home");
+//            tv_home_menu.setText("Home");
         } else {
             tv_user_setup_menus.setText("Myself");
             title.setText("Attendance");
@@ -657,15 +657,33 @@ public class MainActivity extends AppCompatActivity {
         }
         switch (value) {
             case "home":
-                btn_footer_home.setSelected(true);
-                tv_home_menu.setSelected(true);
-                afterClickTabItem(Constant.FRAG_HOME, null);
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+                    tv_user_setup_menus.setSelected(true);
+                    btn_footer_setup_user.setSelected(true);
+                    btn_header_sync.setVisibility(View.VISIBLE);
+                    tv_user_setup_menus.setText("Attendance");
+                    title.setText("Attendance");
+                    afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+                } else {
+                    btn_footer_home.setSelected(true);
+                    tv_home_menu.setSelected(true);
+                    afterClickTabItem(Constant.FRAG_HOME, null);
+                }
+
                 break;
             case "punch":
 
-                tv_user_setup_menus.setSelected(true);
-                btn_footer_setup_user.setSelected(true);
-                afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+
+                  startActivity(new Intent(MainActivity.this,PunchActivity.class));
+
+                } else {
+
+                    tv_user_setup_menus.setSelected(true);
+                    btn_footer_setup_user.setSelected(true);
+                    afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
+                }
+
                 break;
             case "users":
 
@@ -681,6 +699,14 @@ public class MainActivity extends AppCompatActivity {
                 afterClickTabItem(Constant.FRAG_SET_UP, null);
                 break;
             case "myself":
+                if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+
+                   title.setText("Myself");
+                } else {
+
+                    title.setText("More");
+
+                }
                 tv_more_menu.setSelected(true);
                 btn_footer_more.setSelected(true);
                 afterClickTabItem(Constant.FRAG_MORE, null);
@@ -2129,7 +2155,7 @@ public class MainActivity extends AppCompatActivity {
 //            unitListData();
             if (Utils.broadcastIntent(MainActivity.this, rlt_root)) {
                 //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
-                load();
+             //   load();
                 UserActivityData();
             } else {
                 Snackbar snackbar = Snackbar
@@ -2526,11 +2552,39 @@ public class MainActivity extends AppCompatActivity {
 //                            Log.e("currentTime","currentTime"+currentTime);
 //                            Log.e("endTime","endTime"+endTimes);
 //                            Log.e("difference","difference"+days +":"+min);
-
+//
+//                        if (userActivityListEntity.PunchInTime!=null)
+//                        {
+//                            if (str.equals("")){
+//
+//                                DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//
+//
+//                                Date dates = dateFormat.parse(userActivityListEntity.PunchInTime);
+//
+//                                SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
+//
+//
+//                                String currentTime = formatters.format(dates);
+//                                userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                                userActivity.Duration = userActivityListEntity.Duration;
+//                                userActivity.PunchInTimeLate = currentTime;
+//                            }
+//                            else {
+//                                userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                                userActivity.Duration = userActivityListEntity.Duration;
+//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+//                            }
+//
+//                        }
+//                        else {
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+//                        }
                         userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
                         userActivity.Duration = userActivityListEntity.Duration;
                         userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
-
 
                     } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
                         String strTime = userActivityListEntity.PunchInTime;
@@ -2984,14 +3038,16 @@ public class MainActivity extends AppCompatActivity {
         Utils.is_home = true;
         setUpFooter(HOME_BTN);
         //show the initial home page
-        afterClickTabItem(Constant.FRAG_HOME, null);
+
         // checkToGetTicket(false);
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 
-            title.setText("Home");
+            startActivity(new Intent(MainActivity.this,DashboardActivity.class));
+            finish();
+
         } else {
             tv_user_setup_menus.setText("Myself");
-
+            afterClickTabItem(Constant.FRAG_HOME, null);
         }
         rlt_header_details.setVisibility(View.GONE);
         view_header_details.setVisibility(View.GONE);
@@ -3214,7 +3270,7 @@ public class MainActivity extends AppCompatActivity {
         switch (fragId) {
             case Constant.FRAG_HOME:
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                    newFrag = new DashboardFragment();
+                   // newFrag = new DashboardFragment();
                 } else {
                     Constant.SYNC = "UserActivitY";
                     newFrag = new PunchFragment();
@@ -3236,6 +3292,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case Constant.FRAG_MORE:
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
+
                     newFrag = new HomeFragment();
                 } else {
 
@@ -3249,7 +3306,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case Constant.FRAG_SET_UP_USER:
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-                    newFrag = new PunchFragment();
+                    newFrag = new DashboardFragment();
                 } else {
 
                     newFrag = new HomeFragment();

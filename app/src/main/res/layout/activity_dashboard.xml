@@ -88,7 +88,7 @@
                     android:layout_marginBottom="96px"
                     android:alpha="1.5"
                     android:orientation="vertical"
-                    android:weightSum="3">
+                    android:weightSum="4">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -97,83 +97,6 @@
                         android:layout_marginTop="0px"
                         android:orientation="horizontal"
                         android:weightSum="2">
-
-                        <LinearLayout
-                            android:id="@+id/linear_home"
-                            android:layout_width="0px"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="1px"
-                            android:layout_marginRight="5px"
-                            android:layout_weight="1"
-                            android:background="@drawable/white_bx"
-
-                            android:orientation="vertical"
-
-                            >
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginTop="80px"
-                                android:layout_marginRight="1px"
-                                android:src="@drawable/house" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="28px"
-                                android:gravity="center_horizontal"
-                                android:tag="52"
-                                android:text="Home"
-                                android:textColor="@color/gray_black"
-                                android:textSize="52px" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/linear_punch"
-                            android:layout_width="0px"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10px"
-                            android:layout_weight="1"
-                            android:background="@drawable/white_bx"
-
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:layout_marginLeft="6px"
-                                android:layout_marginTop="80px"
-                                android:src="@drawable/keyhole" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="28px"
-                                android:gravity="center_horizontal"
-                                android:tag="52"
-                                android:text="Attendance"
-                                android:textColor="@color/gray_black"
-                                android:textSize="52px" />
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                    <LinearLayout
-
-                        android:layout_width="match_parent"
-                        android:layout_height="0px"
-                        android:layout_weight="1"
-                        android:layout_marginTop="0px"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
                         <LinearLayout
                             android:id="@+id/linear_users"
                             android:layout_width="0px"
@@ -202,6 +125,83 @@
                                 android:gravity="center_horizontal"
                                 android:tag="52"
                                 android:text="Users"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:id="@+id/linear_home"
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="1px"
+                            android:layout_marginRight="5px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical"
+
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="80px"
+                                android:layout_marginRight="1px"
+                                android:src="@drawable/house" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Attendance"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+
+                        </LinearLayout>
+
+
+
+
+                    </LinearLayout>
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_weight="1"
+                        android:layout_marginTop="0px"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:id="@+id/linear_punch"
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="6px"
+                                android:layout_marginTop="80px"
+                                android:src="@drawable/keyhole" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Punch In/Out"
                                 android:textColor="@color/gray_black"
                                 android:textSize="52px" />
 
@@ -285,6 +285,94 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/linear_sync"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="1px"
+                                android:layout_marginTop="80px"
+                                android:src="@drawable/sync" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Sync"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4px"
+                                android:layout_marginTop="11px"
+                                android:gravity="center_horizontal"
+                                android:letterSpacing="0.02"
+                                android:tag="34"
+                                android:text="news"
+                                android:layout_marginBottom="94px"
+                                android:textColor="#80202020"
+                                android:textSize="34px" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0px"
+                        android:layout_marginTop="21px"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:id="@+id/linear_logout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="1px"
+                            android:layout_marginRight="7px"
+                            android:layout_weight="1"
+                            android:background="@drawable/white_bx"
+
+                            android:orientation="vertical"
+
+                            >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="1px"
+                                android:layout_marginTop="80px"
+                                android:src="@drawable/logouts" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="28px"
+                                android:gravity="center_horizontal"
+                                android:tag="52"
+                                android:text="Logout"
+                                android:textColor="@color/gray_black"
+                                android:textSize="52px" />
+
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/linear_web"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -328,25 +416,25 @@
 
 
                     </LinearLayout>
+                    <TextView
 
+                        android:id="@+id/tv_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="70px"
+
+                        android:layout_marginTop="37px"
+                        android:alpha="1.5"
+                        android:gravity="center_horizontal"
+                        android:letterSpacing=".01"
+                        android:paddingRight="1px"
+                        android:tag="49"
+                        android:text=""
+                        android:textColor="@color/reject"
+                        android:textSize="49px" />
                 </LinearLayout>
 
             </RelativeLayout>
-            <TextView
-                android:layout_alignParentBottom="true"
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="70px"
 
-                android:layout_marginTop="37px"
-                android:alpha="1.5"
-                android:gravity="center_horizontal"
-                android:letterSpacing=".01"
-                android:paddingRight="1px"
-                android:tag="49"
-                android:text=""
-                android:textColor="@color/reject"
-                android:textSize="49px" />
 
         </RelativeLayout>
     </ScrollView>
