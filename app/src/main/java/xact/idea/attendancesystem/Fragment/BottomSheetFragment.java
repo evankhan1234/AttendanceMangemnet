@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.ContactsContract;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private ImageView img_sms;
     private ImageView img_email;
     private ImageView img_add_contact;
+    private ImageView btn_close_drawer;
 
 
     public BottomSheetFragment() {
@@ -78,10 +80,11 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        final BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
         View view = View.inflate(getContext(), R.layout.fragment_bottom_sheet, null);
 
+        btn_close_drawer = view.findViewById(R.id.btn_close_drawer);
         text_blood_group = view.findViewById(R.id.text_blood_group);
         text_emergency_contact_number = view.findViewById(R.id.text_emergency_contact_number);
         img_add_contact = view.findViewById(R.id.img_add_contact);
@@ -103,8 +106,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         dialog.setContentView(view);
         mBehavior = BottomSheetBehavior.from((View) view.getParent());
         text_name.setText(userList.FullName);
+        btn_close_drawer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         if (userList.ProfilePhoto!=null){
-            Glide.with(mActivity).load(userList.ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load(userList.ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -112,7 +121,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                         }
                     });
         }else {
-            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -120,44 +129,86 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
                         }
                     });
         }
+        String text = "<b><font color=#000 >Name : </font></b> <font color=#358ED3>"+userList.FullName+"</font>";
+        String number = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>"+userList.PersonalMobileNumber+"</font>";
+        String numberNull = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>N/A</font>";
+        String email = "<b><font color=#000 >Email : </font></b> <font color=#358ED3>"+userList.Email+"</font>";
+        String emailNull = "<b><font color=#000 >Email : </font></b> <font color=#358ED3N/A</font>";
+        String blood = "<b><font color=#000 >Blood Group : </font></b> <font color=#358ED3>"+userList.BloodGroup+"</font>";
+        String bloodNull = "<b><font color=#000 >Blood Group : </font></b> <font color=#358ED3>N/A</font>";
+        String emergency = "<b><font color=#000 >Emergency Contact Person : </font></b> <font color=#358ED3>"+userList.EmergencyContactPerson+"</font>";
+        String emergencyNull = "<b><font color=#000 >Emergency Contact Person : </font></b> <font color=#358ED3>N/A</font>";
+        String unit = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>"+userList.UnitName+"</font>";
+        String unitNull = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>N/A</font>";
+        String department = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>"+userList.DepartmentName+"</font>";
+        String departmentNull = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>N/A</font>";
+        String designation = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>"+userList.Designation+"</font>";
+        String designationNull = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>N/A</font>";
 
-       text_name.setText(userList.FullName);
-       text_email.setText(userList.Email);
+        text_name.setText(Html.fromHtml(text));
+       // text_email.setText(Html.fromHtml(email));
+    //   text_name.setText(text);
+      // text_email.setText(userList.Email);
         if (userList.OfficeExt!=null){
-           text_office_text.setText("("+userList.OfficeExt+")");
+          String offtext =userList.OfficeExt.replaceAll("\\n","");
+            //String offtext = "<font color=#edaa0e>"+userList.OfficeExt+"</font>";
+           text_office_text.setText("("+offtext+")");
         }
         else {
 
         }
-
-       text_phone_number.setText(userList.PersonalMobileNumber);
-       text_blood_group.setText("Blood Group: "+userList.PersonalMobileNumber);
+        if (userList.Email!=null){
+            text_email.setText(Html.fromHtml(email));
+            // text_emergency_contact_number.setText("Emergency Contact Number: "+userList.EmergencyContactPerson);
+        }
+        else {
+            text_email.setText(Html.fromHtml(emailNull));
+        }
+    //   text_phone_number.setText(Html.fromHtml(number));
+        if (userList.PersonalMobileNumber!=null){
+            text_phone_number.setText(Html.fromHtml(number));
+            // text_emergency_contact_number.setText("Emergency Contact Number: "+userList.EmergencyContactPerson);
+        }
+        else {
+            text_phone_number.setText(Html.fromHtml(numberNull));
+        }
+        if (userList.BloodGroup!=null){
+            text_blood_group.setText(Html.fromHtml(blood));
+            // text_emergency_contact_number.setText("Emergency Contact Number: "+userList.EmergencyContactPerson);
+        }
+        else {
+            text_blood_group.setText(Html.fromHtml(bloodNull));
+        }
+      // text_blood_group.setText("Blood Group: "+userList.PersonalMobileNumber);
 
         if (userList.EmergencyContactPerson!=null){
-            text_emergency_contact_number.setText("Emergency Contact Number: "+userList.EmergencyContactPerson);
+            text_emergency_contact_number.setText(Html.fromHtml(emergency));
+           // text_emergency_contact_number.setText("Emergency Contact Number: "+userList.EmergencyContactPerson);
         }
         else {
-            text_emergency_contact_number.setText("Emergency Contact Number: N/A");
+            text_emergency_contact_number.setText(Html.fromHtml(emergencyNull));
         }
         if (userList.Designation!=null){
-           text_department.setText(userList.Designation);
+            text_designation.setText(Html.fromHtml(designation));
         }
         else {
-           text_department.setText("N/A");
+            text_designation.setText(Html.fromHtml(designationNull));
         }
 
         if (userList.UnitName!=null){
-           text_unit.setText(userList.UnitName);
+           text_unit.setText(Html.fromHtml(unit));
         }
         else {
-           text_unit.setText("N/A");
+            text_unit.setText(Html.fromHtml(unitNull));
         }
 
         if (userList.DepartmentName!=null){
-           text_department.setText(userList.DepartmentName);
+
+            text_department.setText(Html.fromHtml(department));
         }
         else {
-           text_department.setText("N/A");
+         //  text_department.setText("N/A");
+            text_department.setText(Html.fromHtml(departmentNull));
         }
 
 

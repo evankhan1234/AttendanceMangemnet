@@ -394,7 +394,7 @@ public class PunchActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         finish();
     }
 

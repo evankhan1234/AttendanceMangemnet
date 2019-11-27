@@ -94,6 +94,7 @@ public class DashboardFragment extends Fragment {
     static  RadioButton radioleave;
     static  RadioButton radioPresentOnTime;
     static RadioButton radioAll;
+    static RadioButton radioAllPresent;
     static HorizontalScrollView scr_category_present;
     IRetrofitApi mService;
     static CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -227,6 +228,7 @@ public class DashboardFragment extends Fragment {
 
     }
     private void initView() {
+        radioAllPresent =view. findViewById(R.id.radioAllPresent);
          rg =view. findViewById(R.id.radioSex);
         radioPresents =view. findViewById(R.id.radioPresents);
         radioPresentOnTime = view.findViewById(R.id.radioPresentOnTime);
@@ -292,6 +294,25 @@ public class DashboardFragment extends Fragment {
         l1.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
 
         radioPresent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scr_category_present.setVisibility(View.VISIBLE);
+
+
+                if (unitValue > 0 && departmentValue > 0) {
+                    loadDataActivityUnitDepartmentWise("present");
+
+                } else if (unitValue > 0) {
+                    loadDataActivityUnitDepartmentWise("present");
+                } else if (departmentValue > 0) {
+                    loadDataActivityUnitDepartmentWise("present");
+                } else {
+                    loadDataActivity("present");
+                }
+
+            }
+        });
+        radioAllPresent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 scr_category_present.setVisibility(View.VISIBLE);
@@ -1172,6 +1193,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void run() {
 
+
                 ydata.add(Integer.valueOf(presentWise));
                 ydata.add(Integer.valueOf(absentWise));
                 ydata.add(Integer.valueOf(0));
@@ -1184,7 +1206,7 @@ public class DashboardFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, 100);
 
     }
 

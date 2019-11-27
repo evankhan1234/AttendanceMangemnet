@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -238,16 +239,16 @@ public class PunchInFragment extends Fragment {
                 dFragment.show(getFragmentManager(), "Date Picker");
             }
         });
-        text_email.setText(Email);
-        text_phone_number.setText(Number);
-        text_name.setText(FullName);
-        text_backup_name.setText(FullName);
-        UnitName = UnitName != null ? UnitName : "N/A";
-        DepartmentName = DepartmentName != null ? DepartmentName : "N/A";
-        Designation = Designation != null ? Designation : "N/A";
-        OfficeExt = OfficeExt != null ? OfficeExt : "N/A";
+//        text_email.setText(Email);
+//        text_phone_number.setText(Number);
+//        text_name.setText(FullName);
+//        text_backup_name.setText(FullName);
+//        UnitName = UnitName != null ? UnitName : "N/A";
+//        DepartmentName = DepartmentName != null ? DepartmentName : "N/A";
+//        Designation = Designation != null ? Designation : "N/A";
+//        OfficeExt = OfficeExt != null ? OfficeExt : "N/A";
         if (Picture!=null){
-            Glide.with(mActivity).load(Picture).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load(Picture).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -256,7 +257,7 @@ public class PunchInFragment extends Fragment {
                     });
         }
         else {
-            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -265,12 +266,75 @@ public class PunchInFragment extends Fragment {
                     });
         }
 
-        text_unit.setText(UnitName);
-        text_department.setText(DepartmentName);
-        text_designation.setText(Designation);
-        String offtext = OfficeExt.replaceAll("\\n","");
-        text_office_text.setText(offtext);
+//        text_unit.setText(UnitName);
+//        text_department.setText(DepartmentName);
+//        text_designation.setText(Designation);
+//        String offtext = OfficeExt.replaceAll("\\n","");
+//        text_office_text.setText(offtext);
 
+        String text = "<b><font color=#000 >Name : </font></b> <font color=#358ED3>"+FullName+"</font>";
+        String number = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>"+Number+"</font>";
+        String numberNull = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>N/A</font>";
+        String email = "<b><font color=#000 >Email : </font></b> <font color=#358ED3>"+Email+"</font>";
+        String emailNull = "<b><font color=#000 >Email : </font></b> <font color=#358ED3N/A</font>";
+        String unit = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>"+UnitName+"</font>";
+        String unitNull = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>N/A</font>";
+        String department = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>"+DepartmentName+"</font>";
+        String departmentNull = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>N/A</font>";
+        String designation = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>"+Designation+"</font>";
+        String designationNull = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>N/A</font>";
+        String office = "<b><font color=#000 >Office Text : </font></b> <font color=#358ED3>"+OfficeExt+"</font>";
+        String officeNull = "<b><font color=#000 >Office Text  : </font></b> <font color=#358ED3>N/A</font>";
+        text_name.setText(Html.fromHtml(text));
+        // text_email.setText(Html.fromHtml(email));
+        //   text_name.setText(text);
+        // text_email.setText(Email);
+        if (OfficeExt!=null){
+            String offtext =office.replaceAll("\\n","");
+            //String offtext = "<font color=#edaa0e>"+OfficeExt+"</font>";
+            text_office_text.setText(Html.fromHtml(offtext));
+        }
+        else {
+            text_office_text.setText(Html.fromHtml(officeNull));
+        }
+        if (Email!=null){
+            text_email.setText(Html.fromHtml(email));
+            // text_emergency_contact_number.setText("Emergency Contact Number: "+EmergencyContactPerson);
+        }
+        else {
+            text_email.setText(Html.fromHtml(emailNull));
+        }
+        //   text_phone_number.setText(Html.fromHtml(number));
+        if (Number!=null){
+            text_phone_number.setText(Html.fromHtml(number));
+            // text_emergency_contact_number.setText("Emergency Contact Number: "+EmergencyContactPerson);
+        }
+        else {
+            text_phone_number.setText(Html.fromHtml(numberNull));
+        }
+
+        if (Designation!=null){
+            text_designation.setText(Html.fromHtml(designation));
+        }
+        else {
+            text_designation.setText(Html.fromHtml(designationNull));
+        }
+
+        if (UnitName!=null){
+            text_unit.setText(Html.fromHtml(unit));
+        }
+        else {
+            text_unit.setText(Html.fromHtml(unitNull));
+        }
+
+        if (DepartmentName!=null){
+
+            text_department.setText(Html.fromHtml(department));
+        }
+        else {
+            //  text_department.setText("N/A");
+            text_department.setText(Html.fromHtml(departmentNull));
+        }
     }
     static Calendar now = Calendar.getInstance();
     public static class DatePickerFromFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
