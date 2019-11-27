@@ -78,7 +78,7 @@ public class LeaveApplicationApprovalFragment extends Fragment {
     public void onResume() {
         super.onResume();
         initView();
-        load("");
+       // load("");
     }
 
     private void initView() {

@@ -23,7 +23,7 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.De
 
     private Activity mActivity = null;
     private List<Department> messageEntities;
-    int row_index = -1;
+    int row_index = 0;
     DepartmentClickInterface clickInterface;
     public DepartmentAdapter(Activity activity, List<Department> messageEntitie, DepartmentClickInterface  clickInterfaces) {
         mActivity = activity;

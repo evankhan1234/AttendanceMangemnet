@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //String s=SharedPreferenceUtil.getPic(this);
         if (SharedPreferenceUtil.getPic(this).equals("null")) {
-            Glide.with(this).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(this).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -589,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
         } else {
-            Glide.with(this).load(SharedPreferenceUtil.getPic(this)).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(this).load(SharedPreferenceUtil.getPic(this)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -676,6 +676,7 @@ public class MainActivity extends AppCompatActivity {
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 
                   startActivity(new Intent(MainActivity.this,PunchActivity.class));
+                  finish();
 
                 } else {
 
@@ -926,17 +927,24 @@ public class MainActivity extends AppCompatActivity {
                             tv_user_setup_menus.setText("Attendance");
 
                             tv_home_menu.setText("Home");
-                        } else {
-                            tv_user_setup_menus.setText("Myself");
-
-                            tv_home_menu.setText("Attendance");
-                        }
-                            title.setText("Myself");
-                            Log.e("sds", "s" );
                             tv_more_menu.setSelected(true);
                             btn_footer_more.setSelected(true);
                             tv_user_setup_menus.setSelected(false);
                             btn_footer_setup_user.setSelected(false);
+                        } else {
+                            tv_user_setup_menus.setText("Myself");
+
+                            tv_home_menu.setText("Attendance");
+                            tv_more_menu.setSelected(false);
+                            btn_footer_more.setSelected(false);
+
+                            tv_user_setup_menus.setSelected(true);
+                            btn_footer_setup_user.setSelected(true);
+                        }
+                            title.setText("Myself");
+                            Log.e("sds", "s" );
+
+
                             tv_user_activity_menu.setSelected(false);
                             btn_footer_user_activity.setSelected(false);
                             tv_setup_menu.setSelected(false);
@@ -2534,7 +2542,7 @@ public class MainActivity extends AppCompatActivity {
                     if (userActivityListEntity.PunchInTime.equals("0")) {
                         userActivityListEntity.PunchInTime = "";
                     }
-                    if (userActivityListEntity.PunchInTime.equals("") || userActivityListEntity.PunchOutTime.equals("")) {
+                    if (userActivityListEntity.PunchOutTime.equals("") ) {
 //                        String strTime = userActivityListEntity.PunchInTime;
 //                        String endTime = userActivityListEntity.PunchOutTime;
 //                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
@@ -2552,29 +2560,22 @@ public class MainActivity extends AppCompatActivity {
 //                            Log.e("currentTime","currentTime"+currentTime);
 //                            Log.e("endTime","endTime"+endTimes);
 //                            Log.e("difference","difference"+days +":"+min);
-//
+
 //                        if (userActivityListEntity.PunchInTime!=null)
 //                        {
-//                            if (str.equals("")){
+//                            String strTime = userActivityListEntity.PunchInTime;
 //
-//                                DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//                            DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//
+//                            Date dates = dateFormat.parse(strTime);
+//
+//                            SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
 //
 //
-//                                Date dates = dateFormat.parse(userActivityListEntity.PunchInTime);
-//
-//                                SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
-//
-//
-//                                String currentTime = formatters.format(dates);
-//                                userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-//                                userActivity.Duration = userActivityListEntity.Duration;
-//                                userActivity.PunchInTimeLate = currentTime;
-//                            }
-//                            else {
-//                                userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-//                                userActivity.Duration = userActivityListEntity.Duration;
-//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
-//                            }
+//                            String currentTime = formatters.format(dates);
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = currentTime;
 //
 //                        }
 //                        else {
@@ -2582,9 +2583,125 @@ public class MainActivity extends AppCompatActivity {
 //                            userActivity.Duration = userActivityListEntity.Duration;
 //                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
 //                        }
-                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-                        userActivity.Duration = userActivityListEntity.Duration;
-                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                        if (!userActivityListEntity.PunchInTime.equals("")){
+
+                            String str1 = userActivityListEntity.PunchInTime;
+                            if (str1 == null || str1.equals("")) {
+                                userActivity.PunchInTime = 0.0;
+                            } else {
+                                String firstFourChars = "";     //substring containing first 4 characters
+
+
+                                firstFourChars = str1.substring(0, 5);
+
+                                int index = 2;
+                                char ch = '.';
+
+                                StringBuilder string = new StringBuilder(firstFourChars);
+                                string.setCharAt(index, ch);
+                                //  userActivity.PunchInTimeLate = string.toString();
+                                double d= Double.parseDouble(string.toString());
+                                if (d<12){
+                                    userActivity.PunchInTimeLate = string.toString() +" AM";
+                                }
+                                else {
+                                    userActivity.PunchInTimeLate = string.toString() +" PM";
+                                }
+
+                            }
+//                            double d= Double.parseDouble(userActivityListEntity.PunchInTime);
+//                            if (d<12){
+//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime +"AM";
+//                            }
+//                            else {
+//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime +"PM";
+//                            }
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+                        else {
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+
+
+
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("") ) {
+//                        String strTime = userActivityListEntity.PunchInTime;
+//                        String endTime = userActivityListEntity.PunchOutTime;
+//                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//                        try {
+//                            Date dates = dateFormat.parse(strTime);
+//                            Date enddates = dateFormat.parse(endTime);
+//                            SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
+//
+//                            String currentTime=formatters.format(dates);
+//                            String endTimes=formatters.format(enddates);
+//                            long difference = enddates.getTime() - dates.getTime();
+//                            int  days = (int) (difference / (1000*60*60*24));
+//                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+//                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+//                            Log.e("currentTime","currentTime"+currentTime);
+//                            Log.e("endTime","endTime"+endTimes);
+//                            Log.e("difference","difference"+days +":"+min);
+
+//                        if (userActivityListEntity.PunchInTime!=null)
+//                        {
+//                            String strTime = userActivityListEntity.PunchInTime;
+//
+//                            DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//
+//                            Date dates = dateFormat.parse(strTime);
+//
+//                            SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
+//
+//
+//                            String currentTime = formatters.format(dates);
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = currentTime;
+//
+//                        }
+//                        else {
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+//                        }
+                        if (!userActivityListEntity.PunchOutTime.equals("")){
+                            String str2 = userActivityListEntity.PunchOutTime;
+                            if (str2 == null || str2.equals("")) {
+                                userActivity.PunchInTime = 0.0;
+                            } else {
+                                String firstFourChars = "";     //substring containing first 4 characters
+
+
+                                firstFourChars = str2.substring(0, 5);
+
+                                int index = 2;
+                                char ch = '.';
+
+                                StringBuilder string = new StringBuilder(firstFourChars);
+                                string.setCharAt(index, ch);
+                                //  userActivity.PunchInTimeLate = string.toString();
+                                double d= Double.parseDouble(string.toString());
+                                if (d<12){
+                                    userActivity.PunchOutTime = string.toString() +" AM";
+                                }
+                                else {
+                                    userActivity.PunchOutTime = string.toString() +" PM";
+                                }
+
+                            }
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+                        else {
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
 
                     } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
                         String strTime = userActivityListEntity.PunchInTime;
@@ -3278,6 +3395,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case Constant.FRAG_SET_UP:
+                Toast.makeText(mContext, "Under Construction", Toast.LENGTH_SHORT).show();
                 newFrag = new LeaveApplicationApprovalFragment();
 
                 //   newFrag = new AlertFragment();

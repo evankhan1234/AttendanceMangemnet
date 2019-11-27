@@ -96,7 +96,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
         Log.e("messageEntities", "SDfs" + messageEntities.get(position).UserId);
 
         if (messageEntities.get(position).ProfilePhoto != null) {
-            Glide.with(mActivity).load(messageEntities.get(position).ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load(messageEntities.get(position).ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -104,7 +104,7 @@ public class UnitDepartmentAdapter extends RecyclerView.Adapter<UnitDepartmentAd
                         }
                     });
         } else {
-            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
+            Glide.with(mActivity).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {

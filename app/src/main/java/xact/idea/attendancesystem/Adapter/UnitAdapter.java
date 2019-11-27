@@ -23,7 +23,7 @@ public class UnitAdapter extends RecyclerView.Adapter<UnitAdapter.UnitListiewHol
 
     private Activity mActivity = null;
     private List<Unit> messageEntities;
-    int row_index=-1;
+    int row_index=0;
     UnitClickInterface unitClickInterface;
     public UnitAdapter(Activity activity, List<Unit> messageEntitie,UnitClickInterface unitClickInterfaces) {
         mActivity = activity;

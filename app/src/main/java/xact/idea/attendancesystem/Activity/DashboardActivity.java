@@ -1,9 +1,11 @@
 package xact.idea.attendancesystem.Activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -118,6 +120,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "home");
                 startActivity(intent);
 
@@ -128,6 +131,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "punch");
                 startActivity(intent);
             }
@@ -137,6 +141,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Constant.VALUE="value";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "users");
                 startActivity(intent);
             }
@@ -146,6 +151,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "leave");
                 startActivity(intent);
             }
@@ -155,6 +161,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Constant.VALUE="users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "myself");
                 startActivity(intent);
             }
@@ -163,6 +170,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DashboardActivity.this, WebActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -228,6 +236,27 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
         infoDialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                     finish();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isFinishing()) {
+            finish();
+        }
     }
     private void getUserData() {
 
@@ -504,7 +533,7 @@ public class DashboardActivity extends AppCompatActivity {
                     if (userActivityListEntity.PunchInTime.equals("0")) {
                         userActivityListEntity.PunchInTime = "";
                     }
-                    if (userActivityListEntity.PunchInTime.equals("") || userActivityListEntity.PunchOutTime.equals("")) {
+                    if (userActivityListEntity.PunchOutTime.equals("") ) {
 //                        String strTime = userActivityListEntity.PunchInTime;
 //                        String endTime = userActivityListEntity.PunchOutTime;
 //                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
@@ -545,11 +574,128 @@ public class DashboardActivity extends AppCompatActivity {
 //                            userActivity.Duration = userActivityListEntity.Duration;
 //                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
 //                        }
-                        userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
-                        userActivity.Duration = userActivityListEntity.Duration;
-                        userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                        if (!userActivityListEntity.PunchInTime.equals("")){
 
-                    } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
+                            String str1 = userActivityListEntity.PunchInTime;
+                            if (str1 == null || str1.equals("")) {
+                                userActivity.PunchInTime = 0.0;
+                            } else {
+                                String firstFourChars = "";     //substring containing first 4 characters
+
+
+                                firstFourChars = str1.substring(0, 5);
+
+                                int index = 2;
+                                char ch = '.';
+
+                                StringBuilder string = new StringBuilder(firstFourChars);
+                                string.setCharAt(index, ch);
+                              //  userActivity.PunchInTimeLate = string.toString();
+                                double d= Double.parseDouble(string.toString());
+                            if (d<12){
+                                userActivity.PunchInTimeLate = string.toString() +" AM";
+                            }
+                            else {
+                                userActivity.PunchInTimeLate = string.toString() +" PM";
+                            }
+
+                            }
+//                            double d= Double.parseDouble(userActivityListEntity.PunchInTime);
+//                            if (d<12){
+//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime +"AM";
+//                            }
+//                            else {
+//                                userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime +"PM";
+//                            }
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+                        else {
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+
+
+
+                    }
+                    if (userActivityListEntity.PunchInTime.equals("") ) {
+//                        String strTime = userActivityListEntity.PunchInTime;
+//                        String endTime = userActivityListEntity.PunchOutTime;
+//                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//                        try {
+//                            Date dates = dateFormat.parse(strTime);
+//                            Date enddates = dateFormat.parse(endTime);
+//                            SimpleDateFormat formatters= new SimpleDateFormat("hh:mm a");
+//
+//                            String currentTime=formatters.format(dates);
+//                            String endTimes=formatters.format(enddates);
+//                            long difference = enddates.getTime() - dates.getTime();
+//                            int  days = (int) (difference / (1000*60*60*24));
+//                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+//                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+//                            Log.e("currentTime","currentTime"+currentTime);
+//                            Log.e("endTime","endTime"+endTimes);
+//                            Log.e("difference","difference"+days +":"+min);
+
+//                        if (userActivityListEntity.PunchInTime!=null)
+//                        {
+//                            String strTime = userActivityListEntity.PunchInTime;
+//
+//                            DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+//
+//                            Date dates = dateFormat.parse(strTime);
+//
+//                            SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
+//
+//
+//                            String currentTime = formatters.format(dates);
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = currentTime;
+//
+//                        }
+//                        else {
+//                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+//                            userActivity.Duration = userActivityListEntity.Duration;
+//                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+//                        }
+                        if (!userActivityListEntity.PunchOutTime.equals("")){
+                            String str2 = userActivityListEntity.PunchOutTime;
+                            if (str2 == null || str2.equals("")) {
+                                userActivity.PunchInTime = 0.0;
+                            } else {
+                                String firstFourChars = "";     //substring containing first 4 characters
+
+
+                                firstFourChars = str2.substring(0, 5);
+
+                                int index = 2;
+                                char ch = '.';
+
+                                StringBuilder string = new StringBuilder(firstFourChars);
+                                string.setCharAt(index, ch);
+                                //  userActivity.PunchInTimeLate = string.toString();
+                                double d= Double.parseDouble(string.toString());
+                                if (d<12){
+                                    userActivity.PunchOutTime = string.toString() +" AM";
+                                }
+                                else {
+                                    userActivity.PunchOutTime = string.toString() +" PM";
+                                }
+
+                            }
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+                        else {
+                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
+                            userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
+                            userActivity.Duration = userActivityListEntity.Duration;
+                        }
+
+                    }
+                    else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
                         String strTime = userActivityListEntity.PunchInTime;
                         String endTime = userActivityListEntity.PunchOutTime;
                         DateFormat dateFormat = new SimpleDateFormat("hh:mm");

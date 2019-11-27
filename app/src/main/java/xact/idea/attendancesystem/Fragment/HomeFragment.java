@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -233,19 +234,19 @@ public class HomeFragment extends Fragment {
 //        initPager();
 //        selectCategory(0, true);
 //        mRoot.findViewById(R.id.view_category_selected_run).setBackground(Utils.getGradientColor(getContext()));
-            text_name.setText(userList.FullName);
-            text_backup_name.setText(userList.FullName);
-            text_department.setText(userList.DepartmentName);
-            text_phone_number.setText(userList.PersonalMobileNumber);
-            text_unit.setText(userList.UnitName);
-            text_designation.setText(userList.DepartmentName);
-            text_email.setText(userList.Email);
-            if (userList.OfficeExt!=null){
-                text_office_text.setText(userList.OfficeExt);
-            }
-            else {
-                text_office_text.setText("");
-            }
+//            text_name.setText(userList.FullName);
+//            text_backup_name.setText(userList.FullName);
+//            text_department.setText(userList.DepartmentName);
+//            text_phone_number.setText(userList.PersonalMobileNumber);
+//            text_unit.setText(userList.UnitName);
+//            text_designation.setText(userList.DepartmentName);
+//            text_email.setText(userList.Email);
+//            if (userList.OfficeExt!=null){
+//                text_office_text.setText(userList.OfficeExt);
+//            }
+//            else {
+//                text_office_text.setText("");
+//            }
 
             if (userList.ProfilePhoto!=null){
                 Glide.with(mActivity).load(userList.ProfilePhoto).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.backwhite)
@@ -265,7 +266,69 @@ public class HomeFragment extends Fragment {
                             }
                         });
             }
+            String text = "<b><font color=#000 >Name : </font></b> <font color=#358ED3>"+userList.FullName+"</font>";
+            String number = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>"+userList.PersonalMobileNumber+"</font>";
+            String numberNull = "<b><font color=#000 >Mobile Phone  : </font></b> <font color=#358ED3>N/A</font>";
+            String email = "<b><font color=#000 >Email : </font></b> <font color=#358ED3>"+userList.Email+"</font>";
+            String emailNull = "<b><font color=#000 >Email : </font></b> <font color=#358ED3N/A</font>";
+            String unit = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>"+userList.UnitName+"</font>";
+            String unitNull = "<b><font color=#000 >Unit Name : </font></b> <font color=#358ED3>N/A</font>";
+            String department = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>"+userList.DepartmentName+"</font>";
+            String departmentNull = "<b><font color=#000 >Department Name : </font></b> <font color=#358ED3>N/A</font>";
+            String designation = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>"+userList.Designation+"</font>";
+            String designationNull = "<b><font color=#000 >Designation : </font></b> <font color=#358ED3>N/A</font>";
+            String office = "<b><font color=#000 >Office Text : </font></b> <font color=#358ED3>"+userList.OfficeExt+"</font>";
+            String officeNull = "<b><font color=#000 >Office Text  : </font></b> <font color=#358ED3>N/A</font>";
+            text_name.setText(Html.fromHtml(text));
+            // text_email.setText(Html.fromHtml(email));
+            //   text_name.setText(text);
+            // text_email.setText(Email);
+            if (userList.OfficeExt!=null){
+                String offtext =office.replaceAll("\\n","");
+                //String offtext = "<font color=#edaa0e>"+OfficeExt+"</font>";
+                text_office_text.setText(Html.fromHtml(offtext));
+            }
+            else {
+                text_office_text.setText(Html.fromHtml(officeNull));
+            }
+            if (userList.Email!=null){
+                text_email.setText(Html.fromHtml(email));
+                // text_emergency_contact_number.setText("Emergency Contact Number: "+EmergencyContactPerson);
+            }
+            else {
+                text_email.setText(Html.fromHtml(emailNull));
+            }
+            //   text_phone_number.setText(Html.fromHtml(number));
+            if (userList.PersonalMobileNumber!=null){
+                text_phone_number.setText(Html.fromHtml(number));
+                // text_emergency_contact_number.setText("Emergency Contact Number: "+EmergencyContactPerson);
+            }
+            else {
+                text_phone_number.setText(Html.fromHtml(numberNull));
+            }
 
+            if (userList.Designation!=null){
+                text_designation.setText(Html.fromHtml(designation));
+            }
+            else {
+                text_designation.setText(Html.fromHtml(designationNull));
+            }
+
+            if (userList.UnitName!=null){
+                text_unit.setText(Html.fromHtml(unit));
+            }
+            else {
+                text_unit.setText(Html.fromHtml(unitNull));
+            }
+
+            if (userList.DepartmentName!=null){
+
+                text_department.setText(Html.fromHtml(department));
+            }
+            else {
+                //  text_department.setText("N/A");
+                text_department.setText(Html.fromHtml(departmentNull));
+            }
 
     }
 
