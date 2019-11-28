@@ -1,5 +1,6 @@
 package xact.idea.attendancesystem.Activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,15 +8,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,6 +32,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -61,6 +70,7 @@ import xact.idea.attendancesystem.Utils.Common;
 import xact.idea.attendancesystem.Utils.Constant;
 import xact.idea.attendancesystem.Utils.CorrectSizeUtil;
 import xact.idea.attendancesystem.Utils.CustomDialog;
+import xact.idea.attendancesystem.Utils.CustomProgressDialog;
 import xact.idea.attendancesystem.Utils.SharedPreferenceUtil;
 import xact.idea.attendancesystem.Utils.Utils;
 
@@ -80,32 +90,38 @@ public class DashboardActivity extends AppCompatActivity {
     LinearLayout linear_sync;
     LinearLayout linear_logout;
     RelativeLayout root_rlt_dashboard;
+    ProgressBar progress_bar;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
     private Context mContext = null;
+    private Activity mActivity = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("____", "SDFs");
         setContentView(R.layout.activity_dashboard);
-        mContext=this;
+        mContext = this;
         CorrectSizeUtil.getInstance(this).correctSize();
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.root_rlt_dashboard));
         initView();
+        mActivity=this;
     }
 
     private void initView() {
         mService = Common.getApiXact();
-        linear_logout =findViewById(R.id.linear_logout);
-        linear_sync =findViewById(R.id.linear_sync);
-        root_rlt_dashboard =findViewById(R.id.root_rlt_dashboard);
-        linear_home =findViewById(R.id.linear_home);
-        linear_web =findViewById(R.id.linear_web);
-        linear_leave =findViewById(R.id.linear_leave);
-        linear_myself =findViewById(R.id.linear_myself);
-        linear_users =findViewById(R.id.linear_users);
-        linear_punch =findViewById(R.id.linear_punch);
-        TextView tv_store =findViewById(R.id.tv_store);
-        tv_date=findViewById(R.id.tv_date);
+        linear_logout = findViewById(R.id.linear_logout);
+        progress_bar = findViewById(R.id.progress_bar);
+        linear_sync = findViewById(R.id.linear_sync);
+        root_rlt_dashboard = findViewById(R.id.root_rlt_dashboard);
+        linear_home = findViewById(R.id.linear_home);
+        linear_web = findViewById(R.id.linear_web);
+        linear_leave = findViewById(R.id.linear_leave);
+        linear_myself = findViewById(R.id.linear_myself);
+        linear_users = findViewById(R.id.linear_users);
+        linear_punch = findViewById(R.id.linear_punch);
+        TextView tv_store = findViewById(R.id.tv_store);
+        tv_date = findViewById(R.id.tv_date);
         tv_store.setSelected(true);
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
         Date date = new Date(System.currentTimeMillis());
@@ -118,18 +134,19 @@ public class DashboardActivity extends AppCompatActivity {
         linear_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constant.VALUE="users";
+                Constant.VALUE = "users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "home");
                 startActivity(intent);
+                // finish();
 
             }
         });
         linear_punch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constant.VALUE="users";
+                Constant.VALUE = "users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "punch");
@@ -139,7 +156,7 @@ public class DashboardActivity extends AppCompatActivity {
         linear_users.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constant.VALUE="value";
+                Constant.VALUE = "value";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "users");
@@ -149,7 +166,7 @@ public class DashboardActivity extends AppCompatActivity {
         linear_leave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constant.VALUE="users";
+                Constant.VALUE = "users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "leave");
@@ -159,7 +176,7 @@ public class DashboardActivity extends AppCompatActivity {
         linear_myself.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constant.VALUE="users";
+                Constant.VALUE = "users";
                 Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("EXTRA_SESSION", "myself");
@@ -178,6 +195,7 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Utils.showInfoDialog(DashboardActivity.this);
+
             }
         });
         linear_sync.setOnClickListener(new View.OnClickListener() {
@@ -187,6 +205,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
     }
+
     public void showInfoDialog() {
 
         final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
@@ -220,12 +239,26 @@ public class DashboardActivity extends AppCompatActivity {
                     UserActivityData();
                     //AllData();
                     DashboardFragment.shows();
+
                 } else {
                     Snackbar snackbar = Snackbar
                             .make(root_rlt_dashboard, "No Internet", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
+
                 infoDialog.dismiss();
+//                new Handler().postDelayed(new Runnable() {
+//
+//                    @Override
+//                    public void run() {
+//
+//
+//                        showInfoDialogForSync();
+//
+//                    }
+//                }, 5000);
+                showInfoDialogForSync();
+
 
             }
         });
@@ -237,20 +270,106 @@ public class DashboardActivity extends AppCompatActivity {
         });
         infoDialog.show();
     }
+    public void showInfoDialogForSync() {
+       // showLoadingProgress(DashboardActivity.this);
+        progress_bar.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
+                LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = inflator.inflate(R.layout.layout_pop_up_sync_, null);
+
+                infoDialog.setContentView(v);
+                infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+
+                Button btn_yes = infoDialog.findViewById(R.id.btn_ok);
+
+                // btn_yes.setBackgroundTintList(getResources().getColorStateList(R.color.reject));
+                CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
+
+                btn_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        infoDialog.dismiss();
+
+
+                    }
+                });
+
+                infoDialog.show();
+
+                progress_bar.setVisibility(View.GONE);
+
+            }
+        }, 5000);
+
+    }
+
+
+
+
+
+    private void shows() {
+
+     progress_bar.setVisibility(View.VISIBLE);
+//
+//      //  root_rlt_dashboard.setBackgroundColor(getColor(R.color.transparent));
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+
+                progress_bar.setVisibility(View.GONE);
+
+            }
+        }, 5000);
+//        new Handler().postDelayed(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//
+//                showInfoDialogForSync();
+//
+//            }
+//        }, 5000);
+    }
+
     @Override
     public void onBackPressed() {
+
         new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to exit?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                     finish();
+                        Constant.test = "test";
+                        finish();
+
                     }
                 })
                 .setNegativeButton("No", null)
                 .show();
+
+
     }
 
+    //    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        //replaces the default 'Back' button action
+//        if(keyCode==KeyEvent.KEYCODE_BACK)   {
+//// something here
+//            finish();
+//        }
+//        return true;
+//    }
     @Override
     protected void onPause() {
         super.onPause();
@@ -258,6 +377,7 @@ public class DashboardActivity extends AppCompatActivity {
             finish();
         }
     }
+
     private void getUserData() {
 
         showLoadingProgress(DashboardActivity.this);
@@ -304,6 +424,7 @@ public class DashboardActivity extends AppCompatActivity {
         }));
 
     }
+
     private void DepartmentData() {
 
         showLoadingProgress(DashboardActivity.this);
@@ -397,10 +518,19 @@ public class DashboardActivity extends AppCompatActivity {
 
         }));
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         initDB();
+
+        if (Constant.test == null) {
+
+        } else if (Constant.test.equals("test")) {
+            Log.e("evan", "SDFs");
+            Constant.test = "Dsds";
+            finish();
+        }
 
         if (Common.userActivityRepository.size() > 0) {
 
@@ -409,7 +539,7 @@ public class DashboardActivity extends AppCompatActivity {
 //            unitListData();
             if (Utils.broadcastIntent(DashboardActivity.this, root_rlt_dashboard)) {
                 //Toast.makeText(mContext, "Connected ", Toast.LENGTH_SHORT).show();
-             //   load();
+                //   load();
                 UserActivityData();
             } else {
                 Snackbar snackbar = Snackbar
@@ -420,6 +550,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
     }
+
     private void initDB() {
         Common.mainDatabase = MainDatabase.getInstance(this);
         Common.departmentRepository = DepartmentRepository.getInstance(DepartmentDataSource.getInstance(Common.mainDatabase.departmentDao()));
@@ -429,6 +560,7 @@ public class DashboardActivity extends AppCompatActivity {
         Common.remainingLeaveRepository = RemainingLeaveRepository.getInstance(RemainingLeaveDataSource.getInstance(Common.mainDatabase.remainingLeaveDao()));
         Common.userActivityRepository = UserActivityRepository.getInstance(UserActivityDataSource.getInstance(Common.mainDatabase.userActivityDao()));
     }
+
     private void UserActivityData() {
 
         showLoadingProgress(this);
@@ -533,7 +665,7 @@ public class DashboardActivity extends AppCompatActivity {
                     if (userActivityListEntity.PunchInTime.equals("0")) {
                         userActivityListEntity.PunchInTime = "";
                     }
-                    if (userActivityListEntity.PunchOutTime.equals("") ) {
+                    if (userActivityListEntity.PunchOutTime.equals("")) {
 //                        String strTime = userActivityListEntity.PunchInTime;
 //                        String endTime = userActivityListEntity.PunchOutTime;
 //                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
@@ -574,7 +706,7 @@ public class DashboardActivity extends AppCompatActivity {
 //                            userActivity.Duration = userActivityListEntity.Duration;
 //                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
 //                        }
-                        if (!userActivityListEntity.PunchInTime.equals("")){
+                        if (!userActivityListEntity.PunchInTime.equals("")) {
 
                             String str1 = userActivityListEntity.PunchInTime;
                             if (str1 == null || str1.equals("")) {
@@ -590,14 +722,13 @@ public class DashboardActivity extends AppCompatActivity {
 
                                 StringBuilder string = new StringBuilder(firstFourChars);
                                 string.setCharAt(index, ch);
-                              //  userActivity.PunchInTimeLate = string.toString();
-                                double d= Double.parseDouble(string.toString());
-                            if (d<12){
-                                userActivity.PunchInTimeLate = string.toString() +" AM";
-                            }
-                            else {
-                                userActivity.PunchInTimeLate = string.toString() +" PM";
-                            }
+                                //  userActivity.PunchInTimeLate = string.toString();
+                                double d = Double.parseDouble(string.toString());
+                                if (d < 12) {
+                                    userActivity.PunchInTimeLate = string.toString() + " AM";
+                                } else {
+                                    userActivity.PunchInTimeLate = string.toString() + " PM";
+                                }
 
                             }
 //                            double d= Double.parseDouble(userActivityListEntity.PunchInTime);
@@ -609,17 +740,15 @@ public class DashboardActivity extends AppCompatActivity {
 //                            }
                             userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
                             userActivity.Duration = userActivityListEntity.Duration;
-                        }
-                        else {
+                        } else {
                             userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                             userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
                             userActivity.Duration = userActivityListEntity.Duration;
                         }
 
 
-
                     }
-                    if (userActivityListEntity.PunchInTime.equals("") ) {
+                    if (userActivityListEntity.PunchInTime.equals("")) {
 //                        String strTime = userActivityListEntity.PunchInTime;
 //                        String endTime = userActivityListEntity.PunchOutTime;
 //                        DateFormat dateFormat = new SimpleDateFormat("hh:mm");
@@ -660,7 +789,7 @@ public class DashboardActivity extends AppCompatActivity {
 //                            userActivity.Duration = userActivityListEntity.Duration;
 //                            userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
 //                        }
-                        if (!userActivityListEntity.PunchOutTime.equals("")){
+                        if (!userActivityListEntity.PunchOutTime.equals("")) {
                             String str2 = userActivityListEntity.PunchOutTime;
                             if (str2 == null || str2.equals("")) {
                                 userActivity.PunchInTime = 0.0;
@@ -676,26 +805,23 @@ public class DashboardActivity extends AppCompatActivity {
                                 StringBuilder string = new StringBuilder(firstFourChars);
                                 string.setCharAt(index, ch);
                                 //  userActivity.PunchInTimeLate = string.toString();
-                                double d= Double.parseDouble(string.toString());
-                                if (d<12){
-                                    userActivity.PunchOutTime = string.toString() +" AM";
-                                }
-                                else {
-                                    userActivity.PunchOutTime = string.toString() +" PM";
+                                double d = Double.parseDouble(string.toString());
+                                if (d < 12) {
+                                    userActivity.PunchOutTime = string.toString() + " AM";
+                                } else {
+                                    userActivity.PunchOutTime = string.toString() + " PM";
                                 }
 
                             }
                             userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                             userActivity.Duration = userActivityListEntity.Duration;
-                        }
-                        else {
+                        } else {
                             userActivity.PunchInTimeLate = userActivityListEntity.PunchInTime;
                             userActivity.PunchOutTime = userActivityListEntity.PunchOutTime;
                             userActivity.Duration = userActivityListEntity.Duration;
                         }
 
-                    }
-                    else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
+                    } else if (userActivityListEntity.PunchInTime != null && userActivityListEntity.PunchOutTime != null) {
                         String strTime = userActivityListEntity.PunchInTime;
                         String endTime = userActivityListEntity.PunchOutTime;
                         DateFormat dateFormat = new SimpleDateFormat("hh:mm");
@@ -703,19 +829,19 @@ public class DashboardActivity extends AppCompatActivity {
                             Date dates = dateFormat.parse(strTime);
                             Date enddates = dateFormat.parse(endTime);
                             SimpleDateFormat formatters = new SimpleDateFormat("hh:mm a");
-                            SimpleDateFormat formatte= new SimpleDateFormat("hh:mm a");
+                            SimpleDateFormat formatte = new SimpleDateFormat("hh:mm a");
 
                             String currentTime = formatters.format(dates);
                             String endTimes = formatters.format(enddates);
 //                            Date da1= formatte.parse(currentTime);
 //                            Date end= formatte.parse(endTimes);
-                            Date  da1e = formatte.parse(currentTime);
+                            Date da1e = formatte.parse(currentTime);
                             Log.e("da1", "da1" + da1e.toString());
                             Date end = formatte.parse(endTimes);
                             long difference = end.getTime() - da1e.getTime();
-                            int  days = (int) (difference / (1000*60*60*24));
-                            int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
-                            int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+                            int days = (int) (difference / (1000 * 60 * 60 * 24));
+                            int hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
+                            int min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
                             Log.e("currentTime", "currentTime" + currentTime);
                             Log.e("endTime", "endTime" + endTimes);
                             Log.e("difference", "difference" + days + ":" + min);

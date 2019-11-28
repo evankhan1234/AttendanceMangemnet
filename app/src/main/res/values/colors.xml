@@ -3,7 +3,7 @@
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#4CAF50</color>
     <color name="colorAccent">#2E2E2E</color>
-    <color name="transparent">#00000000</color>
+
     <color name="gray_black">#444444</color>
     <color name="homeCategoryBackground">#E5E5E5</color>
     <color name="first1">#E94733</color>
@@ -24,7 +24,7 @@
     <color name="gradient_strong">#80AAAAAA</color>
     <color name="gradient_weak">#00555555</color>
     <color name="light_gray">#dbdbdb</color>
-
+    <color name="transparent">#00000000</color>
     <!-- ONBOARDING -->
     <color name="indicator_unselected">#4D000000</color>
     <array name="colors">
