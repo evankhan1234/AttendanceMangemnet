@@ -72,6 +72,7 @@ public class SpalashActivity extends AppCompatActivity {
         CorrectSizeUtil.getInstance(this).correctSize(findViewById(R.id.rlt_root));
         rlt_root=findViewById(R.id.rlt_root);
         initDB();
+        Constant.test=null;
 
         mServiceXact=Common.getApiXact();
         new Handler().postDelayed(new Runnable() {

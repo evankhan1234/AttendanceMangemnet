@@ -8,12 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,7 +83,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     IRetrofitApi mService;
     private Context mContext = null;
-
+    ProgressBar progress_bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +99,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
     private void initView() {
         mService = Common.getApiXact();
         root_rlt_dashboard = findViewById(R.id.root_rlt_dashboard);
+        progress_bar = findViewById(R.id.progress_bar);
         linear_logout = findViewById(R.id.linear_logout);
         linear_sync = findViewById(R.id.linear_sync);
         linear_more = findViewById(R.id.linear_more);
@@ -205,6 +208,45 @@ public class DashboardActivityUsers extends AppCompatActivity {
             finish();
         }
     }
+    public void showInfoDialogForSync() {
+        // showLoadingProgress(DashboardActivity.this);
+        progress_bar.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
+                LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = inflator.inflate(R.layout.layout_pop_up_sync_, null);
+
+                infoDialog.setContentView(v);
+                infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+
+                Button btn_yes = infoDialog.findViewById(R.id.btn_ok);
+
+                // btn_yes.setBackgroundTintList(getResources().getColorStateList(R.color.reject));
+                CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
+
+                btn_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        infoDialog.dismiss();
+
+
+                    }
+                });
+
+                infoDialog.show();
+
+                progress_bar.setVisibility(View.GONE);
+
+            }
+        }, 5000);
+
+    }
     public void showInfoDialog() {
 
         final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
@@ -244,6 +286,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
                     snackbar.show();
                 }
                 infoDialog.dismiss();
+                showInfoDialogForSync();
 
             }
         });

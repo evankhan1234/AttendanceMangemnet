@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Range;
@@ -579,7 +580,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //String s=SharedPreferenceUtil.getPic(this);
-        if (SharedPreferenceUtil.getPic(this).equals("null")) {
+
+        UserList userList = Common.userListRepository.getUserListById(Integer.parseInt(SharedPreferenceUtil.getUser(this)));
+        if (userList.ProfilePhoto==null) {
             Glide.with(this).load("https://www.hardiagedcare.com.au/wp-content/uploads/2019/02/default-avatar-profile-icon-vector-18942381.jpg").diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.drawable.backwhite)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override
@@ -597,7 +600,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
-        UserList userList = Common.userListRepository.getUserListById(Integer.parseInt(SharedPreferenceUtil.getUser(this)));
         if (userList==null){
 
         }
@@ -638,7 +640,45 @@ public class MainActivity extends AppCompatActivity {
             btn_footer_more.setImageResource(R.drawable.img_footer_more_selector);
         }
     }
+    public void showInfoDialogForSync() {
+        // showLoadingProgress(DashboardActivity.this);
+        progress_bar.setVisibility(View.VISIBLE);
+        new Handler().postDelayed(new Runnable() {
 
+            @Override
+            public void run() {
+                final CustomDialog infoDialog = new CustomDialog(mContext, R.style.CustomDialogTheme);
+                LayoutInflater inflator = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = inflator.inflate(R.layout.layout_pop_up_sync_, null);
+
+                infoDialog.setContentView(v);
+                infoDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                RelativeLayout main_root = infoDialog.findViewById(R.id.main_root);
+
+                Button btn_yes = infoDialog.findViewById(R.id.btn_ok);
+
+                // btn_yes.setBackgroundTintList(getResources().getColorStateList(R.color.reject));
+                CorrectSizeUtil.getInstance((Activity) mContext).correctSize(main_root);
+
+                btn_yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        infoDialog.dismiss();
+
+
+                    }
+                });
+
+                infoDialog.show();
+
+                progress_bar.setVisibility(View.GONE);
+
+            }
+        }, 5000);
+
+    }
     private void setFooter(String value) {
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 //            tv_user_setup_menus.setText("Attendance");
@@ -687,12 +727,13 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case "users":
-
+                title.setText("Users Activity");
                 tv_user_activity_menu.setSelected(true);
                 btn_footer_user_activity.setSelected(true);
                 afterClickTabItem(Constant.FRAG_USER_ACTIVTY, null);
                 break;
             case "leave":
+                title.setText("Leave");
                 btn_header_application.setVisibility(View.VISIBLE);
                 btn_header_sync.setVisibility(View.GONE);
                 tv_setup_menu.setSelected(true);
@@ -758,7 +799,7 @@ public class MainActivity extends AppCompatActivity {
                     snackbar.show();
                 }
                 infoDialog.dismiss();
-
+                showInfoDialogForSync();
             }
         });
         btn_no.setOnClickListener(new View.OnClickListener() {
@@ -3195,7 +3236,7 @@ public class MainActivity extends AppCompatActivity {
         // checkToGetTicket(false);
 
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-            title.setText("Punch");
+            title.setText("Attendance");
             btn_header_sync.setVisibility(View.GONE);
         } else {
             Constant.SYNC = "Status";
