@@ -684,6 +684,7 @@ public class MainActivity extends AppCompatActivity {
 //            tv_user_setup_menus.setText("Attendance");
 //            title.setText("Home");
 //            tv_home_menu.setText("Home");
+            tv_user_setup_menus.setText("Attendance");
         } else {
             tv_user_setup_menus.setText("Myself");
            // title.setText("Home");
