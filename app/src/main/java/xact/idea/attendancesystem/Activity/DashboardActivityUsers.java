@@ -84,6 +84,7 @@ public class DashboardActivityUsers extends AppCompatActivity {
     IRetrofitApi mService;
     private Context mContext = null;
     ProgressBar progress_bar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
