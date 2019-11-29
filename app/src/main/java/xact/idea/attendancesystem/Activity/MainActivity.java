@@ -681,12 +681,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void setFooter(String value) {
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
-//            tv_user_setup_menus.setText("Attendance");
-//            title.setText("Home");
-//            tv_home_menu.setText("Home");
+
+            tv_user_setup_menus.setText("Attendance");
         } else {
             tv_user_setup_menus.setText("Myself");
-           // title.setText("Home");
+
             tv_home_menu.setText("Home");
         }
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
