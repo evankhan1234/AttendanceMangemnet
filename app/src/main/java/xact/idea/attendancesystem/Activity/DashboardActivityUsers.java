@@ -189,16 +189,20 @@ public class DashboardActivityUsers extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+
         new AlertDialog.Builder(this)
                 .setMessage("Are you sure you want to exit?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        Constant.test = "test";
                         finish();
+
                     }
                 })
                 .setNegativeButton("No", null)
                 .show();
+
     }
 
     @Override
@@ -445,6 +449,13 @@ public class DashboardActivityUsers extends AppCompatActivity {
         super.onResume();
         initDB();
 
+        if (Constant.test == null) {
+
+        } else if (Constant.test.equals("test")) {
+            Log.e("evan", "SDFs");
+            Constant.test = "Dsds";
+            finish();
+        }
         if (Common.userActivityRepository.size() > 0) {
 
         } else {
