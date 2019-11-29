@@ -99,8 +99,17 @@ public class PunchActivity extends AppCompatActivity {
         btn_header_back_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PunchActivity.this,DashboardActivity.class));
-                finish();
+
+                String sessionId = getIntent().getStringExtra("EXTRA_SESSION");
+                if (sessionId.equals("admin")){
+                    startActivity(new Intent(PunchActivity.this,DashboardActivity.class));
+                    finish();
+                }
+                else {
+                    startActivity(new Intent(PunchActivity.this,DashboardActivityUsers.class));
+                    finish();
+                }
+
             }
         });
         spinnerUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -686,8 +686,8 @@ public class MainActivity extends AppCompatActivity {
 //            tv_home_menu.setText("Home");
         } else {
             tv_user_setup_menus.setText("Myself");
-            title.setText("Attendance");
-            tv_home_menu.setText("Attendance");
+           // title.setText("Home");
+            tv_home_menu.setText("Home");
         }
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
             btn_header_sync.setVisibility(View.VISIBLE);
@@ -705,9 +705,14 @@ public class MainActivity extends AppCompatActivity {
                     title.setText("Attendance");
                     afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
                 } else {
-                    btn_footer_home.setSelected(true);
-                    tv_home_menu.setSelected(true);
-                    afterClickTabItem(Constant.FRAG_HOME, null);
+                    Intent intent = new Intent(MainActivity.this, PunchActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXTRA_SESSION", "users");
+                    startActivity(intent);
+                    finish();
+//                    btn_footer_home.setSelected(true);
+//                    tv_home_menu.setSelected(true);
+//                    afterClickTabItem(Constant.FRAG_HOME, null);
                 }
 
                 break;
@@ -715,11 +720,19 @@ public class MainActivity extends AppCompatActivity {
 
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
 
-                  startActivity(new Intent(MainActivity.this,PunchActivity.class));
-                  finish();
+                    Intent intent = new Intent(MainActivity.this, PunchActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("EXTRA_SESSION", "admin");
+                    startActivity(intent);
+                    finish();
 
                 } else {
-
+//
+//                    Intent intent = new Intent(MainActivity.this, PunchActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    intent.putExtra("EXTRA_SESSION", "users");
+//                    startActivity(intent);
+//                    finish();
                     tv_user_setup_menus.setSelected(true);
                     btn_footer_setup_user.setSelected(true);
                     afterClickTabItem(Constant.FRAG_SET_UP_USER, null);
@@ -3204,8 +3217,10 @@ public class MainActivity extends AppCompatActivity {
             finish();
 
         } else {
-            tv_user_setup_menus.setText("Myself");
-            afterClickTabItem(Constant.FRAG_HOME, null);
+            startActivity(new Intent(MainActivity.this,DashboardActivityUsers.class));
+            finish();
+//            tv_user_setup_menus.setText("Myself");
+//            afterClickTabItem(Constant.FRAG_HOME, null);
         }
         rlt_header_details.setVisibility(View.GONE);
         view_header_details.setVisibility(View.GONE);
@@ -3237,7 +3252,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
             title.setText("Attendance");
-            btn_header_sync.setVisibility(View.GONE);
+            btn_header_sync.setVisibility(View.VISIBLE);
+           // btn_header_sync.setVisibility(View.VISIBLE);
+            Constant.SYNC = "Admin";
         } else {
             Constant.SYNC = "Status";
             title.setText("Myself");
@@ -3430,8 +3447,8 @@ public class MainActivity extends AppCompatActivity {
                 if (SharedPreferenceUtil.getAdmin(MainActivity.this).equals("1")) {
                    // newFrag = new DashboardFragment();
                 } else {
-                    Constant.SYNC = "UserActivitY";
-                    newFrag = new PunchFragment();
+//                    Constant.SYNC = "UserActivitY";
+//                    newFrag = new PunchFragment();
 
                 }
                 break;

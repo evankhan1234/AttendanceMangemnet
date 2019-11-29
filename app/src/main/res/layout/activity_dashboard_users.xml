@@ -39,7 +39,7 @@
                 android:paddingLeft="1px"
                 android:paddingTop="1px"
                 android:tag="58"
-                android:text="Welcome To the Dashboard "
+                android:text="Welcome To the Real Time Based ERP Solutions"
                 android:textColor="@color/reject"
                 android:textSize="58px" />
             <RelativeLayout
@@ -98,22 +98,25 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
                         <LinearLayout
-                            android:id="@+id/linear_punch"
+                            android:id="@+id/linear_users"
                             android:layout_width="0px"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="10px"
+                            android:layout_marginLeft="1px"
+                            android:layout_marginRight="5px"
                             android:layout_weight="1"
                             android:background="@drawable/white_bx"
 
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+
+                            >
 
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_marginLeft="6px"
                                 android:layout_marginTop="80px"
-                                android:src="@drawable/keyhole" />
+                                android:layout_marginRight="1px"
+                                android:src="@drawable/users" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -121,12 +124,13 @@
                                 android:layout_marginTop="28px"
                                 android:gravity="center_horizontal"
                                 android:tag="52"
-                                android:text="Attendance"
+                                android:text="Users"
                                 android:textColor="@color/gray_black"
                                 android:textSize="52px" />
 
 
                         </LinearLayout>
+
                         <LinearLayout
                             android:id="@+id/linear_myself"
                             android:layout_width="0px"
@@ -175,25 +179,22 @@
                         android:weightSum="2">
 
                         <LinearLayout
-                            android:id="@+id/linear_users"
+                            android:id="@+id/linear_punch"
                             android:layout_width="0px"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="1px"
-                            android:layout_marginRight="5px"
+                            android:layout_marginLeft="10px"
                             android:layout_weight="1"
                             android:background="@drawable/white_bx"
 
-                            android:orientation="vertical"
-
-                            >
+                            android:orientation="vertical">
 
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="6px"
                                 android:layout_marginTop="80px"
-                                android:layout_marginRight="1px"
-                                android:src="@drawable/users" />
+                                android:src="@drawable/keyhole" />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -201,7 +202,7 @@
                                 android:layout_marginTop="28px"
                                 android:gravity="center_horizontal"
                                 android:tag="52"
-                                android:text="Users"
+                                android:text="Punch In/Out"
                                 android:textColor="@color/gray_black"
                                 android:textSize="52px" />
 
