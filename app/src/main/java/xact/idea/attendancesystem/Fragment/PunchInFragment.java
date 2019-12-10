@@ -365,7 +365,7 @@ public class PunchInFragment extends Fragment {
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String formattedDate = formatter.format(chosenDate);
             EditText startTime2 = (EditText) getActivity().findViewById(R.id.edit_start_date);
-            startTime2.setText(formattedDate);
+            edit_start_date.setText(formattedDate);
 
 
         }
@@ -398,7 +398,7 @@ public class PunchInFragment extends Fragment {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String formattedDate = formatter.format(chosenDate);
                 EditText endTime2 = (EditText) getActivity().findViewById(R.id.edit_end_date);
-                endTime2.setText(formattedDate);
+                edit_end_date.setText(formattedDate);
             }
         }
 
