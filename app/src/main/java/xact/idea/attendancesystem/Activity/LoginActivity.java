@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String md5Password=getHashPassWordMD5(password);
         UserList userList;
-         userList=Common.userListRepository.login(email,md5Password);
+         userList=Common.userListRepository.getUserListByEmail(email);
         if (userList!=null){
             SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.TYPE_USER_ID, userList.FullName + "");
             SharedPreferenceUtil.saveShared(LoginActivity.this, SharedPreferenceUtil.USER_EMAIL, userList.Email + "");

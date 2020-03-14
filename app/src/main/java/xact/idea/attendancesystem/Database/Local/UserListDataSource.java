@@ -30,6 +30,11 @@ public class UserListDataSource implements IUserListDataSource {
     }
 
     @Override
+    public UserList getUserListByEmail(String Email) {
+        return userListDao.getUserListByEmail(Email);
+    }
+
+    @Override
     public void emptyCart() {
         userListDao.emptyUserList();
     }

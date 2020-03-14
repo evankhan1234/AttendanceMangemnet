@@ -22,7 +22,8 @@ public interface UserListDao {
     @Query("SELECT * FROM UserList WHERE UserId=:UserId")
     UserList getUserListById(int UserId);
 
-
+    @Query("SELECT * FROM UserList WHERE  Email=:Email")
+    UserList getUserListByEmail(String Email);
     @Query("Select Count(ids)  FROM UserList")
     int value();
     @Query("Select  * FROM UserList where Email=:Email AND Password=:Password")

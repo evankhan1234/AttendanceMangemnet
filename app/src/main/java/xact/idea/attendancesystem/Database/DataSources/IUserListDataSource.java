@@ -13,6 +13,7 @@ public interface IUserListDataSource {
 
     Flowable<List<UserList>> getUserListItemById(int cartItemId);
 
+    UserList getUserListByEmail(String Email);
 
 
     void emptyCart();
