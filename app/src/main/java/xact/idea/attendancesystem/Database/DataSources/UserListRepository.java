@@ -29,6 +29,11 @@ public class UserListRepository implements IUserListDataSource {
     }
 
     @Override
+    public UserList getUserListByEmail(String Email) {
+        return iDepartmentDataSource.getUserListByEmail(Email);
+    }
+
+    @Override
     public void emptyCart() {
         iDepartmentDataSource.emptyCart();
     }
